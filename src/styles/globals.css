@@ -73,6 +73,7 @@
   --spacing-rule-active: 2px; /* active nav underline, schematic trunk */
   --spacing-rule-bar: 3px; /* primary button hover bar */
   --spacing-thumb: 11rem; /* index row hover thumbnail width */
+  --spacing-badge: 3.5rem; /* issuer credential badge in the register */
   --spacing-rail-inset: 2.5rem; /* room left of the content for the rail core, from lg */
 
   /* ---------------------------------------------------------------- Widths */

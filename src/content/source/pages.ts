@@ -28,7 +28,7 @@ export const pagesSource: PagesContent = {
       "Speak directly with the engineer who would do the work about your requirements, current configuration or an upcoming turnaround.",
   },
   credentials: {
-    title: "Credentials and publications",
+    title: "Credentials",
     lead: "Each item is listed with its issuer and identifier so it can be checked independently. Nothing appears here until its wording, status and expiry have been confirmed.",
     finalCta: {
       title: "Capability statements for tenders and prequalification",
@@ -51,7 +51,7 @@ export const pagesSource: PagesContent = {
       {
         title: "DeepTsight reads your enquiry",
         description:
-          "The practitioner reviews what you have described and whether it fits the work DeepTsight does. Response time: TBD — CLIENT.",
+          "The practitioner reviews what you have described and whether it fits the work DeepTsight does. DeepTsight replies within 1 business day.",
       },
       {
         title: "A technical conversation",

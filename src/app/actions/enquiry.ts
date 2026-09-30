@@ -113,7 +113,7 @@ export async function submitEnquiry(
 
   // 6. Transactional email delivery via Resend (FR-37)
   const resendApiKey = env.server.RESEND_API_KEY;
-  const toEmail = env.server.ENQUIRY_TO_EMAIL || "enquiries@deeptsight.com.au";
+  const toEmail = env.server.ENQUIRY_TO_EMAIL || "enquiries@deeptsight.com";
   const fromEmail = env.server.ENQUIRY_FROM_EMAIL || "contact@deeptsight.com.au";
 
   if (resendApiKey) {
@@ -188,7 +188,7 @@ export async function submitEnquiry(
           success: false,
           values: rawValues,
           formError:
-            "Your enquiry could not be delivered because of an email service fault. Please email contact@deeptsight.com.au directly.",
+            "Your enquiry could not be delivered because of an email service fault. Please email enquiries@deeptsight.com directly.",
         };
       }
     } catch (error) {
@@ -201,7 +201,7 @@ export async function submitEnquiry(
         success: false,
         values: rawValues,
         formError:
-          "Your enquiry could not be delivered because of an email service fault. Please email contact@deeptsight.com.au directly.",
+          "Your enquiry could not be delivered because of an email service fault. Please email enquiries@deeptsight.com directly.",
       };
     }
   } else {

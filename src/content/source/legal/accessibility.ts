@@ -23,7 +23,7 @@ export const accessibilitySource: LegalPage = {
     {
       title: "4. Feedback and contact",
       content:
-        "If you find an accessibility barrier or have difficulty accessing content, email enquiries@deeptsight.com.au. [PLACEHOLDER] TODO(CLIENT): confirmed response time for accessibility feedback.",
+        "If you find an accessibility barrier or have difficulty accessing content, email enquiries@deeptsight.com. [PLACEHOLDER] TODO(CLIENT): confirmed response time for accessibility feedback.",
     },
   ],
 };

@@ -20,11 +20,11 @@ Client-dependent. Chase these in parallel with Phase 1; several block later phas
 - [ ] Confirm whether "Consulting" appears in nav and page titles (OPEN-02)
 - [ ] **Sample the navy from the supplied logo file; replace `--ink-800`; regenerate the ink ramp** (OPEN-10) — _blocks final palette sign-off_
 - [ ] Present the design system as a proposal; get palette and typeface approval (OPEN-11). _The accent is resolved: the client primary is `#0E50ED` (Q-04)_
-- [ ] Confirm real business address, phone, email, ABN, LinkedIn — replace the placeholders in `site.ts`
+- [x] Confirm real business address, phone, email, ABN, LinkedIn — replace the placeholders in `site.ts` _(2026-09-30: from the founder file; no address is published, LinkedIn is the personal profile until the company page exists)_
 - [ ] Confirm domain, DNS control, registrar, launch date (OPEN-12)
 - [ ] Confirm enquiry destination: inbox, shared mailbox or CRM (OPEN-13)
 - [ ] Confirm whether an existing site exists and needs a redirect map (OPEN-14)
-- [ ] Confirm priority sectors and geographic service area (OPEN-03)
+- [x] Confirm priority sectors and geographic service area (OPEN-03) _(2026-09-30: Australia-wide, eight sectors)_
 - [ ] Confirm primary CTA label and preferred enquiry method (OPEN-04)
 - [ ] Confirm Insights launch scope — ship with content, ship empty, or defer (OPEN-05)
 - [ ] Confirm hosting, CMS timing and ongoing support owner (OPEN-07)
@@ -32,7 +32,7 @@ Client-dependent. Chase these in parallel with Phase 1; several block later phas
 - [ ] Confirm languages, integrations and future functionality to allow for (OPEN-09)
 - [ ] Receive founder biography and professional portrait
 - [ ] Receive verified credentials with exact wording, status and expiry (OPEN-06) — _blocks `/credentials`_
-- [ ] Receive approved publication citations and links
+- [x] Receive approved publication citations and links _(2026-09-30: none exist; section removed)_
 - [ ] Receive approved service descriptions and technology references
 - [ ] Receive permitted client, project and outcome evidence — or written confirmation there is none for launch
 - [ ] Receive image assets with documented usage rights — **no generated imagery ships** (`AGENT_ROLES.md` §4)
@@ -332,11 +332,11 @@ Add here whenever a requirement is ambiguous. Do not guess and proceed.
 | Q-03 | Does the client want Australian data residency for hosting?                                                | Phase 0         | Open                                |
 | Q-04 | Is signal yellow acceptable as the accent, or should it follow the logo?                                   | Redesign        | Closed: client primary is `#0E50ED` |
 | Q-05 | Approved photography: shoot, supply, or generated and disclosed as illustrative?                           | Redesign        | Open                                |
-| Q-06 | Response-time statement for the contact page and thank-you page                                            | Redesign        | Open                                |
-| Q-07 | Is NER current? The record shows it expired in July 2025                                                   | Founder content | Open                                |
-| Q-08 | Does the founder have power generation experience? The brief says ATCO Power; LinkedIn says ATCO Australia | Founder content | Open                                |
-| Q-09 | Does a RAMS publication exist?                                                                             | Founder content | Open                                |
-| Q-10 | Should the footer link to the founder's personal LinkedIn profile or a company page?                       | Founder content | Open                                |
+| Q-06 | Response-time statement for the contact page and thank-you page                                            | Redesign        | Closed: within 1 business day (founder file) |
+| Q-07 | Is NER current? The record shows it expired in July 2025                                                   | Founder content | Closed: NER active, renewed yearly |
+| Q-08 | Does the founder have power generation experience? The brief says ATCO Power; LinkedIn says ATCO Australia | Founder content | Closed: yes, ATCO power generation assets |
+| Q-09 | Does a RAMS publication exist?                                                                             | Founder content | Closed: none; section removed |
+| Q-10 | Should the footer link to the founder's personal LinkedIn profile or a company page?                       | Founder content | Closed: personal profile until the company page exists |
 
 ---
 
@@ -399,3 +399,11 @@ Record every judgement call the documents did not cover: what was chosen and why
 | 2026-09-30 | Each Home section (not the hero) fades up 14px once as it enters, via `.rail-enter` on its container                                                                                                                              | Transform and opacity only, compositor-driven, no JS. The hero is left alone so LCP is unaffected                                                                             |
 | 2026-09-30 | Rail anchored to the content edge (`--rail-x = --rail-gutter - --rail-offset`) and shown at every width; terminal squares sit on the rail                                                                                         | It was hidden below 1024px and pinned to the viewport edge, 340px from the content at 1920px. Railed containers now have a wider left margin (44px on phones)                 |
 | 2026-09-30 | Footer columns go 2-up between md and lg                                                                                                                                                                                          | The 12-column split overflowed the viewport at 768px on every page                                                                                                            |
+| 2026-09-30 | Founder details file (`docs/sources/DeepTsight_founder_details.md`) treated as the source of truth over LinkedIn and the README                                                                                          | User instruction. Where it contradicts itself (Hancock/Roy Hill, ATCO Power/ATCO Australia, MEng/Master's), each section is used as written and the conflict is logged in `docs/CONTENT_GAPS.md` §2 |
+| 2026-09-30 | Email switched to `enquiries@deeptsight.com`; site URLs stay on `deeptsight.com.au` until the domain is fixed                                                                                                                      | User: the domain is not decided. The sender address (`ENQUIRY_FROM_EMAIL`) also waits on the domain                                                                          |
+| 2026-09-30 | Registered office removed; `site.address` made optional and JSON-LD keeps locality only                                                                                                                                           | Founder instruction (FD:258)                                                                                                                                                   |
+| 2026-09-30 | Publications group and its register layout removed                                                                                                                                                                                | Founder instruction (FD:252). The dead `publications` branch in `CredentialGroup` went with it                                                                                  |
+| 2026-09-30 | "Cochin" kept in the About narrative                                                                                                                                                                                              | It is founder-approved text. Flagged in `CONTENT_GAPS.md` 2.4 because with "LNG regasification facility" it points to one facility                                               |
+| 2026-09-30 | ISA IC32/33/34/37 "specialist badges" left off the register                                                                                                                                                                       | They are ISA course codes; CRAS, CDS and CMS already represent the specialist certificates                                                                                     |
+| 2026-09-30 | Credentials "Platforms and standards" shown as a two-column list instead of the certificate table; home sectors two-up on tablets only; contact splits Location and Service area | The table forced "Not applicable" identifiers and a status on tool lists. Design-taste audit found the rest of the site restrained and on-brief, so no wider redesign |
+| 2026-09-30 | All credentials set `verified: true`; badge art renamed to kebab-case in `public/badges/` and shown beside CPEng, NER, ISA and CAP® entries (register and home strip), with a Verify link to each issuer page | User confirmed every credential is verified and supplied the badges. Badges use `alt=""` because the credential name sits beside them; new `--spacing-badge` token |

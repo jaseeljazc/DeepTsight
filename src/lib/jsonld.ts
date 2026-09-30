@@ -43,7 +43,7 @@ export function organizationLd(site: Site) {
  * LocalBusiness JSON-LD schema (SEO-04)
  */
 export function localBusinessLd(site: Site) {
-  if (hasPlaceholder(site.displayName) || hasPlaceholder(site.address)) {
+  if (hasPlaceholder(site.displayName)) {
     return null;
   }
 
@@ -54,16 +54,17 @@ export function localBusinessLd(site: Site) {
     url: "https://deeptsight.com.au",
     ...(site.phone && !hasPlaceholder(site.phone) ? { telephone: site.phone } : {}),
     email: site.email,
+    // No street address is published (founder instruction); locality only.
     address: {
       "@type": "PostalAddress",
-      streetAddress: site.address,
+      ...(site.address && !hasPlaceholder(site.address) ? { streetAddress: site.address } : {}),
       addressLocality: "Perth",
       addressRegion: "WA",
       addressCountry: "AU",
     },
     areaServed: {
-      "@type": "AdministrativeArea",
-      name: "Western Australia",
+      "@type": "Country",
+      name: "Australia",
     },
     priceRange: "$$$$",
   };
@@ -77,7 +78,7 @@ export function personLd(about: AboutContent, site: Site) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Deepak Pazhoor",
-    jobTitle: "Founder and principal engineer",
+    jobTitle: "Founder and principal consultant",
     worksFor: {
       "@type": "Organization",
       name: site.displayName,

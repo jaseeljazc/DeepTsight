@@ -46,7 +46,7 @@ export function PerthContext({ perthContext, figure }: PerthContextProps) {
               {
                 label: "Sectors",
                 value: (
-                  <ul className="space-y-1 font-sans">
+                  <ul className="grid grid-cols-1 gap-x-6 gap-y-1 font-sans sm:grid-cols-2 lg:grid-cols-1">
                     {perthContext.sectors.map((sector) => (
                       <li key={sector}>
                         <MarkedText text={sector} />

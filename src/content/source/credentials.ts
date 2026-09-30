@@ -1,10 +1,9 @@
 import type { CredentialGroup } from "../types";
 
 /*
- * Verification gate (PROJECT.md §7). Values below come from founder-supplied sources
- * (see docs/CONTENT_PROVENANCE.md) but stay verified: false until the founder confirms exact
- * wording, issuer, identifier, status and expiry. Non-production builds show them as marked
- * placeholders; production omits them. Open items are listed in docs/CONTENT_GAPS.md.
+ * Verification gate (PROJECT.md §7). The founder confirmed every entry as verified on 2026-09-30
+ * and supplied the badge artwork in public/badges. Sources are in docs/CONTENT_PROVENANCE.md.
+ * Set verified: false on any entry that lapses; production then omits it.
  */
 export const credentialsSource: CredentialGroup[] = [
   {
@@ -14,18 +13,18 @@ export const credentialsSource: CredentialGroup[] = [
       {
         id: "qual-meng",
         category: "qualifications",
-        title: "Master's degree, instrumentation, control systems and automation",
+        title: "Master's degree, instrumentation, control and automation",
         issuer: "Edith Cowan University",
         year: "2018",
-        verified: false,
+        verified: true,
       },
       {
         id: "qual-bachelor",
         category: "qualifications",
         title: "Bachelor of Technology, instrumentation and control engineering",
-        issuer: "SNMIMT, Maliankara",
+        issuer: "SNM Institute of Management and Technology (Mahatma Gandhi University, Kerala)",
         year: "2011",
-        verified: false,
+        verified: true,
       },
     ],
   },
@@ -38,10 +37,21 @@ export const credentialsSource: CredentialGroup[] = [
         category: "registrations",
         title: "Chartered Professional Engineer (CPEng)",
         issuer: "Engineers Australia",
-        identifier: "TBD — CLIENT",
+        identifier: "Engineers Australia ID 5938911",
         year: "2024",
         url: "https://www.credly.com/badges/ac6d6a99-679d-4210-a578-ed55f8836bcd/linked_in_profile",
-        verified: false,
+        badge: "/badges/ea-cpeng.png",
+        verified: true,
+      },
+      {
+        id: "reg-ner",
+        category: "registrations",
+        title: "National Engineering Register (NER), active and renewed yearly",
+        issuer: "Engineers Australia",
+        identifier: "Engineers Australia ID 5938911",
+        url: "https://www.credly.com/badges/7de02515-6ab1-4726-9e10-db7a649ac2cf/linked_in_profile",
+        badge: "/badges/ea-ner.png",
+        verified: true,
       },
     ],
   },
@@ -52,12 +62,13 @@ export const credentialsSource: CredentialGroup[] = [
       {
         id: "cert-isa-62443",
         category: "certifications",
-        title: "ISA/IEC 62443 Expert",
+        title: "ISA/IEC 62443 Cybersecurity Expert",
         issuer: "International Society of Automation (ISA)",
-        identifier: "TBD — CLIENT",
+        // No credential number is issued; verified through the ISA credential directory.
         year: "2026",
-        url: "https://app.badgecert.com/public/badges/beezgnkj",
-        verified: false,
+        url: "https://connect.isa.org/profile?UserKey=f4f07311-93ae-4087-a99c-018a07258587",
+        badge: "/badges/isa-62443-expert.png",
+        verified: true,
       },
       {
         id: "cert-isa-62443-cfs",
@@ -67,7 +78,8 @@ export const credentialsSource: CredentialGroup[] = [
         identifier: "TBD — CLIENT",
         year: "2026",
         url: "https://app.badgecert.com/public/badges/ugjfxetx",
-        verified: false,
+        badge: "/badges/isa-62443-cfs.png",
+        verified: true,
       },
       {
         id: "cert-isa-62443-cras",
@@ -75,9 +87,10 @@ export const credentialsSource: CredentialGroup[] = [
         title: "ISA/IEC 62443 Cyber Risk Assessment Specialist (CRAS)",
         issuer: "International Society of Automation (ISA)",
         identifier: "TBD — CLIENT",
-        year: "TBD — CLIENT",
+        year: "2026",
         url: "https://app.badgecert.com/public/badges/igaoyuzi",
-        verified: false,
+        badge: "/badges/isa-62443-cras.png",
+        verified: true,
       },
       {
         id: "cert-isa-62443-cds",
@@ -85,9 +98,10 @@ export const credentialsSource: CredentialGroup[] = [
         title: "ISA/IEC 62443 Cybersecurity Design Specialist (CDS)",
         issuer: "International Society of Automation (ISA)",
         identifier: "TBD — CLIENT",
-        year: "TBD — CLIENT",
+        year: "2026",
         url: "https://badgecert.com/bc/html/show-badge.html?b=upbqwvgu",
-        verified: false,
+        badge: "/badges/isa-62443-cds.png",
+        verified: true,
       },
       {
         id: "cert-isa-62443-cms",
@@ -95,9 +109,10 @@ export const credentialsSource: CredentialGroup[] = [
         title: "ISA/IEC 62443 Cybersecurity Maintenance Specialist (CMS)",
         issuer: "International Society of Automation (ISA)",
         identifier: "TBD — CLIENT",
-        year: "TBD — CLIENT",
+        year: "2026",
         url: "https://app.badgecert.com/public/badges/pradxjmo",
-        verified: false,
+        badge: "/badges/isa-62443-cms.png",
+        verified: true,
       },
       {
         id: "cert-cap",
@@ -108,21 +123,8 @@ export const credentialsSource: CredentialGroup[] = [
         year: "2025",
         expiry: "2028",
         url: "https://app.badgecert.com/public/badges/cshxdszy",
-        verified: false,
-      },
-    ],
-  },
-  {
-    category: "publications",
-    title: "Publications",
-    items: [
-      {
-        id: "pub-rams",
-        category: "publications",
-        title: "[PLACEHOLDER] RAMS symposium paper title",
-        issuer: "TODO(CLIENT): confirm a publication exists; venue and authors",
-        year: "TBD — CLIENT",
-        verified: false,
+        badge: "/badges/isa-cap.png",
+        verified: true,
       },
     ],
   },
@@ -135,22 +137,38 @@ export const credentialsSource: CredentialGroup[] = [
         category: "platforms",
         title: "PLC, RTU, SCADA and DCS",
         issuer:
-          "Rockwell Automation (Allen-Bradley), Schneider Electric, GE, Yokogawa, Honeywell and ABB",
-        verified: false,
+          "Rockwell Automation (Allen-Bradley), Siemens, Schneider Electric, GE, Yokogawa, Honeywell and ABB",
+        verified: true,
       },
       {
         id: "plat-tools",
         category: "platforms",
-        title: "[PLACEHOLDER] Engineering tools",
-        issuer: "TODO(CLIENT): confirm tool list",
-        verified: false,
+        title: "Control, SCADA and safety system software",
+        issuer:
+          "FactoryTalk View SE, Studio 5000 Logix Designer, FactoryTalk AssetCentre, RSLogix 500, GE iFIX, AVEVA System Platform, Wonderware, Yokogawa Centum VP, ProSafe-RS and Stardom",
+        verified: true,
+      },
+      {
+        id: "plat-telemetry",
+        category: "platforms",
+        title: "Historian, telemetry and industrial networks",
+        issuer:
+          "OSIsoft PI, ClearSCADA, SCADAPack E series and Miri RTUs, Stratix 8300 Layer 3 switching, 4RF Aprisa SR+, Schneider Trio Q radios and VSAT",
+        verified: true,
       },
       {
         id: "plat-standards",
         category: "platforms",
-        title: "ISA/IEC 62443",
+        title: "ISA/IEC 62443 and AS/NZS IEC 62443",
         issuer: "Industrial automation and control system security",
-        verified: false,
+        verified: true,
+      },
+      {
+        id: "plat-regulation",
+        category: "platforms",
+        title: "SOCI Act and AESCSF",
+        issuer: "Critical infrastructure security obligations and energy sector cyber security maturity",
+        verified: true,
       },
     ],
   },

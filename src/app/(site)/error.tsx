@@ -25,7 +25,7 @@ export default function ErrorBoundary({
         </h1>
         <p className="text-lead text-ink-700 mt-6">
           Try again, or go back to the home page. If it keeps happening, email
-          enquiries@deeptsight.com.au.
+          enquiries@deeptsight.com.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
           <Button variant="primary" onClick={() => reset()}>

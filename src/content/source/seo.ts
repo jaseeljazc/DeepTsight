@@ -14,7 +14,7 @@ export const seoSource: Record<string, SeoEntry> = {
   "/about": {
     title: "About Deepak Pazhoor",
     description:
-      "Founder-led industrial engineering consultancy in Perth, drawing on site commissioning and control systems work in oil and gas and mining.",
+      "Founder-led industrial engineering consultancy in Perth, drawing on control systems and OT work in oil and gas, mining and power generation.",
     canonical: "https://deeptsight.com.au/about",
   },
   "/services": {
@@ -24,9 +24,9 @@ export const seoSource: Record<string, SeoEntry> = {
     canonical: "https://deeptsight.com.au/services",
   },
   "/credentials": {
-    title: "Credentials and publications",
+    title: "Credentials",
     description:
-      "Qualifications, registrations, certifications and publications, each listed with its issuer so it can be checked.",
+      "Qualifications, registrations, certifications and platforms, each listed with its issuer so it can be checked.",
     canonical: "https://deeptsight.com.au/credentials",
   },
   "/insights": {

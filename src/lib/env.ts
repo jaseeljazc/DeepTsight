@@ -10,7 +10,7 @@ const clientEnvSchema = z.object({
 const serverEnvSchema = z.object({
   TURNSTILE_SECRET_KEY: z.string().optional().default("1x0000000000000000000000000000000AA"),
   RESEND_API_KEY: z.string().optional(),
-  ENQUIRY_TO_EMAIL: z.string().email().optional().default("enquiries@deeptsight.com.au"),
+  ENQUIRY_TO_EMAIL: z.string().email().optional().default("enquiries@deeptsight.com"),
   ENQUIRY_FROM_EMAIL: z.string().email().optional().default("contact@deeptsight.com.au"),
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),

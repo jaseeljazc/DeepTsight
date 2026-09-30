@@ -1,9 +1,9 @@
 import type { HomeContent } from "../types";
 
 /*
- * Trust strip and selected proof entries are unverified drafts. They stay gated
- * (verified / disclosureApproved = false) until the client confirms exact wording,
- * status and permission. In non-production builds they render as marked placeholders.
+ * Trust strip entries mirror the verified credentials register (founder-confirmed 2026-09-30).
+ * Selected proof entries are unverified drafts, gated by disclosureApproved = false until the
+ * client confirms wording and permission. In non-production builds they render as marked placeholders.
  */
 export const homeSource: HomeContent = {
   hero: {
@@ -14,7 +14,7 @@ export const homeSource: HomeContent = {
     primaryCta: "Discuss your operational challenge",
     secondaryCta: "Explore capabilities",
     facts: [
-      { label: "Based", value: "Perth, Western Australia" },
+      { label: "Based", value: "Perth, WA. Working Australia-wide" },
       { label: "Disciplines", value: "Control systems, OT security, segregation, reliability" },
       { label: "Standards", value: "ISA/IEC 62443", mono: true },
       { label: "Engagement", value: "Founder-led" },
@@ -31,30 +31,33 @@ export const homeSource: HomeContent = {
     {
       id: "cred-meng",
       category: "qualifications",
-      title: "Master's degree, instrumentation, control systems and automation",
+      title: "Master's degree, instrumentation, control and automation",
       issuer: "Edith Cowan University",
-      verified: false,
+      verified: true,
     },
     {
       id: "cred-peng",
       category: "registrations",
       title: "Chartered Professional Engineer (CPEng)",
       issuer: "Engineers Australia",
-      verified: false,
+      badge: "/badges/ea-cpeng.png",
+      verified: true,
     },
     {
       id: "cred-isa-62443",
       category: "certifications",
-      title: "ISA/IEC 62443 Expert",
+      title: "ISA/IEC 62443 Cybersecurity Expert",
       issuer: "International Society of Automation (ISA)",
-      verified: false,
+      badge: "/badges/isa-62443-expert.png",
+      verified: true,
     },
     {
       id: "cred-cap",
       category: "certifications",
       title: "Certified Automation Professional (CAP®)",
       issuer: "International Society of Automation (ISA)",
-      verified: false,
+      badge: "/badges/isa-cap.png",
+      verified: true,
     },
   ],
   trustStripCopy: {
@@ -64,7 +67,6 @@ export const homeSource: HomeContent = {
       qualifications: "Qualification",
       registrations: "Registration",
       certifications: "Certification",
-      publications: "Publication",
       platforms: "Platforms",
     },
   },
@@ -201,15 +203,19 @@ export const homeSource: HomeContent = {
     },
   ],
   perthContext: {
-    title: "Based in Perth, working across critical infrastructure",
-    description: "Operators of critical infrastructure and heavy industry.",
+    title: "Based in Perth, working across Australia",
+    description:
+      "Operators of critical infrastructure and heavy industry, anywhere in Australia.",
     officeArea: "Perth, Western Australia",
     sectors: [
       "Heavy industry",
       "Resources",
       "Utilities",
       "Critical infrastructure",
-      "[PLACEHOLDER] Service area — TODO(CLIENT) (OPEN-03)",
+      "Oil and gas",
+      "Power generation",
+      "Energy",
+      "Mining",
     ],
   },
   finalCta: {

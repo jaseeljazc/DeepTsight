@@ -4,43 +4,42 @@ The website needs these facts and the sources in `docs/sources/` don't supply th
 them in a form that can't be published yet. Until each one is resolved, its placeholder stays on
 the site and the production build fails on it (`scripts/check-placeholders.ts`).
 
-Sources checked (2026-09-29): `Linkedin_profile_data.md`, `DeepTsight_Content_Reference_README.md`.
+Sources checked (2026-09-30): `DeepTsight_founder_details.md` (source of truth: the founder's
+reviewed answers), `Linkedin_profile_data.md`, `DeepTsight_Content_Reference_README.md`.
+Items the founder file answered have been filled and removed from this list; see
+`docs/CONTENT_PROVENANCE.md` for what went where.
 
 ## 1. Missing entirely
 
-| #   | Needed                                                                              | Where it shows                               | Notes                                                                                                                                                      |
-| --- | ----------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | ~~Founding year~~                                                                   | —                                            | **Resolved 2026-09-29:** 2026, from the user.                                                                                                              |
-| 2   | ABN (11-digit Australian Business Number; the company will also have a 9-digit ACN) | Footer title block, legal pages              | `site.ts` → `abn`. Find it at abr.business.gov.au or ask the founder's accountant.                                                                         |
-| 3   | CPEng registration number                                                           | Credentials register                         | Engineers Australia issued it July 2024, but no number is given. The register exists so a buyer can look it up.                                            |
-| 4   | Credential IDs for CAP® and the ISA/IEC 62443 certificates                          | Credentials register                         | Badge links are supplied, but not which badge belongs to which certificate (see 2.4).                                                                      |
-| 5   | Issue dates for CRAS, CDS and CMS                                                   | Credentials register                         | Only Expert (July 2026) and CFS (May 2026) have dates.                                                                                                     |
-| 6   | Publication details: title, venue, year, authors, DOI                               | Credentials → publications, home trust strip | The site has a slot for a "RAMS symposium paper". Neither source mentions any publication. Confirm whether one exists. If not, the slot should be removed. |
-| 7   | Engineering tools (software)                                                        | Credentials → platforms                      | The sources name hardware and platform vendors but no tools.                                                                                               |
-| 8   | Service area (Perth only, WA, national, overseas?)                                  | Home, "Based in Perth" section (OPEN-03)     | Sectors are in the sources. Geography isn't.                                                                                                               |
-| 9   | Anonymised project summaries with disclosure permission                             | Home, "Selected proof" (2 slots)             | The README says past projects are the founder's experience, not DeepTsight's. Any summary needs to be written and approved for DeepTsight use.             |
-| 10  | Approved founder photograph and caption                                             | About, home portrait                         | The current image is a mock.                                                                                                                               |
-| 11  | Company LinkedIn page, if there is one                                              | Footer, JSON-LD `sameAs`                     | Only the personal profile is in the sources.                                                                                                               |
+| #   | Needed                                                  | Where it shows                        | Notes                                                                                                                                                                                                                  |
+| --- | ------------------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1 | **Website domain**                                      | Canonical URLs, sitemap, robots, OG image, JSON-LD, footer "Document" cell, security.txt | Not fixed yet. The enquiry email is `enquiries@deeptsight.com`, but the site is built for `deeptsight.com.au`. Once decided, replace the domain everywhere (grep `deeptsight.com.au`). |
+| 1.2 | Enquiry sender address                                  | Enquiry form emails (`ENQUIRY_FROM_EMAIL`) | Still `contact@deeptsight.com.au`. It must be an address on a domain verified with the email provider, so it waits on 1.1.                                                                                             |
+| 1.3 | Credential numbers for CFS, CRAS, CDS, CMS and CAP®     | Credentials register                  | All credentials are verified (2026-09-30) and each has a badge and a verification link. The founder file says only that the Expert has no number. If the others have none either, the placeholder becomes "Not applicable". |
+| 1.4 | Anonymised project summaries with disclosure permission | Home, "Selected project notes" (2 slots) | Past projects are the founder's employers' work, not DeepTsight's. Any summary needs to be written and approved for DeepTsight use.                                                                                    |
+| 1.5 | "Verified delivery" lines on the four service pages     | Each service page, evidence line      | Currently `[PLACEHOLDER]`. They need approved wording that doesn't name clients or sites.                                                                                                                              |
+| 1.6 | Approved founder photograph and caption                 | About, home portrait                  | The current image is a mock.                                                                                                                                                                                           |
+| 1.7 | Company LinkedIn page                                   | Footer, contact, about, JSON-LD `sameAs` | Pending (FD:284). The founder's personal profile is linked until then.                                                                                                                                              |
+| 1.8 | Accessibility-feedback response time                    | Accessibility statement               | The founder file gives 1 business day for enquiries. Confirm whether the same applies to accessibility feedback.                                                                                                        |
 
 ## 2. Supplied, but needs confirming before it can be published
 
-| #   | Item                                | Issue                                                                                                                                                                                                 |
-| --- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2.1 | Phone `+61 8 5550 0142`             | The README says it's a development placeholder. It's now marked `[PLACEHOLDER]` on the site, so the production build is blocked until the real number is supplied.                                    |
-| 2.2 | NER registration                    | The LinkedIn headline shows "CPEng NER", but the README says NER expired in July 2025. Is it current?                                                                                                 |
-| 2.3 | ~~ATCO Australia end date~~         | **Resolved 2026-09-29:** the founder is still there. The timeline shows 2024–present.                                                                                                                 |
-| 2.4 | ~~Badge verification links~~        | **Resolved 2026-09-29:** the user mapped each link to its credential. The links are stored as `url` on each credential and shown once it is verified.                                                 |
-| 2.5 | LinkedIn profile URL                | The PDF export wraps the URL across two lines: `linkedin.com/in/deepak` / `pazhoor-a29b7b49`. Is it `deepak-pazhoor-a29b7b49`?                                                                        |
-| 2.6 | "Power generation" and "ATCO Power" | The current site copy mentions both, but the sources say ATCO **Australia** and list oil and gas, mining, utilities and construction. Confirm whether power generation experience exists, or drop it. |
-| 2.7 | "Cochin"                            | The current site copy mentions early experience in Cochin. The sources only give the undergraduate institution (Maliankara, Ernakulam).                                                               |
-| 2.8 | ~~OT security governance~~          | **Resolved 2026-09-29:** yes. It's back in the OT cybersecurity service and its SEO description.                                                                                                      |
-| 2.9 | Credentials show as unverified      | Production hides every `verified: false` credential. Once 3–5 above are supplied and checked, the founder needs to confirm each credential before its flag is set to `true`.                          |
+| #   | Item                                      | Issue                                                                                                                                                                                                                |
+| --- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1 | Mining employer name                      | The approved About text says **Hancock Iron Ore**; the founder file's timeline says **Roy Hill Iron Ore**. The site currently uses each where the founder file does (narrative and timeline). Confirm one name.       |
+| 2.2 | ATCO name                                 | The approved About text says **ATCO Power**; the timeline says **ATCO Australia**. Used as given in each. Confirm one name.                                                                                          |
+| 2.3 | Master's award title                      | The About text says Master of Engineering (MEng); the education section says "Master Degree in Instrumentation Control and Automation". The register uses the second. Confirm the exact award title.               |
+| 2.4 | "Cochin" in the About text                | Founder-approved, so it is on the site. With "LNG regasification facility" it points to one facility, which CLAUDE.md §6 asks us to avoid. Confirm it can stay, or it becomes "in India".                         |
+| 2.5 | ISA/IEC 62443 specialist badges (IC codes) | The resume lists IC32, IC33, IC34 and IC37 as specialist badges. These are ISA course codes, so they are left off the register. CRAS, CDS and CMS cover the specialist certificates.                              |
 
 ## 3. Deliberately left out
 
 These are in the sources but won't go on the site:
 
-- **Identifying details:** project and facility names, pipeline and facility specifications, and client and asset-owner names (CLAUDE.md §6).
-- **Personal details:** languages, the secondary-school record and personal skill tags.
-- **Training courses:** ISA short courses (IC32M, IC33M, IC34M, IC37M, EC00M exam review). These are training, not certifications.
+- **Identifying details:** power station, project and facility names, pipeline specifications, and client and asset-owner names (CLAUDE.md §6).
+- **Registered office address:** removed on the founder's instruction (FD:258).
+- **Publications:** none exist; the section was removed on the founder's instruction (FD:252).
+- **Personal details:** residential address, languages, the secondary-school record, grades (WAM, percentages, university rank) and personal skill tags.
+- **Training courses:** ISA short courses and course codes, and the DOEACC PLC/SCADA/DCS certificate. These are training, not professional certifications.
+- **Generic skill lists:** capability keywords with no named product or standard.
 - **Marketing wording:** "leading vendors", "successful projects" and similar phrasing from the profile summary.

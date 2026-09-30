@@ -73,17 +73,18 @@ export default async function ContactPage() {
             ),
           },
           { label: "Location", value: "Perth, Western Australia" },
+          { label: "Service area", value: "Australia-wide" },
           {
             label: "LinkedIn",
             value: linkedInPending ? (
               <MarkedText text="TBD — CLIENT" />
             ) : (
               <Link href={site.linkedIn ?? ""} isExternal>
-                DeepTsight on LinkedIn
+                Deepak Pazhoor on LinkedIn
               </Link>
             ),
           },
-          { label: "Response time", value: <MarkedText text="TBD — CLIENT" /> },
+          { label: "Response time", value: "Within 1 business day" },
         ]}
       />
 

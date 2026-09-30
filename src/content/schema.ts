@@ -24,7 +24,7 @@ export const siteSchema = z.object({
   displayName: z.string(),
   tagline: z.string(),
   abn: z.string().optional(),
-  address: z.string(),
+  address: z.string().optional(),
   phone: z.string(),
   email: z.string().email(),
   linkedIn: z.string().optional(),
@@ -76,6 +76,8 @@ export const credentialSchema = z.object({
   year: z.string().optional(),
   expiry: z.string().optional(),
   url: z.string().optional(),
+  /** Issuer's badge artwork in public/badges, supplied by the founder. */
+  badge: z.string().optional(),
   verified: z.boolean(),
 });
 

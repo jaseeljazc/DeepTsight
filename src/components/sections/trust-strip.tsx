@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { Link } from "@/components/primitives/link";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/primitives/badge";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { MarkedText } from "@/components/primitives/placeholder";
 import type { HomeContent } from "@/content/types";
+import { cn } from "@/lib/utils";
 
 export type TrustStripProps = {
   items: HomeContent["trustStrip"];
@@ -13,8 +15,8 @@ export type TrustStripProps = {
 };
 
 /**
- * Credentials as a ruled register, not a logo wall (FR-13). An entry the client has not yet
- * verified says so in words, so the register can never read as finished when it is not.
+ * Credentials as a ruled register, not a logo wall (FR-13): the issuer badge sits beside the
+ * entry, the words carry it. An unverified entry says so in words.
  */
 export function TrustStrip({ items, copy }: TrustStripProps) {
   if (items.length === 0) return null;
@@ -35,17 +37,29 @@ export function TrustStrip({ items, copy }: TrustStripProps) {
           {items.map((item) => (
             <div
               key={item.id}
-              className="border-rule flex flex-col gap-2 border-b py-4 sm:pr-4 lg:border-r lg:px-5 lg:first:pl-0 lg:last:border-r-0"
+              className="border-rule relative flex flex-col gap-2 border-b py-4 sm:pr-4 lg:border-r lg:px-5 lg:first:pl-0 lg:last:border-r-0"
             >
               <dt className="text-steel-600 text-caption font-mono">
                 {copy.categoryLabels[item.category] ?? item.category}
               </dt>
-              <dd className="text-ink-900 text-small font-medium">
+              <dd className={cn("text-ink-900 text-small font-medium", item.badge && "pr-16")}>
                 <MarkedText text={item.title} />
               </dd>
-              <dd className="text-steel-600 text-caption">
+              <dd className={cn("text-steel-600 text-caption", item.badge && "pr-16")}>
                 <MarkedText text={item.issuer} />
               </dd>
+              {item.badge && (
+                // Decorative: the title above names the credential.
+                <dd className="absolute top-4 right-0 sm:right-4 lg:right-5">
+                  <Image
+                    src={item.badge}
+                    alt=""
+                    width={112}
+                    height={112}
+                    className="size-badge object-contain"
+                  />
+                </dd>
+              )}
               {!item.verified && (
                 <dd>
                   <Badge tone="pending">Pending verification</Badge>

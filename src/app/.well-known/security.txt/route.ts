@@ -6,7 +6,7 @@ export function GET() {
 
   const content = [
     "# DeepTsight Consulting Security Policy",
-    "Contact: mailto:security@deeptsight.com.au",
+    "Contact: mailto:enquiries@deeptsight.com",
     `Expires: ${expires.toISOString()}`,
     "Preferred-Languages: en",
     "Canonical: https://deeptsight.com.au/.well-known/security.txt",

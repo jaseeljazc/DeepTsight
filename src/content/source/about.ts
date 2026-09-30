@@ -9,10 +9,10 @@ export const aboutSource: AboutContent = {
   narrative: {
     title: "Engineering judgement formed on operating industrial assets",
     paragraphs: [
-      "Deepak Pazhoor founded DeepTsight Consulting to give critical infrastructure operators engineering and cybersecurity advice that holds up on a running plant.",
-      "His career began in instrumentation construction and commissioning in oil and gas, on an LNG regasification facility and then a cross-country gas pipeline in Malaysia. After a master's in instrumentation, control systems and automation at Edith Cowan University, he worked as a control systems engineer in Perth, in mining at Hancock Iron Ore. He currently leads operations technology and control systems at ATCO Australia.",
-      "Working on site makes one gap obvious: security teams can underestimate the availability constraints of industrial automation, while plant engineering teams are asked to defend systems against threats they were never designed for.",
-      "DeepTsight was established in Perth, Western Australia, to close that gap, with one practitioner accountable for the engineering, the functional safety and the segregation.",
+      "Deepak Pazhoor founded DeepTsight to provide critical infrastructure operators with engineering and cybersecurity expertise that holds up on a running plant. He brings 15 years of experience across Australia and Southeast Asia in power generation, energy and mining.",
+      "His career began in October 2011 in Cochin, in instrumentation construction and commissioning for an LNG regasification facility, followed by a cross-country gas pipeline in Malaysia. After a Master of Engineering in instrumentation, control systems and automation at Edith Cowan University, he began his Perth-based career at Blochtech Engineering. He then worked as a senior control systems engineer in mining with Hancock Iron Ore, before leading operations technology and control systems at ATCO Power.",
+      "Working on site makes one gap obvious: IT security teams can underestimate the availability constraints of industrial automation, while plant engineering teams are asked to defend systems against cyber threats they were never designed for.",
+      "DeepTsight was established in Perth, Western Australia, to close that gap, giving asset owners a single, highly qualified practitioner accountable for OT engineering, functional safety and secure segregation.",
     ],
   },
   principles: [
@@ -52,33 +52,35 @@ export const aboutSource: AboutContent = {
       period: "2011–2012",
       role: "Instrumentation supervisor",
       context:
-        "CTCI. Construction and commissioning of instrumentation on an LNG regasification facility.",
+        "CTCI India Engineering and Construction. Construction and commissioning of instrumentation on an LNG regasification facility.",
     },
     {
       period: "2013–2015",
       role: "E&I commissioning engineer",
       context:
-        "Punj Lloyd Oil & Gas Malaysia. Instrumentation commissioning on a cross-country gas pipeline: loop checks, handover and start-up.",
+        "Punj Lloyd Oil and Gas Malaysia. Instrumentation commissioning on a cross-country gas pipeline, including gas turbine-driven compressors and remote power systems.",
     },
     {
       period: "2017–2019",
-      role: "Intern, graduate and control system engineer",
-      context: "BLOCHTECH Engineering, Perth.",
+      role: "Graduate intern, graduate control systems engineer, then control systems engineer",
+      context: "Blochtech Engineering, Perth.",
     },
     {
       period: "2019–2024",
-      role: "Control system engineer, then senior control system engineer",
-      context: "Hancock Iron Ore.",
+      role: "Engineer, then senior engineer, control systems (NPI)",
+      context: "Roy Hill Iron Ore. Control systems for iron ore mining operations.",
     },
     {
-      period: "2024–present",
-      role: "Lead operations technology and control systems",
-      context: "ATCO Australia, Perth.",
+      period: "2024–2026",
+      role: "Lead operational technology",
+      context:
+        "ATCO Australia. Governance of OT applications and process control systems on power generation assets: IT/OT segregation, AESCSF SP2 compliance, ISA/IEC 62443 network architecture and SCADA upgrades.",
     },
     {
-      period: "2026",
-      role: "Founded DeepTsight Consulting, Perth",
-      context: "Control systems, OT cybersecurity and plant reliability.",
+      period: "2026–present",
+      role: "Founder and principal consultant",
+      context:
+        "DeepTsight Consulting Pty Ltd, Perth. OT cybersecurity and control systems, aligned with AS/NZS IEC 62443 and the SOCI Act.",
     },
   ],
 };

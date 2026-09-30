@@ -9,10 +9,12 @@ Ticked items are done.
 - [ ] Real photo of Deepak (the current portrait is not him)
 - [ ] Real photos to replace the AI images (prompts are in `docs/image-prompts/`)
 - [ ] Two anonymised project examples for the home page
-- [ ] Publication details, or confirmation there are none
-- [ ] Phone number, ABN, LinkedIn link, service area and response time
-- [ ] Credential numbers and IDs, and the founder's sign-off on each credential
-- [ ] Answers to the 8 questions in the founder review PDF (`docs/review/`)
+- [x] Publication details, or confirmation there are none (none; section removed)
+- [x] Phone number, ABN, LinkedIn link, service area and response time
+- [ ] Credential numbers and IDs, and the founder's sign-off on each credential (all signed off and badged 2026-09-30; numbers for CFS, CRAS, CDS, CMS and CAP® still open)
+- [ ] Website domain (.com or .com.au): the email is enquiries@deeptsight.com
+- [ ] One name each for the mining employer (Hancock or Roy Hill) and ATCO (Power or Australia), and the exact master's title
+- [x] Answers to the 8 questions in the founder review PDF (`docs/review/`)
 
 ## Still to build
 
@@ -32,8 +34,8 @@ Ticked items are done.
 
 ## Client decisions
 
-- [ ] Service area
+- [x] Service area (Australia-wide)
 - [ ] CMS, hosting and support owner
 - [ ] Analytics, cookies and data retention
 - [ ] Languages and future features
-- [ ] About story: the brief mentions ATCO Power and power generation, but LinkedIn says ATCO Australia
+- [x] About story: the brief mentions ATCO Power and power generation, but LinkedIn says ATCO Australia (power generation confirmed)

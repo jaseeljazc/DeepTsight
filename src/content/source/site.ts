@@ -1,15 +1,14 @@
 import type { Site } from "../types";
 
 export const siteSource: Site = {
-  legalName: "DeepTsight Pty Ltd",
-  displayName: "DeepTsight Consulting",
+  legalName: "DeepTsight Consulting Pty Ltd",
+  displayName: "DeepTsight",
   tagline: "Deep technical insight for safer, more reliable and more secure industrial operations.",
-  abn: "[PLACEHOLDER] TBD — CLIENT",
-  address: "Level 11, 191 St Georges Terrace, Perth WA 6000, Australia",
-  // TODO(CLIENT): development number per docs/sources README; supply the real number.
-  phone: "[PLACEHOLDER] +61 8 5550 0142",
-  email: "enquiries@deeptsight.com.au",
-  linkedIn: "[PLACEHOLDER] https://www.linkedin.com/company/deeptsight",
+  abn: "62 701 473 814",
+  phone: "0406 899 469",
+  email: "enquiries@deeptsight.com",
+  // Founder's personal profile until the company page exists (docs/CONTENT_GAPS.md).
+  linkedIn: "https://www.linkedin.com/in/deepak-pazhoor-a29b7b49",
   nav: [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
