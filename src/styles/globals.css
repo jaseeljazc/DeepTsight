@@ -1,0 +1,983 @@
+@import "tailwindcss";
+
+/* The link for the page being viewed (aria-current="page"): nav underline and weight */
+@custom-variant current-page (&[aria-current="page"]);
+
+/*
+ * DeepTsight design tokens: the single source of truth.
+ *
+ * Every colour, spacing step, size, radius, width, aspect ratio and type step used by the site
+ * is defined in this file. Components refer to these by name (bg-primary, h-control,
+ * max-w-measure, aspect-wide ...) and never carry raw values, so editing a token here changes
+ * the whole app. The email template, the social share image and the contrast check read the
+ * colour tokens from this file too (scripts/generate-tokens.ts). See DESIGN.md.
+ *
+ * Ground is the light grey of an enclosure panel, ink is anthracite, and the brand primary
+ * carries actions, label plates, markers, active states and the delivery-sequence moment.
+ */
+@theme {
+  /* ---------------------------------------------------------------- Colour */
+  --color-*: initial;
+
+  --color-ground: #f2f2f2;
+  --color-ground-deep: #dfe2df;
+  --color-panel: #f6f7f6;
+  --color-white: #ffffff;
+
+  --color-ink-900: #1b2124;
+  --color-ink-800: #262e32;
+  --color-ink-700: #3a4448;
+  --color-steel-600: #555f63;
+  --color-control: #737c80;
+  --color-rule: #c9cecb;
+  --color-rule-dark: #3d474b;
+
+  --color-primary: #0e50ed;
+  --color-primary-deep: #0a3fc2;
+  --color-primary-on-dark: #7aa2ff;
+  --color-on-primary: #ffffff;
+
+  --color-on-dark: #e6e9e8;
+  --color-on-dark-muted: #a3adb1;
+
+  --color-error: #a4271b;
+  --color-status: #2f6b3a;
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* ---------------------------------------------------------------- Radius */
+  --radius-*: initial;
+  --radius-control: 2px; /* buttons, inputs, label plates */
+  --radius-panel: 4px; /* form panel, project notes, placeholders */
+  --radius-full: 9999px; /* radio controls only */
+
+  /* ---------------------------------------------------------------- Depth: none */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  /* ---------------------------------------------------------------- Spacing and sizes */
+  /* Base step. Every p-, m-, gap-, inset- and size utility (p-4, gap-8 ...) is a multiple of it. */
+  --spacing: 0.25rem;
+
+  --spacing-header: 4.5rem; /* sticky header height */
+  --spacing-target: 2.75rem; /* minimum pointer target, 44px (A11Y-09) */
+  --spacing-control: 3.25rem; /* button and input height */
+  --spacing-menu-row: 4rem; /* mobile menu link row */
+  --spacing-part-indent: 2.75rem; /* body indent under a numbered heading */
+  --spacing-marker: 0.6875rem; /* terminal marker square */
+  --spacing-wordmark-mark: 0.625rem; /* square in the wordmark */
+  --spacing-lamp: 0.9375rem; /* delivery-sequence lamp */
+  --spacing-rule: 1px; /* hairline */
+  --spacing-rule-active: 2px; /* active nav underline, schematic trunk */
+  --spacing-rule-bar: 3px; /* primary button hover bar */
+  --spacing-thumb: 11rem; /* index row hover thumbnail width */
+  --spacing-rail-inset: 2.5rem; /* room left of the content for the rail core, from lg */
+
+  /* ---------------------------------------------------------------- Widths */
+  --container-*: initial; /* drop the default xs to 7xl sizes so only named widths exist */
+  --container-page: 84rem; /* 1280px content plus 32px gutters */
+  --container-measure: 68ch; /* long-form reading */
+  --container-prose-md: 54ch; /* hero lead */
+  --container-prose-sm: 40ch; /* side-column paragraphs */
+  --container-headline-sm: 16ch;
+  --container-headline: 18ch;
+  --container-headline-lg: 22ch;
+  --container-cell-lg: 16rem; /* register table: credential column */
+  --container-cell-md: 12rem; /* register table: issuer column */
+  --container-cell-sm: 10rem; /* register table: status column */
+
+  /* ---------------------------------------------------------------- Aspect ratios */
+  --aspect-wide: 21 / 9;
+  --aspect-banner: 3 / 1;
+  --aspect-landscape: 3 / 2;
+  --aspect-classic: 4 / 3;
+  --aspect-portrait: 4 / 5;
+
+  /* ---------------------------------------------------------------- Breakpoints (Tailwind defaults kept, plus xs) */
+  --breakpoint-xs: 25rem;
+
+  /* ---------------------------------------------------------------- Type */
+  --font-*: initial;
+  --font-display: var(--font-archivo);
+  --font-heading: var(--font-archivo);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+
+  --text-display: clamp(2.5rem, 1.35rem + 4.4vw, 4.75rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.032em;
+  --text-h1: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  --text-h1--line-height: 1.04;
+  --text-h1--letter-spacing: -0.028em;
+  --text-h2: clamp(1.875rem, 1.35rem + 2vw, 3.125rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.022em;
+  --text-h3-lg: clamp(1.25rem, 1rem + 1vw, 2.125rem);
+  --text-h3-lg--line-height: 1.15;
+  --text-h3-lg--letter-spacing: -0.02em;
+  --text-h3: clamp(1.25rem, 1.12rem + 0.5vw, 1.5rem);
+  --text-h3--line-height: 1.3;
+  --text-menu: 2rem;
+  --text-menu--line-height: 1;
+  --text-menu--letter-spacing: -0.02em;
+  --text-wordmark: 1.375rem;
+  --text-wordmark--line-height: 1;
+  --text-wordmark--letter-spacing: -0.02em;
+  --text-lead: clamp(1.125rem, 1.04rem + 0.35vw, 1.3125rem);
+  --text-lead--line-height: 1.55;
+  --text-body: clamp(1.0625rem, 1.03rem + 0.12vw, 1.125rem);
+  --text-body--line-height: 1.65;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
+  --text-field: 1rem; /* buttons and form fields: 16px so iOS does not zoom on focus */
+  --text-field--line-height: 1.5;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+  --text-inline-mono: 0.875em; /* mono inside running text */
+
+  --tracking-heading: -0.02em;
+  --tracking-snug: -0.01em;
+
+  /* ---------------------------------------------------------------- Motion */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/*
+ * Values that are not Tailwind utilities but still belong to the design system.
+ * Components reach them through the utilities and component classes further down.
+ */
+@layer base {
+  :root {
+    color-scheme: light;
+    --header-height: var(--spacing-header);
+    --icon-stroke: 1.5; /* every line icon */
+    --photo-saturation: 0.82; /* grade applied to every photograph */
+    --plate-offset: 0.4em; /* aligns a label plate with the cap height of its heading */
+    --sticky-gap: 2rem; /* space between the header and sticky rails */
+    --table-key-column: 38%; /* first column of two-column schedules */
+    --spec-label-column: minmax(7rem, 40%); /* label column of a SpecBlock */
+    --schematic-junction: 72%; /* where the discipline lines meet the trunk */
+    --lamp-border: 1.5px;
+    --rule-tick: 0.3125rem; /* drawing rule minor tick */
+    --rule-tick-major: 0.5rem; /* drawing rule tick at every third column */
+    --figure-parallax-overscan: 8%; /* how far a parallax image extends past its frame */
+    --figure-parallax-travel: 6%; /* how far it drifts while scrolling */
+    --section-space: clamp(5rem, 9vw, 9.5rem); /* vertical rhythm between sections */
+    --section-space-tight: clamp(3.5rem, 6vw, 6rem);
+    --focus-width: 2px;
+    --focus-offset: 2px;
+    --anchor-gap: 1.5rem; /* space above an anchor target below the header */
+    --link-underline-offset: 0.28em;
+    --plate-height: 1.5rem;
+    --plate-padding: 0.125rem 0.4rem;
+
+    /* Rail: one line down the Home page, just left of the content, tapped off at every section */
+    --rail-width: 2px;
+    --wire-width: 1.5px;
+    --rail-px: 1.25rem; /* left margin of a railed container; the rail runs inside it */
+    --rail-offset: 1.25rem; /* distance from the rail to the content edge */
+    --rail-gutter: calc(max(0px, (100% - var(--container-page)) / 2) + var(--rail-px));
+    --rail-x: calc(var(--rail-gutter) - var(--rail-offset));
+    --rail-rise: 0.875rem; /* how far a block travels as it fades in */
+    --rail-lead: 30%; /* the rail fills down to this far above the bottom of the screen */
+    --rail-enter: 15rem; /* scroll distance over which a block fades in */
+  }
+
+  @media (min-width: 40rem) {
+    :root {
+      --rail-px: 1.5rem;
+      --rail-offset: 1.5rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    :root {
+      --rail-px: var(--spacing-rail-inset);
+      --rail-offset: 2.5rem;
+    }
+  }
+
+  /* Line icons (lucide) take their stroke from the token, not from props */
+  .lucide {
+    stroke-width: var(--icon-stroke);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-ink-700);
+    background-color: var(--color-ground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-ground);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--color-ink-900);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  /* Visible focus everywhere (A11Y-07). Primary on light grounds, its light tint on ink. */
+  :focus-visible {
+    outline: var(--focus-width) solid var(--color-primary);
+    outline-offset: var(--focus-offset);
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-primary-on-dark);
+  }
+
+  /* Anchor targets clear the sticky header */
+  [id] {
+    scroll-margin-top: calc(var(--header-height) + var(--anchor-gap));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Disable non-essential motion (A11Y-16) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation: none !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Windows High Contrast: keep hairlines and markers visible */
+  @media (forced-colors: active) {
+    .tag-plate,
+    .marker-square {
+      forced-color-adjust: none;
+      border: var(--spacing-rule) solid CanvasText;
+    }
+  }
+}
+
+@utility section-y {
+  padding-block: var(--section-space);
+}
+
+@utility section-b {
+  padding-bottom: var(--section-space);
+}
+
+@utility section-y-tight {
+  padding-block: var(--section-space-tight);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility measure {
+  max-width: var(--container-measure);
+}
+
+@utility photo-grade {
+  filter: saturate(var(--photo-saturation));
+}
+
+@utility list-square {
+  list-style-type: square;
+}
+
+/* Nudges a label plate down to the cap height of the heading beside it */
+@utility plate-align {
+  margin-top: var(--plate-offset);
+}
+
+/* Offset for sticky rails and images so they clear the header */
+@utility sticky-below-header {
+  top: calc(var(--header-height) + var(--sticky-gap));
+}
+
+/* Hero viewport heights: fills visible screen below the sticky header */
+@utility min-h-hero {
+  min-height: calc(100dvh - var(--header-height));
+}
+
+@utility h-hero {
+  height: calc(100dvh - var(--header-height));
+}
+
+/* Constrains hero ASCII art so it never exceeds visible viewport height */
+@utility max-h-hero-art {
+  max-height: calc(100dvh - var(--header-height));
+}
+
+/* Number column plus content: numbered lists, ledgers, next steps */
+@utility grid-numbered {
+  grid-template-columns: calc(var(--spacing) * 12) minmax(0, 1fr);
+}
+
+/* Label column plus value: SpecBlock rows */
+@utility grid-spec {
+  grid-template-columns: var(--spec-label-column) minmax(0, 1fr);
+}
+
+/* Index rows: number, content, action column (the action column holds the hover thumbnail) */
+@utility grid-index {
+  grid-template-columns: calc(var(--spacing) * 12) minmax(0, 1fr) auto;
+  @variant sm {
+    grid-template-columns: calc(var(--spacing) * 16) minmax(0, 1fr) auto;
+  }
+  @variant lg {
+    grid-template-columns: calc(var(--spacing) * 18) minmax(0, 1fr) calc(
+        var(--spacing-thumb) + var(--spacing) * 8
+      );
+  }
+}
+
+/* Index rows without a number column: content, then the action column */
+@utility grid-index-bare {
+  grid-template-columns: minmax(0, 1fr) auto;
+  @variant lg {
+    grid-template-columns: minmax(0, 1fr) calc(var(--spacing-thumb) + var(--spacing) * 8);
+  }
+}
+
+/* First column of a two-column schedule */
+@utility col-key {
+  width: var(--table-key-column);
+}
+
+/* Starts a full-bleed block at the content edge of a railed container, from lg */
+@utility pl-rail-gutter {
+  padding-left: var(--rail-gutter);
+}
+
+/* Left margin of a railed container: room for the rail and its taps */
+@utility pl-rail {
+  padding-left: var(--rail-px);
+}
+
+/* Underline that thickens and turns to ink on hover and keyboard focus */
+@utility link-rule {
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--spacing-rule);
+  text-underline-offset: var(--link-underline-offset);
+  text-decoration-color: var(--color-control);
+  transition:
+    text-decoration-color 150ms var(--ease-standard),
+    text-decoration-thickness 150ms var(--ease-standard);
+  &:hover,
+  &:focus-visible {
+    text-decoration-thickness: var(--spacing-rule-active);
+    text-decoration-color: var(--link-hover-rule, var(--color-primary));
+  }
+}
+
+/* Fixed primary underline for the current page in the mobile menu, matching the desktop nav rule */
+@utility underline-active {
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--spacing-rule-active);
+  text-underline-offset: var(--link-underline-offset);
+  text-decoration-color: var(--color-primary);
+}
+
+@layer components {
+  /* Engraved label plate: primary ground, white mono text */
+  .tag-plate {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--plate-height);
+    padding: var(--plate-padding);
+    border-radius: var(--radius-control);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tag-plate-muted {
+    background-color: var(--color-ink-900);
+    color: var(--color-on-dark);
+  }
+
+  /* Figure numbering is generated per page (Fig. 01, Fig. 02 ...) */
+  .figure-counter-scope {
+    counter-reset: figure;
+  }
+
+  .figure-numbered {
+    counter-increment: figure;
+  }
+
+  .figure-numbered .figure-number::before {
+    content: "Fig. " counter(figure, decimal-leading-zero);
+  }
+
+  /* Parallax frame: the layer is oversized so no gap ever shows */
+  .parallax-frame {
+    view-timeline-name: --frame;
+    view-timeline-axis: block;
+  }
+
+  .parallax-layer {
+    position: absolute;
+    inset: calc(var(--figure-parallax-overscan) * -1) 0;
+  }
+
+  .sequence {
+    view-timeline-name: --sequence;
+    view-timeline-axis: block;
+    --lamp-on: var(--color-primary);
+  }
+
+  .on-dark .sequence {
+    --lamp-on: var(--color-primary-on-dark);
+  }
+
+  /* Drawing rule: hairline with column ticks, in currentColor */
+  .drawing-rule {
+    position: relative;
+    height: var(--rule-tick-major);
+    border-top: var(--spacing-rule) solid currentColor;
+  }
+
+  .drawing-rule-tick {
+    position: absolute;
+    top: 0;
+    width: var(--spacing-rule);
+    height: var(--rule-tick);
+    background-color: currentColor;
+    transform: translateX(-50%);
+  }
+
+  .drawing-rule-tick-major {
+    height: var(--rule-tick-major);
+  }
+
+  /* Sequence geometry: lamps, and the conductor that runs through their centres */
+  .sequence-conductor-x {
+    top: calc(var(--spacing-lamp) / 2);
+    height: var(--spacing-rule);
+  }
+
+  .sequence-conductor-rail {
+    left: calc(var(--rail-offset) * -1);
+  }
+
+  .sequence-conductor-y {
+    left: calc(var(--spacing-lamp) / 2);
+    width: var(--spacing-rule);
+  }
+
+  .sequence-conductor-fill {
+    background-color: var(--lamp-on);
+  }
+
+  .sequence-lamp-size {
+    width: var(--spacing-lamp);
+    height: var(--spacing-lamp);
+    border-width: var(--lamp-border);
+    border-style: solid;
+  }
+
+  /* Terminal marker centred on a 1px vertical rule (career record) */
+  .marker-on-rule {
+    left: calc(var(--spacing-marker) / -2);
+  }
+
+  /* Convergence schematic: trunk, junction markers and the trunk label */
+  .schematic-trunk {
+    left: var(--schematic-junction);
+    width: var(--spacing-rule-active);
+    transform: translateX(-50%);
+  }
+
+  .schematic-junction {
+    left: var(--schematic-junction);
+    bottom: calc(var(--spacing-marker) / -2);
+    transform: translateX(-50%);
+  }
+
+  .schematic-label {
+    margin-right: calc(100% - var(--schematic-junction));
+  }
+
+  /* Index row thumbnail: hidden until its row is hovered or focused */
+  .index-thumb {
+    width: var(--spacing-thumb);
+    aspect-ratio: var(--aspect-classic);
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+    transition:
+      opacity 300ms var(--ease-out-quint),
+      clip-path 300ms var(--ease-out-quint);
+  }
+
+  .group:hover .index-thumb,
+  .group:focus-visible .index-thumb {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+
+  .on-dark {
+    --link-hover-rule: var(--color-primary-on-dark);
+  }
+
+  .sequence-fill-x,
+  .sequence-fill-y {
+    transform: scale(1, 1);
+  }
+
+  .sequence-fill-x {
+    transform-origin: left center;
+  }
+
+  .sequence-fill-y {
+    transform-origin: center top;
+  }
+
+  .sequence-lamp {
+    background-color: var(--lamp-on);
+    border-color: var(--lamp-on);
+  }
+
+  .schematic-line {
+    transform-origin: left center;
+  }
+
+  /* ------------------------------------------------------------ Rail (Home) */
+  .rail-page {
+    counter-reset: rail;
+    --rail-on: var(--color-primary);
+  }
+
+  .on-dark {
+    --rail-on: var(--color-primary-on-dark);
+  }
+
+  .rail-page section {
+    position: relative;
+  }
+
+  /*
+   * The rail: a line the full height of every section, set a fixed distance left of the content,
+   * so the sections read as one line down the page. Its blue fill draws down as each section
+   * scrolls in, the leading edge staying about 70% down the screen.
+   */
+  .rail-seg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--rail-x);
+    width: var(--rail-width);
+    pointer-events: none;
+    background-color: var(--color-rule);
+    view-timeline-name: --rail-seg;
+    view-timeline-axis: block;
+    view-timeline-inset: 0px var(--rail-lead);
+  }
+
+  .on-dark .rail-seg {
+    background-color: var(--color-rule-dark);
+  }
+
+  .rail-seg-fill {
+    position: absolute;
+    inset: 0;
+    background-color: var(--rail-on);
+    transform-origin: top;
+  }
+
+  /* Section terminal: a square seated on the rail, tapped across to the section label */
+  .rail-tag-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--plate-height);
+    margin-bottom: 1.5rem;
+    padding-left: var(--rail-gutter);
+    counter-increment: rail;
+    view-timeline-name: --rail-tag;
+    view-timeline-axis: block;
+    view-timeline-inset: 0px var(--rail-lead);
+  }
+
+  .rail-marker {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--rail-x) + var(--rail-width) / 2);
+    z-index: 1;
+    width: var(--spacing-marker);
+    height: var(--spacing-marker);
+    border: var(--lamp-border) solid var(--rail-on);
+    border-radius: var(--radius-control);
+    background-color: var(--rail-on);
+    transform: translate(-50%, -50%);
+  }
+
+  /* An unlit terminal is hollow, filled with its section's ground so the rail does not show through */
+  .rail-page .bg-ground-deep {
+    --rail-ground: var(--color-ground-deep);
+  }
+  .rail-page .bg-panel {
+    --rail-ground: var(--color-panel);
+  }
+  .rail-page .bg-ink-900 {
+    --rail-ground: var(--color-ink-900);
+  }
+
+  .rail-tap {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--rail-x) + var(--spacing-marker) / 2);
+    width: calc(var(--rail-offset) - var(--spacing-marker) / 2 - 0.5rem);
+    height: var(--spacing-rule);
+    background-color: var(--rail-on);
+    transform-origin: left center;
+  }
+
+  .rail-tag {
+    color: var(--color-steel-600);
+  }
+
+  .on-dark .rail-tag {
+    color: var(--color-on-dark-muted);
+  }
+
+  .rail-code::before {
+    content: "T" counter(rail, decimal-leading-zero);
+  }
+
+  /* Service wiring: four cores drop from the terminals, meet, and land on one common terminal */
+  .rail-wiring {
+    view-timeline-name: --wiring;
+    view-timeline-axis: block;
+    view-timeline-inset: 0px var(--rail-lead);
+  }
+
+  .rail-wire {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: var(--wire-width);
+    stroke-linecap: square;
+  }
+
+  .rail-wire-node {
+    fill: var(--color-primary);
+  }
+}
+
+/*
+ * Scroll-driven motion. Progressive enhancement only: browsers without
+ * scroll timelines, and anyone with reduced motion, get the finished state.
+ */
+@keyframes parallax-drift {
+  from {
+    transform: translate3d(0, calc(var(--figure-parallax-travel) * -1), 0);
+  }
+  to {
+    transform: translate3d(0, var(--figure-parallax-travel), 0);
+  }
+}
+
+@keyframes figure-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes header-rule {
+  from {
+    border-bottom-color: transparent;
+  }
+  to {
+    border-bottom-color: var(--color-rule);
+  }
+}
+
+@keyframes fill-x {
+  from {
+    transform: scale(0, 1);
+  }
+  to {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes fill-y {
+  from {
+    transform: scale(1, 0);
+  }
+  to {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes lamp-1 {
+  0%,
+  8% {
+    background-color: transparent;
+    border-color: var(--color-control);
+  }
+  12%,
+  100% {
+    background-color: var(--lamp-on);
+    border-color: var(--lamp-on);
+  }
+}
+
+@keyframes lamp-2 {
+  0%,
+  34% {
+    background-color: transparent;
+    border-color: var(--color-control);
+  }
+  38%,
+  100% {
+    background-color: var(--lamp-on);
+    border-color: var(--lamp-on);
+  }
+}
+
+@keyframes lamp-3 {
+  0%,
+  60% {
+    background-color: transparent;
+    border-color: var(--color-control);
+  }
+  64%,
+  100% {
+    background-color: var(--lamp-on);
+    border-color: var(--lamp-on);
+  }
+}
+
+@keyframes lamp-4 {
+  0%,
+  86% {
+    background-color: transparent;
+    border-color: var(--color-control);
+  }
+  90%,
+  100% {
+    background-color: var(--lamp-on);
+    border-color: var(--lamp-on);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-frame .parallax-layer {
+      animation: parallax-drift linear both;
+      animation-timeline: --frame;
+      animation-range: cover 0% cover 100%;
+    }
+
+    .figure-reveal {
+      animation: figure-wipe linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 75%;
+    }
+
+    .site-header {
+      animation: header-rule linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 96px;
+    }
+
+    .sequence .sequence-fill-x {
+      animation: fill-x linear both;
+      animation-timeline: --sequence;
+      animation-range: entry 100% cover 60%;
+    }
+
+    .sequence .sequence-fill-y {
+      animation: fill-y linear both;
+      animation-timeline: --sequence;
+      animation-range: entry 40% cover 75%;
+    }
+
+    .sequence .sequence-lamp {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --sequence;
+      animation-range: entry 100% cover 60%;
+    }
+
+    .sequence .sequence-lamp[data-step="1"] {
+      animation-name: lamp-1;
+    }
+    .sequence .sequence-lamp[data-step="2"] {
+      animation-name: lamp-2;
+    }
+    .sequence .sequence-lamp[data-step="3"] {
+      animation-name: lamp-3;
+    }
+    .sequence .sequence-lamp[data-step="4"] {
+      animation-name: lamp-4;
+    }
+
+    .schematic .schematic-line {
+      animation: fill-x linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+  }
+}
+
+@keyframes rail-fill {
+  from {
+    transform: scale(1, 0);
+  }
+}
+
+@keyframes rail-land {
+  from {
+    background-color: var(--rail-ground, var(--color-ground));
+    border-color: var(--color-control);
+  }
+}
+
+@keyframes rail-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes rail-appear {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rail-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rail-rise));
+  }
+}
+
+/*
+ * Rail motion. Scroll-linked and compositor-only (transform, opacity, stroke-dashoffset), so it
+ * never touches layout. The base state is always the finished state, so nothing is gated on it.
+ * Every range is a scroll distance in length units, so it does not stretch with a block's height.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The rail draws down as each section scrolls in */
+    .rail-seg-fill {
+      animation: rail-fill linear both;
+      animation-timeline: --rail-seg;
+      animation-range: entry-crossing 0% entry-crossing 100%;
+    }
+
+    /* The first section (Hero) is already in the viewport on load; start its fill at the top */
+    .hero-section .rail-seg-fill,
+    .rail-page > section:first-of-type .rail-seg-fill {
+      animation-range: contain 0% contain 100%;
+    }
+
+    /* Each terminal is tapped off the rail, then lights */
+    .rail-tap {
+      animation: fill-x linear both;
+      animation-timeline: --rail-tag;
+      animation-range: entry-crossing 0px entry-crossing 6rem;
+    }
+
+    .rail-marker {
+      animation: rail-land linear both;
+      animation-timeline: --rail-tag;
+      animation-range: entry-crossing 3rem entry-crossing 8rem;
+    }
+
+    /* Service wiring: four cores draw in turn, meet, then the trunk lands on the common terminal */
+    .rail-wire {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 0;
+      animation: rail-draw linear both;
+      animation-timeline: --wiring;
+    }
+
+    .rail-wire-1 {
+      animation-range: entry-crossing 0px entry-crossing 12rem;
+    }
+    .rail-wire-2 {
+      animation-range: entry-crossing 2rem entry-crossing 14rem;
+    }
+    .rail-wire-3 {
+      animation-range: entry-crossing 4rem entry-crossing 16rem;
+    }
+    .rail-wire-4 {
+      animation-range: entry-crossing 6rem entry-crossing 18rem;
+    }
+    .rail-wire-trunk {
+      animation-range: entry-crossing 14rem entry-crossing 20rem;
+    }
+
+    .rail-wire-node {
+      animation: rail-appear linear both;
+      animation-timeline: --wiring;
+      animation-range: entry-crossing 0px entry-crossing 3rem;
+    }
+
+    .rail-wire-junction {
+      animation-range: entry-crossing 12rem entry-crossing 16rem;
+    }
+
+    /* A block fades up a few pixels as it enters. Cards follow one another. */
+    .rail-enter,
+    .rail-rise {
+      animation: rail-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0px entry var(--rail-enter);
+    }
+
+    .rail-stagger > :nth-child(2) {
+      animation-range: entry 2rem entry calc(var(--rail-enter) + 2rem);
+    }
+    .rail-stagger > :nth-child(3) {
+      animation-range: entry 4rem entry calc(var(--rail-enter) + 4rem);
+    }
+    .rail-stagger > :nth-child(4) {
+      animation-range: entry 6rem entry calc(var(--rail-enter) + 6rem);
+    }
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sequence.sequence-vertical .sequence-lamp {
+      animation-range: entry 40% cover 75%;
+    }
+
+    @media (max-width: 1023px) {
+      .sequence .sequence-lamp {
+        animation-range: entry 40% cover 75%;
+      }
+    }
+  }
+}

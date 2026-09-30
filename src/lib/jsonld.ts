@@ -1,0 +1,156 @@
+import type { Site, AboutContent, Service, Article } from "@/content/types";
+
+function hasPlaceholder(val?: string | null): boolean {
+  if (!val) return false;
+  return (
+    val.includes("[PLACEHOLDER]") || val.includes("TBD — CLIENT") || val.includes("TODO(CLIENT)")
+  );
+}
+
+/**
+ * Organization JSON-LD schema (SEO-04)
+ * Emits schema only if essential information is not a placeholder.
+ */
+export function organizationLd(site: Site) {
+  if (hasPlaceholder(site.displayName) || hasPlaceholder(site.email)) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: site.displayName,
+    legalName: site.legalName,
+    url: "https://deeptsight.com.au",
+    email: site.email,
+    ...(site.phone && !hasPlaceholder(site.phone) ? { telephone: site.phone } : {}),
+    ...(site.address && !hasPlaceholder(site.address)
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: site.address,
+            addressLocality: "Perth",
+            addressRegion: "WA",
+            addressCountry: "AU",
+          },
+        }
+      : {}),
+    ...(site.linkedIn && !hasPlaceholder(site.linkedIn) ? { sameAs: [site.linkedIn] } : {}),
+  };
+}
+
+/**
+ * LocalBusiness JSON-LD schema (SEO-04)
+ */
+export function localBusinessLd(site: Site) {
+  if (hasPlaceholder(site.displayName) || hasPlaceholder(site.address)) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: site.displayName,
+    url: "https://deeptsight.com.au",
+    ...(site.phone && !hasPlaceholder(site.phone) ? { telephone: site.phone } : {}),
+    email: site.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: site.address,
+      addressLocality: "Perth",
+      addressRegion: "WA",
+      addressCountry: "AU",
+    },
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: "Western Australia",
+    },
+    priceRange: "$$$$",
+  };
+}
+
+/**
+ * Person JSON-LD schema (About page) (SEO-04)
+ */
+export function personLd(about: AboutContent, site: Site) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Deepak Pazhoor",
+    jobTitle: "Founder and principal engineer",
+    worksFor: {
+      "@type": "Organization",
+      name: site.displayName,
+      url: "https://deeptsight.com.au",
+    },
+    description: about.narrative.title,
+    ...(site.linkedIn && !hasPlaceholder(site.linkedIn) ? { sameAs: [site.linkedIn] } : {}),
+  };
+}
+
+/**
+ * Service JSON-LD schema (SEO-04)
+ */
+export function serviceLd(service: Service, site: Site) {
+  if (hasPlaceholder(service.title) || hasPlaceholder(service.summary)) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.title,
+    serviceType: service.shortTitle,
+    description: service.summary,
+    provider: {
+      "@type": "Organization",
+      name: site.displayName,
+      url: "https://deeptsight.com.au",
+    },
+    url: `https://deeptsight.com.au/services/${service.slug}`,
+  };
+}
+
+/**
+ * Article JSON-LD schema (SEO-04)
+ */
+export function articleLd(article: Article, site: Site) {
+  if (hasPlaceholder(article.title) || hasPlaceholder(article.summary)) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.summary,
+    datePublished: article.publishedAt,
+    dateModified: article.publishedAt,
+    publisher: {
+      "@type": "Organization",
+      name: site.displayName,
+      url: "https://deeptsight.com.au",
+    },
+    url: `https://deeptsight.com.au/insights/${article.slug}`,
+  };
+}
+
+/**
+ * BreadcrumbList JSON-LD schema (SEO-04)
+ */
+export function breadcrumbLd(items: { name: string; url: string }[]) {
+  if (!items || items.length === 0) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}

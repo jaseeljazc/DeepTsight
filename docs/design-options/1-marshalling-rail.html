@@ -1,0 +1,1415 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo 1 · Marshalling rail · DeepTsight</title>
+    <style>
+      /* Local design demo. No external requests. All copy comes from src/content/source/home.ts and services.ts. */
+      @font-face {
+        font-family: Archivo;
+        font-weight: 600;
+        src: url(../../public/fonts/archivo-600.woff2) format("woff2");
+        font-display: swap;
+      }
+      @font-face {
+        font-family: Archivo;
+        font-weight: 500;
+        src: url(../../public/fonts/archivo-500.woff2) format("woff2");
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "IBM Plex Sans";
+        font-weight: 400;
+        src: url(../../public/fonts/ibm-plex-sans-400.woff2) format("woff2");
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "IBM Plex Sans";
+        font-weight: 500;
+        src: url(../../public/fonts/ibm-plex-sans-500.woff2) format("woff2");
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "IBM Plex Mono";
+        font-weight: 400;
+        src: url(../../public/fonts/ibm-plex-mono-400.woff2) format("woff2");
+        font-display: swap;
+      }
+      :root {
+        --ground: #eceeec;
+        --ground-deep: #dfe2df;
+        --panel: #f6f7f6;
+        --ink-900: #1b2124;
+        --ink-800: #262e32;
+        --ink-700: #3a4448;
+        --steel: #555f63;
+        --control: #737c80;
+        --rule: #c9cecb;
+        --rule-dark: #3d474b;
+        --primary: #0e50ed;
+        --primary-dark: #0a3fc2;
+        --on-dark: #e6e9e8;
+        --on-dark-muted: #a3adb1;
+        --primary-on-dark: #7aa2ff;
+        --core-x: 20px;
+        --pad: clamp(56px, 6.5vw, 104px);
+        --edge: clamp(20px, 3.5vw, 56px);
+        --ease: cubic-bezier(0.2, 0, 0, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        background: var(--ground);
+        color: var(--ink-700);
+        font:
+          400 17px/1.6 "IBM Plex Sans",
+          Arial,
+          sans-serif;
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+      .mono {
+        font-family: "IBM Plex Mono", Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--steel);
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: Archivo, Arial, sans-serif;
+        font-weight: 600;
+        color: var(--ink-900);
+        text-wrap: balance;
+      }
+      p {
+        text-wrap: pretty;
+      }
+
+      /* the core: one line down the rail */
+      .core {
+        position: fixed;
+        left: var(--core-x);
+        top: 0;
+        bottom: 0;
+        width: 1.5px;
+        background: var(--rule);
+        z-index: 5;
+        pointer-events: none;
+      }
+      .core::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--primary);
+        transform-origin: top;
+      }
+      main {
+        padding-left: var(--pad);
+        padding-right: var(--edge);
+      }
+      main > section,
+      footer {
+        position: relative;
+      }
+
+      /* terminal tag: numbered, tapped off the core */
+      .tb {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.9rem;
+        view-timeline: --tb block;
+      }
+      .tb::before {
+        content: "";
+        position: absolute;
+        right: 100%;
+        margin-right: 0.35rem;
+        width: calc(var(--pad) - var(--core-x) - 0.35rem);
+        top: 50%;
+        height: 1.5px;
+        background: var(--primary);
+        transform-origin: left;
+      }
+      .tb i {
+        width: 11px;
+        height: 11px;
+        border: 1.5px solid var(--primary);
+        background: var(--primary);
+        border-radius: 2px;
+        flex: none;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--ground);
+        border-bottom: 1px solid var(--rule);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0 var(--edge) 0 var(--pad);
+        min-height: 68px;
+      }
+      .wm {
+        font-family: Archivo;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--ink-900);
+        text-decoration: none;
+      }
+      .wm small {
+        font: 400 14px "IBM Plex Sans";
+        color: var(--steel);
+        margin-left: 0.4rem;
+      }
+      nav {
+        display: flex;
+        gap: 1.6rem;
+        font-size: 15px;
+      }
+      nav a {
+        text-decoration: none;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 6px;
+      }
+      nav a:hover {
+        text-decoration: underline;
+        text-decoration-color: var(--primary);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        padding: 0 1.35rem;
+        background: var(--primary);
+        color: #fff;
+        border-radius: 2px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 16px;
+        transition: background 150ms var(--ease);
+      }
+      .btn:hover {
+        background: var(--primary-dark);
+      }
+      .link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        font-weight: 500;
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 6px;
+        text-decoration-color: var(--control);
+      }
+      .link:hover {
+        text-decoration-color: var(--primary);
+      }
+      @media (max-width: 900px) {
+        nav {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        header .btn {
+          display: none;
+        }
+        header {
+          min-height: 60px;
+        }
+      }
+
+      /* hero */
+      .hero {
+        padding: clamp(28px, 4vw, 56px) 0 clamp(28px, 3.5vw, 48px);
+        display: grid;
+        grid-template-columns: 8fr 4fr;
+        gap: clamp(24px, 4vw, 64px);
+        align-items: start;
+      }
+      .hero h1 {
+        font-size: clamp(2.3rem, 4.9vw, 4.6rem);
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+        max-width: 21ch;
+      }
+      .hero .facts {
+        margin-top: 2.4rem;
+      }
+      .hero .lead {
+        max-width: 62ch;
+        margin-top: clamp(16px, 2vw, 28px);
+        font-size: clamp(17px, 1.4vw, 19px);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.75rem;
+        align-items: center;
+        margin-top: 1.25rem;
+      }
+      .facts {
+        border-top: 1px solid var(--ink-900);
+      }
+      .facts div {
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--rule);
+        display: grid;
+        grid-template-columns: 6.5rem 1fr;
+        gap: 0.75rem;
+      }
+      .facts dt {
+        font:
+          400 13px "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+        padding-top: 0.2rem;
+      }
+      .facts dd {
+        margin: 0;
+        font-size: 15.5px;
+        line-height: 1.45;
+        color: var(--ink-900);
+      }
+      @media (max-width: 980px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .fig {
+        margin: 0 calc(-1 * var(--edge)) 0 0;
+      }
+      .fig .frame {
+        aspect-ratio: 24/8;
+        overflow: hidden;
+        background: var(--ground-deep);
+      }
+      .fig img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(0.45) contrast(1.02);
+      }
+      figcaption {
+        padding: 0.5rem 0;
+      }
+      @media (max-width: 700px) {
+        .fig .frame {
+          aspect-ratio: 16/9;
+        }
+      }
+
+      section.pad {
+        padding: clamp(48px, 6vw, 88px) 0;
+      }
+      .head {
+        display: grid;
+        grid-template-columns: 5fr 6fr;
+        gap: clamp(20px, 4vw, 64px);
+        align-items: end;
+        margin-bottom: clamp(20px, 2.6vw, 36px);
+      }
+      h2 {
+        font-size: clamp(1.9rem, 3.8vw, 3.25rem);
+        line-height: 1.06;
+        letter-spacing: -0.015em;
+        max-width: 18ch;
+      }
+      .head p {
+        max-width: 58ch;
+      }
+      @media (max-width: 860px) {
+        .head {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* credentials register */
+      .reg {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--ink-900);
+      }
+      .reg li {
+        list-style: none;
+        padding: 0.9rem 1rem 1rem;
+        border-right: 1px solid var(--rule);
+        border-bottom: 1px solid var(--rule);
+      }
+      .reg li:first-child {
+        padding-left: 0;
+      }
+      .reg li:last-child {
+        border-right: 0;
+      }
+      .reg h3 {
+        font-size: 1.02rem;
+        line-height: 1.3;
+        font-weight: 500;
+        margin: 0.35rem 0 0.3rem;
+      }
+      .reg p {
+        font-size: 14.5px;
+        line-height: 1.45;
+      }
+      .pend {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.55rem;
+        font:
+          400 12.5px "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+      }
+      .pend::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border: 1.5px dashed var(--control);
+        border-radius: 2px;
+      }
+      .regnote {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding-top: 0.7rem;
+      }
+      @media (max-width: 900px) {
+        .reg {
+          grid-template-columns: 1fr 1fr;
+        }
+        .reg li:nth-child(2) {
+          border-right: 0;
+        }
+        .reg li:nth-child(3) {
+          padding-left: 0;
+        }
+      }
+      @media (max-width: 520px) {
+        .reg {
+          grid-template-columns: 1fr;
+        }
+        .reg li {
+          border-right: 0;
+          padding-left: 0;
+        }
+      }
+
+      /* DIN rail: four dense terminals, cores converge */
+      .rail {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3px;
+      }
+      .term {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        padding: 1.1rem 1.1rem 1.2rem;
+        background: var(--panel);
+        border: 1px solid var(--control);
+        border-radius: 2px;
+        text-decoration: none;
+        transition:
+          background 150ms var(--ease),
+          border-color 150ms var(--ease);
+      }
+      .term:hover,
+      .term:focus-visible {
+        background: #fff;
+        border-color: var(--primary);
+      }
+      .term .n {
+        font:
+          400 13px "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+        display: flex;
+        justify-content: space-between;
+      }
+      .term h3 {
+        font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+        line-height: 1.2;
+      }
+      .term .sum {
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .term .out {
+        font-size: 14.5px;
+        line-height: 1.5;
+        color: var(--ink-900);
+        padding-top: 0.6rem;
+        border-top: 1px solid var(--rule);
+      }
+      .term ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+      .term li {
+        padding: 0.28rem 0;
+        border-top: 1px solid var(--rule);
+      }
+      .term .std {
+        font:
+          400 12.5px/1.5 "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+        margin-top: auto;
+        padding-top: 0.4rem;
+      }
+      .term .go {
+        font-weight: 500;
+        font-size: 14.5px;
+        color: var(--primary);
+      }
+      .convwrap {
+        view-timeline: --conv block;
+      }
+      .conv {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .conv path {
+        fill: none;
+        stroke: var(--primary);
+        stroke-width: 1.5;
+        stroke-linecap: square;
+      }
+      .conv rect {
+        fill: var(--primary);
+      }
+      .common {
+        display: flex;
+        justify-content: center;
+        margin-top: -1px;
+      }
+      .common div {
+        padding: 0.85rem 1.5rem;
+        background: var(--ink-900);
+        color: var(--on-dark);
+        border-radius: 2px;
+        font-family: Archivo;
+        font-weight: 500;
+        font-size: clamp(16px, 1.5vw, 19px);
+      }
+      @media (max-width: 1180px) {
+        .rail {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 860px) {
+        .conv {
+          display: none;
+        }
+        .common {
+          margin-top: 1rem;
+          justify-content: flex-start;
+        }
+      }
+      @media (max-width: 560px) {
+        .rail {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .why {
+        display: grid;
+        grid-template-columns: 5fr 6fr;
+        gap: clamp(24px, 5vw, 80px);
+      }
+      .why p + p {
+        margin-top: 0.8rem;
+      }
+      .pillars {
+        list-style: none;
+        padding: 0;
+        border-top: 1px solid var(--ink-900);
+      }
+      .pillars li {
+        padding: 0.9rem 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      .pillars h3 {
+        font-size: 1.12rem;
+        margin-bottom: 0.2rem;
+      }
+      .pillars p {
+        font-size: 15.5px;
+        line-height: 1.5;
+      }
+      @media (max-width: 860px) {
+        .why {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* problems ledger */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border-top: 1px solid var(--ink-900);
+      }
+      caption {
+        text-align: left;
+        padding-bottom: 0.6rem;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 0.85rem 1rem 0.85rem 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      th {
+        width: 34%;
+        font-family: Archivo;
+        font-weight: 500;
+        font-size: 1.12rem;
+        line-height: 1.25;
+        color: var(--ink-900);
+      }
+      td {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      td.k {
+        width: 3.2rem;
+        font:
+          400 13px "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+      }
+      @media (max-width: 700px) {
+        th {
+          width: auto;
+          display: block;
+          border: 0;
+          padding-bottom: 0;
+        }
+        td {
+          display: block;
+        }
+        td.k {
+          display: none;
+        }
+        tr {
+          display: block;
+          border-bottom: 1px solid var(--rule);
+        }
+      }
+
+      /* dark band */
+      .band {
+        background: var(--ink-900);
+        color: var(--on-dark);
+        margin: 0 calc(-1 * var(--edge)) 0 calc(-1 * var(--pad));
+        padding: clamp(52px, 6.5vw, 96px) var(--edge) clamp(52px, 6.5vw, 96px) var(--pad);
+        position: relative;
+      }
+      .band h2,
+      .band h3 {
+        color: var(--on-dark);
+      }
+      .band .mono,
+      .band .head p {
+        color: var(--on-dark-muted);
+      }
+      .band .head p {
+        color: var(--on-dark);
+      }
+      .band .tb i {
+        background: var(--primary-on-dark);
+        border-color: var(--primary-on-dark);
+      }
+      .band .tb::before {
+        background: var(--primary-on-dark);
+      }
+      .steps {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        position: relative;
+        view-timeline: --st block;
+      }
+      .steps::before,
+      .steps::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 5px;
+        height: 1.5px;
+      }
+      .steps::before {
+        background: var(--rule-dark);
+      }
+      .steps::after {
+        background: var(--primary-on-dark);
+        transform-origin: left;
+      }
+      .steps li {
+        position: relative;
+        padding: 1.9rem 1.25rem 0 0;
+      }
+      .steps li::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 11px;
+        height: 11px;
+        background: var(--primary-on-dark);
+        border: 1.5px solid var(--primary-on-dark);
+        border-radius: 2px;
+      }
+      .steps h3 {
+        font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+        font-weight: 500;
+        margin: 0.15rem 0 0.4rem;
+      }
+      .steps p {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--on-dark);
+      }
+      @media (max-width: 800px) {
+        .steps {
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+        }
+        .steps::before,
+        .steps::after {
+          left: 5px;
+          right: auto;
+          top: 0;
+          bottom: 0;
+          width: 1.5px;
+          height: auto;
+          transform-origin: top;
+        }
+        .steps li {
+          padding: 0 0 0 2rem;
+        }
+        .steps li::before {
+          top: 0.3rem;
+        }
+      }
+
+      /* proof + perth */
+      .notes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .note {
+        padding: 1.1rem;
+        border: 1.5px dashed var(--control);
+        border-radius: 4px;
+        background: var(--panel);
+      }
+      .note h3 {
+        font-size: 1.05rem;
+        margin: 0.3rem 0 0.4rem;
+        font-weight: 500;
+      }
+      .note p {
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .note p + p {
+        margin-top: 0.5rem;
+        color: var(--steel);
+      }
+      .perth {
+        display: grid;
+        grid-template-columns: 5fr 6fr;
+        gap: clamp(20px, 4vw, 64px);
+        align-items: stretch;
+      }
+      .perth img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 220px;
+        object-fit: cover;
+        filter: grayscale(0.45) contrast(1.02);
+      }
+      .perth .fr {
+        background: var(--ground-deep);
+      }
+      .sect {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+        border-top: 1px solid var(--ink-900);
+        columns: 2;
+        column-gap: 2rem;
+      }
+      .sect li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--rule);
+        break-inside: avoid;
+        font-size: 16px;
+      }
+      .sect li.ph {
+        border: 1.5px dashed var(--control);
+        padding: 0.5rem 0.6rem;
+        margin: 0.4rem 0;
+        font:
+          400 13px/1.45 "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+      }
+      @media (max-width: 860px) {
+        .notes,
+        .perth {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .cta {
+        display: grid;
+        grid-template-columns: 7fr 4fr;
+        gap: clamp(20px, 4vw, 64px);
+        align-items: end;
+      }
+      .cta h2 {
+        max-width: 14ch;
+        font-size: clamp(2.2rem, 5.6vw, 5rem);
+      }
+      .cta p {
+        max-width: 52ch;
+      }
+      .warn {
+        font-size: 14.5px;
+        color: var(--steel);
+        border-top: 1px solid var(--rule);
+        padding-top: 0.7rem;
+        margin-top: 1rem;
+      }
+      @media (max-width: 860px) {
+        .cta {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      footer {
+        border-top: 1px solid var(--ink-900);
+        padding: 0 var(--edge) 0 var(--pad);
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      footer div {
+        padding: 0.8rem 1rem 0.9rem 0;
+        border-right: 1px solid var(--rule);
+      }
+      footer div:last-child {
+        border-right: 0;
+      }
+      footer b {
+        display: block;
+        font:
+          400 12.5px "IBM Plex Mono",
+          Consolas,
+          monospace;
+        color: var(--steel);
+        font-weight: 400;
+      }
+      footer span {
+        font-size: 14.5px;
+        color: var(--ink-900);
+      }
+      @media (max-width: 760px) {
+        footer {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .banner {
+        background: var(--ink-900);
+        color: var(--on-dark);
+        font:
+          400 13px "IBM Plex Mono",
+          Consolas,
+          monospace;
+        padding: 0.5rem var(--edge);
+        text-align: center;
+      }
+
+      /* motion: quiet and scroll-linked. Base state is always the finished state, so content is never gated. */
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) {
+          @keyframes core-fill {
+            from {
+              transform: scaleY(0);
+            }
+          }
+          @keyframes land {
+            from {
+              background-color: transparent;
+              border-color: var(--control);
+            }
+          }
+          @keyframes tap {
+            from {
+              transform: scaleX(0);
+            }
+          }
+          @keyframes draw {
+            from {
+              stroke-dashoffset: 1;
+            }
+          }
+          @keyframes appear {
+            from {
+              opacity: 0;
+            }
+          }
+          @keyframes fillx {
+            from {
+              transform: scaleX(0);
+            }
+          }
+          @keyframes filly {
+            from {
+              transform: scaleY(0);
+            }
+          }
+          @keyframes rise {
+            from {
+              opacity: 0;
+              transform: translateY(14px);
+            }
+          }
+          .core::after {
+            animation: core-fill linear both;
+            animation-timeline: scroll(root);
+          }
+          .tb i {
+            animation: land linear both;
+            animation-timeline: --tb;
+            animation-range: entry 30% entry 100%;
+          }
+          .tb::before {
+            animation: tap linear both;
+            animation-timeline: --tb;
+            animation-range: entry 0% entry 90%;
+          }
+          /* service wiring: four cores draw in turn, meet, then the trunk lands on the common terminal */
+          .conv path {
+            stroke-dasharray: 1;
+            stroke-dashoffset: 0;
+            animation: draw linear both;
+            animation-timeline: --conv;
+          }
+          .conv .p1 {
+            animation-range: entry 0% entry 60%;
+          }
+          .conv .p2 {
+            animation-range: entry 8% entry 68%;
+          }
+          .conv .p3 {
+            animation-range: entry 16% entry 76%;
+          }
+          .conv .p4 {
+            animation-range: entry 24% entry 84%;
+          }
+          .conv .trunk {
+            animation-range: entry 70% entry 100%;
+          }
+          .conv rect {
+            animation: appear linear both;
+            animation-timeline: --conv;
+            animation-range: entry 0% entry 30%;
+          }
+          .conv .j {
+            animation-range: entry 60% entry 85%;
+          }
+          /* delivery: the line fills and each stage lights as it is reached */
+          .steps::after {
+            animation: fillx linear both;
+            animation-timeline: --st;
+            animation-range: entry 20% cover 45%;
+          }
+          .steps li::before {
+            animation: land linear both;
+            animation-timeline: --st;
+          }
+          .steps li:nth-child(1)::before {
+            animation-range: entry 15% entry 45%;
+          }
+          .steps li:nth-child(2)::before {
+            animation-range: entry 35% cover 15%;
+          }
+          .steps li:nth-child(3)::before {
+            animation-range: entry 60% cover 30%;
+          }
+          .steps li:nth-child(4)::before {
+            animation-range: entry 85% cover 45%;
+          }
+          .term,
+          .pillars li,
+          .reg li,
+          .note,
+          tr {
+            animation: rise linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 40%;
+          }
+        }
+        @supports (animation-timeline: view()) {
+          @media (max-width: 800px) {
+            .steps::after {
+              animation-name: filly;
+            }
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banner">
+      Design demo · Marshalling rail · static local preview · existing mock images marked as
+      representative
+    </div>
+    <div class="core" aria-hidden="true"></div>
+
+    <header>
+      <a class="wm" href="#">DeepTsight<small>Consulting</small></a>
+      <nav aria-label="Primary">
+        <a href="#">About</a><a href="#capabilities">Services</a><a href="#">Credentials</a
+        ><a href="#">Insights</a><a href="#">Contact</a>
+      </nav>
+      <a class="btn" href="#cta">Discuss your operational challenge</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <span class="tb mono"><i></i>T01 · Home</span>
+          <h1>
+            Deep technical insight for safer, more reliable and more secure industrial operations.
+          </h1>
+          <p class="lead">
+            DeepTsight combines hands-on control systems and E&amp;I engineering experience with
+            practical OT cybersecurity and reliability thinking to solve complex operational
+            challenges without losing sight of plant availability, lifecycle value or implementation
+            reality.
+          </p>
+          <div class="actions">
+            <a class="btn" href="#cta">Discuss your operational challenge</a
+            ><a class="link" href="#capabilities">Explore capabilities</a>
+          </div>
+        </div>
+        <dl class="facts">
+          <div>
+            <dt>Based</dt>
+            <dd>Perth, Western Australia</dd>
+          </div>
+          <div>
+            <dt>Disciplines</dt>
+            <dd>Control systems, OT security, segregation, reliability</dd>
+          </div>
+          <div>
+            <dt>Standards</dt>
+            <dd class="mono" style="color: var(--ink-900); font-size: 14.5px">ISA/IEC 62443</dd>
+          </div>
+          <div>
+            <dt>Engagement</dt>
+            <dd>Founder-led</dd>
+          </div>
+        </dl>
+      </section>
+
+      <figure class="fig">
+        <div class="frame">
+          <img
+            src="../../public/images/hero-control-room.jpg"
+            alt="Operator console in an industrial control room with process graphics on two screens"
+          />
+        </div>
+        <figcaption class="mono">
+          Fig. 01 — Operator console, industrial control room. Representative image.
+        </figcaption>
+      </figure>
+
+      <section class="pad">
+        <span class="tb mono"><i></i>T02 · Credentials on record</span>
+        <ul class="reg" style="padding: 0; margin: 0">
+          <li>
+            <span class="mono">Qualification</span>
+            <h3>Master's degree, instrumentation, control systems and automation</h3>
+            <p>Edith Cowan University</p>
+            <span class="pend">Pending verification</span>
+          </li>
+          <li>
+            <span class="mono">Registration</span>
+            <h3>Chartered Professional Engineer (CPEng)</h3>
+            <p>Engineers Australia</p>
+            <span class="pend">Pending verification</span>
+          </li>
+          <li>
+            <span class="mono">Certification</span>
+            <h3>ISA/IEC 62443 Expert</h3>
+            <p>International Society of Automation (ISA)</p>
+            <span class="pend">Pending verification</span>
+          </li>
+          <li>
+            <span class="mono">Certification</span>
+            <h3>Certified Automation Professional (CAP®)</h3>
+            <p>International Society of Automation (ISA)</p>
+            <span class="pend">Pending verification</span>
+          </li>
+        </ul>
+        <div class="regnote">
+          <span class="mono">Shown as pending until each item is verified by the client.</span
+          ><a class="link" href="#" style="min-height: 44px">View the full register</a>
+        </div>
+      </section>
+
+      <section class="pad" id="capabilities" style="padding-top: 0">
+        <span class="tb mono"><i></i>T03 · Core capabilities</span>
+        <div class="head">
+          <h2>Core capabilities</h2>
+          <p>
+            One practitioner across four disciplines, so each recommendation accounts for the other
+            three.
+          </p>
+        </div>
+        <div class="rail">
+          <a class="term" href="#"
+            ><span class="n"><span>1</span><span>Control</span></span>
+            <h3>Control systems and E&amp;I engineering</h3>
+            <p class="sum">
+              PLC, DCS and electrical instrumentation engineering for continuous process plants and
+              critical utilities.
+            </p>
+            <p class="out">
+              Reduce delivery risk, improve operability and integrate change within live industrial
+              environments.
+            </p>
+            <ul>
+              <li>Functional design specifications (FDS)</li>
+              <li>I/O assignment and loop schematics</li>
+              <li>Factory acceptance testing (FAT) protocols</li>
+            </ul>
+            <span class="std">IEC 61131-3 · IEC 61508 / 61511</span
+            ><span class="go">View service →</span></a
+          >
+          <a class="term" href="#"
+            ><span class="n"><span>2</span><span>Security</span></span>
+            <h3>OT cybersecurity and network architecture</h3>
+            <p class="sum">
+              ISA/IEC 62443-aligned security architecture, asset visibility and segmentation for
+              live industrial control networks.
+            </p>
+            <p class="out">
+              Improve visibility, segmentation and resilience with controls that respect plant
+              availability.
+            </p>
+            <ul>
+              <li>ISA/IEC 62443 gap assessment</li>
+              <li>Passive asset inventory and taxonomy</li>
+              <li>Zone and conduit design specification</li>
+            </ul>
+            <span class="std">ISA/IEC 62443-3-2 / 3-3 · NIST SP 800-82</span
+            ><span class="go">View service →</span></a
+          >
+          <a class="term" href="#"
+            ><span class="n"><span>3</span><span>Boundary</span></span>
+            <h3>IT/OT segregation</h3>
+            <p class="sum">
+              Defensible separation between corporate and control networks, without breaking
+              essential data flows.
+            </p>
+            <p class="out">
+              Reduce exposure while preserving the operational data flows and supportability the
+              plant depends on.
+            </p>
+            <ul>
+              <li>Industrial DMZ architecture specification</li>
+              <li>Historian and jump host broker design</li>
+              <li>Cutover sequencing protocol</li>
+            </ul>
+            <span class="std">Purdue model · ISA/IEC 62443-3-3</span
+            ><span class="go">View service →</span></a
+          >
+          <a class="term" href="#"
+            ><span class="n"><span>4</span><span>Lifecycle</span></span>
+            <h3>Plant reliability and asset lifecycle</h3>
+            <p class="sum">
+              Engineering analysis, failure mode risk reduction and lifecycle optimisation for
+              ageing automation and electrical assets.
+            </p>
+            <p class="out">
+              Improve resilience, prioritise expenditure and balance technical risk against
+              lifecycle cost.
+            </p>
+            <ul>
+              <li>Obsolescence audit and FMECA</li>
+              <li>10-year technology roadmap</li>
+              <li>CAPEX vs OPEX prioritisation matrix</li>
+            </ul>
+            <span class="std">ISO 55000 · IEC 60300 · IEC 60812</span
+            ><span class="go">View service →</span></a
+          >
+        </div>
+        <div class="convwrap">
+          <svg class="conv" viewBox="0 0 1000 110" aria-hidden="true" focusable="false">
+            <path class="p1" pathLength="1" d="M125 0 V56 H500" />
+            <path class="p2" pathLength="1" d="M375 0 V56 H500" />
+            <path class="p3" pathLength="1" d="M625 0 V56 H500" />
+            <path class="p4" pathLength="1" d="M875 0 V56 H500" />
+            <path class="trunk" pathLength="1" d="M500 56 V110" />
+            <rect x="121" y="0" width="8" height="8" />
+            <rect x="371" y="0" width="8" height="8" />
+            <rect x="621" y="0" width="8" height="8" />
+            <rect x="871" y="0" width="8" height="8" />
+            <rect class="j" x="496" y="52" width="8" height="8" />
+          </svg>
+        </div>
+        <div class="common"><div>One accountable practitioner</div></div>
+      </section>
+
+      <section class="pad" style="padding-top: 0">
+        <span class="tb mono"><i></i>T04 · Why DeepTsight</span>
+        <div class="why">
+          <div>
+            <h2 style="margin-bottom: 1rem">Why DeepTsight</h2>
+            <p>
+              Cybersecurity advice can recommend controls that disrupt plant availability.
+              Reliability studies can lack hands-on control system and communications depth.
+              Engineering upgrades can treat cybersecurity as an afterthought.
+            </p>
+            <p>
+              DeepTsight was founded to bring these disciplines together under one senior
+              practitioner.
+            </p>
+          </div>
+          <ul class="pillars">
+            <li>
+              <h3>Founder-led accountability</h3>
+              <p>
+                You work directly with the practitioner who assesses, designs and validates the
+                solution.
+              </p>
+            </li>
+            <li>
+              <h3>Site-grounded judgement</h3>
+              <p>
+                Recommendations are shaped by site experience on operating assets, not by theory
+                alone.
+              </p>
+            </li>
+            <li>
+              <h3>Integrated disciplines</h3>
+              <p>
+                Each recommendation weighs control logic, security segmentation and asset lifecycle
+                together.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="pad" style="padding-top: 0">
+        <span class="tb mono"><i></i>T05 · Problems addressed</span>
+        <div class="head">
+          <h2>Operational problems addressed</h2>
+          <p>
+            The situations that bring clients to a conversation, and the engineering response to
+            each.
+          </p>
+        </div>
+        <table>
+          <caption class="mono">
+            Situation and approach
+          </caption>
+          <tbody>
+            <tr>
+              <td class="k">P1</td>
+              <th scope="row">Complex brownfield upgrades</th>
+              <td>
+                Planning control system cutovers around scheduled turnaround windows, so the upgrade
+                does not become the outage.
+              </td>
+            </tr>
+            <tr>
+              <td class="k">P2</td>
+              <th scope="row">Uncontrolled network convergence</th>
+              <td>
+                Replacing flat or multi-homed connections between corporate IT and control networks
+                with a defined, supportable boundary.
+              </td>
+            </tr>
+            <tr>
+              <td class="k">P3</td>
+              <th scope="row">Standards and regulatory obligations</th>
+              <td>
+                Translating ISA/IEC 62443 and SOCI Act obligations into engineering remediations
+                that asset owners can sustain.
+              </td>
+            </tr>
+            <tr>
+              <td class="k">P4</td>
+              <th scope="row">Automation obsolescence and spares risk</th>
+              <td>
+                Building defensible replacement roadmaps for ageing control systems and field
+                instrumentation before a failure forces the decision.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="band">
+        <span class="tb mono"><i></i>T06 · Delivery approach</span>
+        <div class="head">
+          <h2>A method built around a running plant</h2>
+          <p>
+            Four stages, each ending in a deliverable the plant can check before the next begins.
+          </p>
+        </div>
+        <ol class="steps">
+          <li>
+            <span class="mono">A1 · 01</span>
+            <h3>Assess</h3>
+            <p>
+              Establish the real current state: cabinets, logic, network flows and operating
+              constraints.
+            </p>
+          </li>
+          <li>
+            <span class="mono">A2 · 02</span>
+            <h3>Architect</h3>
+            <p>
+              Produce functional specifications, zone and conduit definitions and cutover protocols.
+            </p>
+          </li>
+          <li>
+            <span class="mono">A3 · 03</span>
+            <h3>Implement</h3>
+            <p>
+              Stage and test configurations before site arrival, so commissioning confirms rather
+              than discovers.
+            </p>
+          </li>
+          <li>
+            <span class="mono">A4 · 04</span>
+            <h3>Assure</h3>
+            <p>
+              Commission during planned windows, validate every change and hand over as-built
+              documentation.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="pad">
+        <span class="tb mono"><i></i>T07 · Selected project notes</span>
+        <div class="notes">
+          <div class="note">
+            <span class="mono">[PLACEHOLDER] Power generation</span>
+            <h3>[PLACEHOLDER] Anonymised project summary</h3>
+            <p>[PLACEHOLDER] Control system modernisation on an operating generation asset.</p>
+            <p>TODO(CLIENT): approved outcome wording and disclosure permission.</p>
+          </div>
+          <div class="note">
+            <span class="mono">[PLACEHOLDER] Water and utilities</span>
+            <h3>[PLACEHOLDER] Anonymised project summary</h3>
+            <p>[PLACEHOLDER] Network segregation aligned to ISA/IEC 62443 zones.</p>
+            <p>TODO(CLIENT): approved outcome wording and disclosure permission.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="pad" style="padding-top: 0">
+        <span class="tb mono"><i></i>T08 · Perth and sector context</span>
+        <div class="perth">
+          <figure class="fr">
+            <img
+              src="../../public/images/perth-industrial-hub.jpg"
+              alt="Bulk commodity port and processing plant on the Western Australian coast"
+            />
+          </figure>
+          <div>
+            <h2 style="max-width: 16ch">Based in Perth, working across critical infrastructure</h2>
+            <p style="margin-top: 0.8rem">
+              Operators of critical infrastructure and heavy industry.
+            </p>
+            <ul class="sect">
+              <li>Heavy industry</li>
+              <li>Resources</li>
+              <li>Utilities</li>
+              <li>Critical infrastructure</li>
+              <li class="ph" style="column-span: all">
+                [PLACEHOLDER] Service area — TODO(CLIENT) (OPEN-03)
+              </li>
+            </ul>
+            <p class="mono" style="margin-top: 0.6rem">
+              Fig. 02 — Port and processing infrastructure, Western Australia. Representative image.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="pad" id="cta" style="padding-top: 0">
+        <span class="tb mono"><i></i>T09 · Enquiry</span>
+        <div class="cta">
+          <div><h2>Talk through an operational challenge</h2></div>
+          <div>
+            <p>
+              Speak directly with Deepak Pazhoor about control systems, OT security architecture or
+              plant reliability.
+            </p>
+            <div class="actions">
+              <a class="btn" href="#">Discuss your operational challenge</a>
+            </div>
+            <p class="warn">
+              Please do not include site names, network details or vulnerability information in an
+              enquiry.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div><b>Entity</b><span>DeepTsight Pty Ltd</span></div>
+      <div><b>Location</b><span>Perth, Western Australia</span></div>
+      <div><b>ABN</b><span>[PLACEHOLDER] TBD — CLIENT</span></div>
+      <div><b>Domain</b><span>deeptsight.com.au</span></div>
+    </footer>
+  </body>
+</html>

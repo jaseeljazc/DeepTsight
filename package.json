@@ -1,0 +1,63 @@
+{
+  "name": "deeptsight-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.2",
+  "scripts": {
+    "dev": "next dev",
+    "build": "pnpm check:content && next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test:e2e": "playwright test tests/e2e",
+    "test:a11y": "playwright test tests/a11y",
+    "test:perf": "lhci autorun",
+    "check:content": "tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts",
+    "analyze": "ANALYZE=true next build",
+    "tokens": "tsx scripts/generate-tokens.ts"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "~5.9.1",
+    "@marsidev/react-turnstile": "~1.6.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@upstash/ratelimit": "^2.1.0",
+    "@upstash/redis": "^1.38.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.16.0",
+    "next": "^16.3.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-hook-form": "~7.88.0",
+    "resend": "~4.8.0",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.3.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.50.1",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "eslint": "^9.20.0",
+    "eslint-config-next": "^16.3.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "postcss": "^8.5.1",
+    "prettier": "^3.5.0",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md,mjs}": [
+      "prettier --write"
+    ]
+  }
+}
