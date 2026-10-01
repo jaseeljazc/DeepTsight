@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 5 done (partial: no database); next Phase 6
-- Last commit: see git log (cms(phase 5))
-- Next step: Phase 6, adapter switch
+- Current phase: 6 done (partial: CMS mode unverified); next Phase 7
+- Last commit: see git log (cms(phase 6))
+- Next step: Phase 7, revalidation, preview, dates
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -28,7 +28,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | Playwright E2E (prod build) | 24/24 | 24/24 |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 16/16 |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 17/17 |
 | CMS E2E (`pnpm test:cms`) | n/a | 9 written, all skipped (B-1) |
 
 ## Dev-database backups
@@ -61,3 +61,7 @@ None (no database access).
 - **Phase 5** partial. scripts/cms/import-from-source.ts (idempotent upsert by natural key, --reset content only,
   --report, --dry-run). Dry-run report written: 4 services, 2 project notes, 15 credentials, 4 groups, 3 legal pages,
   5 enquiry types, 26 media; 18 placeholder field paths. Import not run (B-1); added to the CMS test setup.
+- **Phase 6** partial. index.ts is a dispatcher (same signatures); static-source.ts (unchanged behaviour),
+  cms-source.ts (Local API, published only, draft mode uncached, unstable_cache with tags), shared rules.ts.
+  Media per database (D-52). Static parity 0; Playwright 52/52; unit 17/17. scripts/cms/parity-cms.ts
+  (cms build + parity) written, not run (B-1). Full suite run (Phase 6 checkpoint): static green.

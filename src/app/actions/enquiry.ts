@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Resend } from "resend";
-import { buildEnquirySchema, getEnquiryOptions, getSite } from "@/content";
+import { buildEnquirySchema, getEnquiryOptionsNow, getSite } from "@/content";
 import { env } from "@/lib/env";
 import { siteHost } from "@/lib/site-url";
 import { checkEnquiryRateLimit, clientIp } from "@/lib/rate-limit";
@@ -70,7 +70,7 @@ export async function submitEnquiry(
   };
 
   // Validated against the enquiry types enabled now, not those the page was built with.
-  const { types } = await getEnquiryOptions();
+  const { types } = await getEnquiryOptionsNow();
   const enquirySchema = buildEnquirySchema(types.map((type) => type.value));
   const parsed = enquirySchema.safeParse(rawValues);
   if (!parsed.success) {

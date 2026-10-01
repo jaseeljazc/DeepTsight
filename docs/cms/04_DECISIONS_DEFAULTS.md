@@ -152,3 +152,16 @@ decision, reason, how to reverse.
   use as today, with licence `TBD — CLIENT`; the content gate (Phase 11) flags them.
 - **D-50** `import-from-source.ts --dry-run` writes the import report from the static source without a
   database; tonight's `docs/cms/import-report.md` is that dry run and says so.
+- **D-51** Published CMS reads are cached with `unstable_cache` and content tags. Next 16 documents
+  `use cache` as its replacement, but that needs Cache Components, which Payload does not support yet
+  (the plan forbids enabling them). Outside a Next.js server (scripts, verify-content) reads run uncached.
+- **D-52** Uploaded media live in one folder per database, `.data/media/<database name>`, so importing into
+  dev and test never renames files (which would break parity) and test runs cannot touch dev files.
+  `MEDIA_DIR` overrides it (production storage is U-2). Backups copy that database's folder.
+- **D-53** In CMS mode a related service, trust-strip credential, project note or Home capability whose
+  record is unpublished (or a service switched off) is left out, like a disabled service. A global that has
+  never been published fails the render with a clear message instead of rendering empty.
+- **D-54** The client-side enquiry form imports `@/content/enquiry-schema` directly, not `@/content`:
+  the adapter can load Payload (server only), which must never reach the browser bundle.
+- **D-55** `getEnquiryOptionsNow()` (uncached) was added to the adapter for the Server Action, so the server
+  validates against the types enabled at that moment (Phase 8); pages use the cached `getEnquiryOptions()`.

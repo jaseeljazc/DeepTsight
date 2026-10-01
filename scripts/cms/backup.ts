@@ -9,10 +9,18 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { argValue, databaseName, parseDbEnvName, redact, runPg, timestamp } from "./lib/db";
+import {
+  argValue,
+  connectionString,
+  databaseName,
+  parseDbEnvName,
+  redact,
+  runPg,
+  timestamp,
+} from "./lib/db";
+import { mediaDirFor } from "../../src/cms/collections/media";
 
 const BACKUP_DIR = path.join(process.cwd(), ".data", "backups");
-const MEDIA_DIR = path.join(process.cwd(), ".data", "media");
 
 function main(): void {
   const db = parseDbEnvName(argValue("--db") ?? "DATABASE_URI");
@@ -30,10 +38,11 @@ function main(): void {
     process.exit(1);
   }
 
+  const mediaDir = mediaDirFor(connectionString(db));
   let mediaNote = "no media directory";
-  if (fs.existsSync(MEDIA_DIR)) {
+  if (fs.existsSync(mediaDir)) {
     const mediaCopy = path.join(BACKUP_DIR, `${base}-media`);
-    fs.cpSync(MEDIA_DIR, mediaCopy, { recursive: true });
+    fs.cpSync(mediaDir, mediaCopy, { recursive: true });
     mediaNote = `media copied to ${path.relative(process.cwd(), mediaCopy)}`;
   }
 

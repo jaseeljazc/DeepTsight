@@ -12,7 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { buildEnquirySchema, type EnquiryData } from "@/content";
+import { buildEnquirySchema, type EnquiryData } from "@/content/enquiry-schema";
 import type { EnquiryOptions } from "@/content/types";
 import { submitEnquiry, type EnquiryActionState } from "@/app/actions/enquiry";
 import { Field, FieldError } from "@/components/primitives/field";

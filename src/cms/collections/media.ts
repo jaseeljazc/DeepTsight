@@ -13,7 +13,23 @@ import { GROUPS, contentAccess, contentVersions } from "./shared";
 
 const tags = () => ["media"];
 
-export const MEDIA_DIR = path.resolve(process.cwd(), ".data", "media");
+/**
+ * Uploaded files: one folder per database (.data/media/<database name>), so the dev, test and
+ * restore databases never share or overwrite each other's files. Production storage is an owner
+ * decision (U-2); set MEDIA_DIR to override.
+ */
+export function mediaDirFor(databaseUri: string | undefined): string {
+  if (process.env["MEDIA_DIR"]) return path.resolve(process.env["MEDIA_DIR"]);
+  let name = "default";
+  try {
+    name = decodeURIComponent(new URL(databaseUri ?? "").pathname.slice(1)) || "default";
+  } catch {
+    name = "default";
+  }
+  return path.resolve(process.cwd(), ".data", "media", name.replace(/[^A-Za-z0-9_-]/g, "_"));
+}
+
+export const MEDIA_DIR = mediaDirFor(process.env["DATABASE_URI"]);
 
 /**
  * Files must be readable by visitors because pages show them. Outside production every file is
