@@ -1,0 +1,63 @@
+# Decisions and defaults for the overnight run
+
+The agent uses these defaults and never stops to ask. New decisions are appended as D-xx entries:
+decision, reason, how to reverse.
+
+## Open questions from the context document
+| # | Question | Default tonight | Needs owner? |
+|---|---|---|---|
+| U-1 | Payload or Sanity | Payload 3, in-app | Confirm |
+| U-2 | Hosting and data residency | Local PostgreSQL 17 only; production database host undecided | Yes |
+| U-3 | Domain | Unchanged; origin from `NEXT_PUBLIC_SITE_URL` | Yes |
+| U-4 | Insights launch | Built, `insightsEnabled = false` | Yes |
+| U-5 | Separate reviewer | No review step; roles editor and approver (founder holds both) | Later |
+| U-6 | Who sets approval flags | Approver role only, audit-logged | Confirm |
+| U-7 | Removed enquiry types on old enquiries | Label copied into each enquiry | No |
+| U-8 | Legal pages in CMS | Yes; wording untouched; status field approver-only | Confirm |
+| U-9 | Admin network restriction | Open, MFA-protected | Yes |
+| U-10 | Payload compatibility | Checked in Phase 1; fallback track if not compatible | Info |
+| U-11 | Start CMS before launch | Owner chose to start; work stays on a branch | No |
+| U-12 | `crm-lead-import-template.xlsx` | Left untouched | Yes |
+| U-13 | No-JS enquiries | Unchanged | Yes (Q-11) |
+| U-14 | Maps link | Field built; empty until the URL is supplied | Supply URL |
+| U-15 | Scope change | Approved | No |
+| U-16 | Service icons | Icon field built; current values kept | Yes |
+| U-17 | Retention and privacy wording | Purge built but off; no wording changed | Yes, before inbox goes live |
+
+## Decisions in the plan
+- **D-01** Local PostgreSQL 17 (owner's existing install) with three databases (`deeptsight_cms_dev`,
+  `_test`, `_restore`) owned by the non-superuser role `deeptsight_cms`. The same adapter as
+  production, so no switch is needed later.
+- **D-02** `CONTENT_SOURCE=static|cms`, default `static`; the static source is kept as a fallback
+  (`src/content/source/` is not deleted).
+- **D-03** In production, `DATABASE_URI` must be Postgres and must use TLS (`sslmode=require` or
+  `verify-full`) unless the host is localhost.
+- **D-04** Payload `push` is off everywhere. Every schema change is a committed migration, proven on a
+  freshly reset test database. The dev database is backed up before each migration.
+- **D-05** The import publishes everything, so the CMS output matches today's site. Placeholder
+  markers stay visible as they are today and are blocked from going live by the production gates
+  (Phase 11). This replaces the context document's §20.1 "import as drafts", which would empty
+  singleton pages such as Home.
+- **D-06** Approval filtering keeps today's semantics (filtered only when
+  `NEXT_PUBLIC_ENV=production`); the `_status = published` filter always applies outside draft mode.
+- **D-07** Navigation: editors change labels only; routes and order are fixed in code.
+- **D-08** Hardcoded copy (context §7.3). **Move to content:** button and link labels ("All services",
+  "View service", the "View …" prefix, "Explore capabilities", "Return to the home page",
+  "Connect on LinkedIn", "on LinkedIn" suffix, "Or email", "or call"); every "Perth, Western Australia"
+  → `site.locationLabel`; figure ids in page files → `pages` global; default title template,
+  description and OG text derived from `site` and `seo`, only if the result is identical.
+  **Keep in code:** section headings and rail labels, table headers, the nine service part labels,
+  enquiry form text, error and 404 copy, legal-document labels, credential table labels, the wordmark,
+  JSON-LD `areaServed`.
+- **D-09** Slugs are locked after first publish (no redirect manager yet, SEO-10).
+- **D-10** Service delivery approach is fixed at 4 steps (animation limit).
+- **D-11** Footer "Revision" date = `site.updatedAt`.
+- **D-12** `check-placeholders.ts` keeps scanning code; the new `check-content-output.ts` scans adapter output.
+- **D-13** Production `robots.txt` disallows `/admin` and `/api`.
+- **D-14** Email failure after a successful save still shows thank-you; the failure is flagged in the admin.
+- **D-15** E2E, parity and smoke tests run against `deeptsight_cms_test` (reset, migrated and imported
+  each run), never the dev database. Reset scripts refuse any database whose name does not end in
+  `_test` or `_restore`.
+
+## Decisions made during the run
+(The agent appends D-16 onwards here.)
