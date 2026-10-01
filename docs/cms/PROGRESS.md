@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 13 done (partial); next Phase 14
-- Last commit: see git log (cms(phase 13))
-- Next step: Phase 14, documentation, QA, morning report
+- Current phase: all phases done (0-14); run complete. Database-dependent checks unverified (B-1).
+- Last commit: see git log (docs(cms): morning report)
+- Next step (owner): add DATABASE_URI* to .env.local, then `pnpm cms:test` (docs/cms/MORNING_REPORT.md §10)
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -90,3 +90,10 @@ None (no database access).
   /insights, /insights/[slug], /insights/rss.xml (XML-escaped), Article + Breadcrumb JSON-LD, sitemap entries,
   all gated by insightsEnabled. Migration `insights` (offline). tests/e2e/insights-off.spec.ts (runs now:
   404s, no menu link); tests/cms/insights.spec.ts (not run, B-1). Parity 0; Playwright 56/56; unit 28/28.
+- **Phase 14** done. pnpm audit: critical next 16.3.5 advisory fixed by upgrading to 16.3.7 (D-69); undici
+  override (D-70); remaining 1 moderate, 1 low. Docs updated (ARCHITECTURE §2-4, TECH_STACK, CONTENT_EDITING_GUIDE,
+  DATA_FLOW_PRIVACY, ACCESS_REGISTER, LICENCES_SERVICES, MAINTENANCE_PLAN, CLAUDE/AGENTS CMS rules, audit status,
+  TASKS Phase 10 status). Account update access tightened (D-71). Final static run: typecheck, lint, build green;
+  parity 0; Playwright 56/56; unit 28/28; CMS E2E 14 tests written, all skipped (B-1).
+- Morning report: docs/cms/MORNING_REPORT.md. No server left running (every server was started and stopped by
+  the Node runner).
