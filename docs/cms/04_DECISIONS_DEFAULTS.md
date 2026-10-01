@@ -145,3 +145,10 @@ decision, reason, how to reverse.
 - **D-47** Media files are readable anonymously outside production (unapproved images render as marked
   mocks, as today) and only approved, published images on the live site. Rights fields (source, licence,
   usage rights, attribution) are hidden from anonymous reads.
+- **D-48** The import publishes project notes (as today, D-05) but does not tick "Contains no client, site
+  or plant names": that is a person's confirmation. It skips the publish guard through a script-only
+  request context flag (`importPublish`); an editor must tick it before the note can be published again.
+- **D-49** The eight issuer badges become media records (`assetClass: issuer-badge`), approved for public
+  use as today, with licence `TBD — CLIENT`; the content gate (Phase 11) flags them.
+- **D-50** `import-from-source.ts --dry-run` writes the import report from the static source without a
+  database; tonight's `docs/cms/import-report.md` is that dry run and says so.

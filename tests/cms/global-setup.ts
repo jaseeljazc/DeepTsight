@@ -4,7 +4,7 @@ import path from "node:path";
 
 /*
  * Prepares the test database for tests/cms: reset the schema, run every migration (proving the
- * chain from empty), then create the test accounts. Only DATABASE_URI_TEST is touched; the reset
+ * chain from empty), import the site content, then create the test accounts. Only DATABASE_URI_TEST is touched; the reset
  * script refuses any database whose name does not end in _test.
  */
 
@@ -29,6 +29,8 @@ export default async function globalSetup(): Promise<void> {
   }
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
   run(path.join("scripts", "cms", "migrate.ts"), ["--db", "DATABASE_URI_TEST", "--fresh"]);
+  // The site content, so cms-mode pages render exactly as static mode (D-15).
+  run(path.join("scripts", "cms", "import-from-source.ts"), ["--db", "DATABASE_URI_TEST"]);
   const accounts: [string, string, string, string][] = [
     [ADMIN_FILE, "editor@example.com", "Test Editor", "editor,approver"],
     [EDITOR_FILE, "editor-only@example.com", "Test Editor Only", "editor"],

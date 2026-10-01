@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 4 done (partial: no database); next Phase 5
-- Last commit: see git log (cms(phase 4))
-- Next step: Phase 5, import script
+- Current phase: 5 done (partial: no database); next Phase 6
+- Last commit: see git log (cms(phase 5))
+- Next step: Phase 6, adapter switch
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -58,3 +58,6 @@ None (no database access).
   revalidation hooks, admin groups and descriptions. Mappers in src/content/mappers. Types generated
   (src/cms/payload-types.ts); migration `collections` created offline. scripts/cms/smoke.ts written, not run (B-1).
   Parity 0; unit 16/16.
+- **Phase 5** partial. scripts/cms/import-from-source.ts (idempotent upsert by natural key, --reset content only,
+  --report, --dry-run). Dry-run report written: 4 services, 2 project notes, 15 credentials, 4 groups, 3 legal pages,
+  5 enquiry types, 26 media; 18 placeholder field paths. Import not run (B-1); added to the CMS test setup.

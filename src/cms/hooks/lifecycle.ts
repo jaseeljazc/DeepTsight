@@ -22,6 +22,13 @@ import { revalidateTags, shouldRevalidate } from "./revalidate";
 
 export const SKIP_AUDIT = "skipAudit";
 
+/**
+ * Set only by scripts/cms/import-from-source.ts, for records whose publish confirmation must stay
+ * a human decision (project notes: "contains no client, site or plant names"). Request context
+ * cannot be set through the REST API or the admin.
+ */
+export const IMPORT_PUBLISH = "importPublish";
+
 export interface PublishIssue {
   path: string;
   message: string;
@@ -49,11 +56,13 @@ export function collectionBeforeChange(
   slug: string,
   validate: PublishValidator,
 ): CollectionBeforeChangeHook {
-  return async ({ data, originalDoc, req }) => {
+  return async ({ data, originalDoc, req, context }) => {
     if (!isPublishing(data)) return data;
     const merged = { ...(originalDoc ?? {}), ...data } as Record<string, unknown>;
-    const issues = await validate(merged, req);
-    if (issues.length > 0) throw toValidationError(issues, slug);
+    if (context[IMPORT_PUBLISH] !== true) {
+      const issues = await validate(merged, req);
+      if (issues.length > 0) throw toValidationError(issues, slug);
+    }
     if (!merged["firstPublishedAt"]) data["firstPublishedAt"] = new Date().toISOString();
     return data;
   };
