@@ -64,6 +64,10 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
+  experimental: {
+    // Two root layouts (public site and CMS admin): unmatched URLs render app/global-not-found.tsx.
+    globalNotFound: true,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
   },
