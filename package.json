@@ -17,7 +17,12 @@
     "check:content": "tsx scripts/check-env.ts && tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts",
     "analyze": "ANALYZE=true next build",
     "tokens": "tsx scripts/generate-tokens.ts",
-    "dither": "tsx scripts/generate-dither.ts"
+    "dither": "tsx scripts/generate-dither.ts",
+    "test:cms": "playwright test -c playwright.cms.config.ts",
+    "test:cms-unit": "tsx --test tests/cms/unit/*.test.ts",
+    "cms:migrate": "tsx scripts/cms/migrate.ts --db DATABASE_URI",
+    "cms:backup": "tsx scripts/cms/backup.ts --db DATABASE_URI",
+    "cms:check-db": "tsx scripts/cms/check-db.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "~5.9.1",
@@ -42,6 +47,7 @@
     "sharp": "0.35.5",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.3.3",
+    "uqr": "0.1.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {

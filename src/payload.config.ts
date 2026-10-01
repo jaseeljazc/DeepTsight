@@ -5,7 +5,9 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { publicEnv } from "./lib/public-env";
+import { AuditLog } from "./cms/collections/audit-log";
 import { Users } from "./cms/collections/users";
+import { noEmailAdapter } from "./cms/lib/no-email";
 
 /*
  * Payload CMS configuration (Phase 2 CMS, docs/cms/01_BUILD_PLAN.md).
@@ -35,9 +37,26 @@ export default buildConfig({
     importMap: {
       baseDir: dirname,
     },
+    meta: {
+      titleSuffix: " | DeepTsight CMS",
+      robots: "noindex, nofollow",
+    },
+    routes: {
+      // Signed-in users without a verified second factor are sent here (03 §3).
+      unauthorized: "/mfa",
+    },
+    components: {
+      views: {
+        unauthorized: {
+          Component: "/cms/views/mfa-view#MfaView",
+          path: "/mfa",
+        },
+      },
+    },
   },
-  collections: [Users],
+  collections: [Users, AuditLog],
   editor: lexicalEditor(),
+  email: noEmailAdapter,
   db: postgresAdapter({
     pool: {
       connectionString: process.env["DATABASE_URI"] ?? "",

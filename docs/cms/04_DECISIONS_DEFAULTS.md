@@ -79,3 +79,32 @@ decision, reason, how to reverse.
 - **D-21** The template's empty `(payload)/custom.scss` is not copied: it would need the `sass` package
   in the app for no styling. Reverse: add the file and `sass`.
 - **D-22** Payload's admin and API currently answer 500 when the database is unreachable (fails closed).
+- **D-23** MFA is built in house, not with the `payload-totp` plugin (3.0.4, MIT, recent). The plugin
+  generates the TOTP secret in the browser, stores it unencrypted, does not rate-limit code checks,
+  has no recovery codes and needs a `proxy.ts` header. In-house: RFC 6238 on `node:crypto` (no
+  `otplib`: fewer dependencies), AES-256-GCM at rest, 10 hashed recovery codes, replay protection,
+  5 checks per 5 minutes per user, cookie bound to the Payload session id. Reverse: replace
+  `src/cms/mfa` and the users fields with the plugin.
+- **D-24** QR code for enrolment: `uqr` 0.1.3 (MIT, no dependencies), rendered as React SVG elements
+  on the server. A manual key is shown as well.
+- **D-25** The MFA screen replaces Payload's "unauthorized" view at `/admin/mfa`
+  (`admin.routes.unauthorized`). Payload sends every signed-in user who fails `access.admin` there,
+  and `access.admin` requires the MFA cookie, so a password alone never reaches content.
+- **D-26** The MFA cookie lasts 2 hours from verification and is not extended by token refresh
+  (stricter than the session). Reverse: reissue it in an `afterRefresh` hook.
+- **D-27** Accounts can never be created through the API or the create-first-user screen, in any
+  environment (not only production): a `beforeOperation` hook refuses `create` unless the
+  `create-admin.ts` script sets a context flag. Forgot-password and reset-password are refused too,
+  and a refusing email adapter stops Payload writing emails (with tokens) to the server log.
+- **D-28** Audit writes run inside the request's transaction and fail closed: if the entry cannot be
+  written, the change is rolled back.
+- **D-29** Fail-closed production gate (`src/proxy.ts`): on the live site `/admin` and `/api` answer
+  404 until `CMS_ADMIN_ENABLED=true`, because tonight's MFA could not be tested against a database.
+  The owner sets the flag after `pnpm test:cms` passes. Reverse: remove `src/proxy.ts`.
+- **D-30** CMS end-to-end tests run on port 3000 (Payload's CSRF origin check compares the Origin
+  header with `NEXT_PUBLIC_SITE_URL`, default `http://localhost:3000`). Parity snapshots stay on 3100.
+- **D-31** Auth cookies are `Secure` whenever the site URL is https (always on the live site, which the
+  env rules force to https) and `SameSite=Strict`. Local http development cannot use Secure cookies.
+- **D-32** "login-failed" audit entries are not written: Payload has no hook for a failed password
+  check, and a write inside the failing login would be rolled back. Failed attempts are still counted
+  by the lockout (5) and the IP limit (10 per 15 minutes); MFA failures are audited.

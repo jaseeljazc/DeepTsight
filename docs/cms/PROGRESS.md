@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 1 done (partial: no database); next Phase 2
-- Last commit: see git log (cms(phase 1) commits)
-- Next step: Phase 2, admin security
+- Current phase: 2 done (partial: no database); next Phase 3
+- Last commit: see git log (cms(phase 2))
+- Next step: Phase 3, content model changes in Zod and the static source
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -28,6 +28,8 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | Playwright E2E (prod build) | 24/24 | 24/24 |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 11/11 |
+| CMS E2E (`pnpm test:cms`) | n/a | 9 written, all skipped (B-1) |
 
 ## Dev-database backups
 None (no database access).
@@ -40,3 +42,8 @@ None (no database access).
   `.env.local` secrets generated (key names only), initial migration created offline.
   Parity 0 differences; 52/52 Playwright. **Not done (B-1):** `payload migrate` on dev and test,
   `/admin` loading in `pnpm dev` (answers 500 without a database).
+- **Phase 2** partial (code complete, DB tests not run). Users (roles, lockout 5/15 min, 2 h tokens, no API
+  keys, Strict cookies), in-house TOTP MFA (D-23), MFA screen at /admin/mfa (D-25), audit log, login IP limit,
+  admin/API CSP + noindex + no-store, GraphQL 404 route, create-admin and reset-admin-password scripts,
+  production fail-closed gate (D-29). Migration `admin_security` created offline. Unit tests 11/11.
+  `tests/cms/admin-security.spec.ts` (9 tests) written; skipped (B-1). Parity 0; Playwright 52/52.

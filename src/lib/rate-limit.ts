@@ -96,3 +96,43 @@ export async function checkEnquiryRateLimit(
   }
   return { allowed: true };
 }
+
+const namedLimiters = new Map<string, Ratelimit>();
+
+/**
+ * A general sliding-window limit, used by the CMS (login attempts per hashed IP, MFA codes per
+ * user). Keys must never be raw personal data: hash IPs before calling. Returns true when the
+ * request is allowed. Uses Upstash when configured, otherwise the in-memory limiter.
+ */
+export async function checkRateLimit(
+  name: string,
+  key: string,
+  limit: number,
+  windowSeconds: number,
+): Promise<boolean> {
+  if (env.server.UPSTASH_REDIS_REST_URL && env.server.UPSTASH_REDIS_REST_TOKEN) {
+    const id = `${name}:${limit}:${windowSeconds}`;
+    let limiter = namedLimiters.get(id);
+    if (!limiter) {
+      limiter = new Ratelimit({
+        redis: new Redis({
+          url: env.server.UPSTASH_REDIS_REST_URL,
+          token: env.server.UPSTASH_REDIS_REST_TOKEN,
+        }),
+        limiter: Ratelimit.slidingWindow(limit, `${windowSeconds} s`),
+        analytics: false,
+        prefix: `ratelimit:${name}`,
+      });
+      namedLimiters.set(id, limiter);
+    }
+    try {
+      return (await limiter.limit(key)).success;
+    } catch (error) {
+      console.warn(
+        `[Rate limit] Redis unavailable for ${name}, using the in-memory limiter:`,
+        error instanceof Error ? error.name : "UnknownError",
+      );
+    }
+  }
+  return checkMemoryLimit(`${name}:${key}`, limit, windowSeconds * 1000);
+}

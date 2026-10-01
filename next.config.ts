@@ -61,6 +61,31 @@ const securityHeaders = [
   },
 ];
 
+/*
+ * CMS admin (/admin) and its API (/api): a stricter policy with no third-party origins, never
+ * cached, never indexed (docs/cms/03_SECURITY_AND_OPS.md §1, §6). The rule sources do not overlap
+ * with the public rule above.
+ */
+const adminCsp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+].join("; ");
+
+const adminHeaders = [
+  ...securityHeaders.filter((header) => header.key !== "Content-Security-Policy"),
+  { key: "Content-Security-Policy", value: adminCsp },
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
+  { key: "Cache-Control", value: "no-store" },
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
@@ -79,6 +104,8 @@ const nextConfig: NextConfig = {
         source: "/((?!admin(?:/|$)|api(?:/|$)).*)",
         headers: securityHeaders,
       },
+      { source: "/admin/:path*", headers: adminHeaders },
+      { source: "/api/:path*", headers: adminHeaders },
     ];
   },
 };
