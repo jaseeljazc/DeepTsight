@@ -20,7 +20,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/design-system", "/contact/thank-you"],
+        // The CMS admin and its API are never crawled (D-13); they also send X-Robots-Tag.
+        disallow: ["/design-system", "/contact/thank-you", "/admin", "/api", "/preview"],
       },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

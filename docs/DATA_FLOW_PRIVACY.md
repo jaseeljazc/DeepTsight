@@ -46,16 +46,44 @@ The application communicates with the following external services during its ope
 3. **Resend (Email API):** Receives the enquiry payloads strictly for the purpose of transmitting the email to the DeepTsight team.
 4. **Plausible (Analytics):** Receives anonymous, aggregated pageview and event data.
 
-## 5. Planned change in Phase 2 (CMS)
+## 5. Phase 2 (CMS): what is built, not yet live
 
-Decided 2026-10-01 (`REQUIREMENTS.md` FR-38 changed, FR-44, PRIV-09). When the CMS ships, every enquiry will
-also be saved in the project database and shown in an admin inbox, so section 1 ("Zero Database Persistence")
-will no longer be true. Before that goes live:
+Built on branch `cms/phase-2` (1 October 2026; `REQUIREMENTS.md` FR-38 changed, FR-44, PRIV-09). Sections 1 to 4
+still describe the live site. The new behaviour applies only when the site runs with `CONTENT_SOURCE=cms`.
+It must not go live until the privacy notice is updated and approved.
 
-- The privacy notice must say enquiries are stored, where, who can see them, for how long, and how to request
-  deletion. The client's adviser approves the wording.
-- A retention period must be decided (PRIV-04) and enforced.
-- The database host and its jurisdiction must be added to the processor list above.
-- Only admin accounts with MFA can open the inbox (`docs/ACCESS_REGISTER.md`).
+**Enquiry storage (FR-44).** The Server Action saves each valid enquiry to the CMS database before emailing it:
 
-Until the CMS ships, this document's sections 1 to 4 describe the live behaviour.
+- **Stored:** name, work email, organisation, phone, the area of enquiry (value and the label shown), message,
+  consent, time received, a read/unread flag, and how the email notification went (`pending`, `sent`,
+  `failed`, `simulated`, plus a short reason code such as `email-not-configured`; never a response body).
+- **Never stored:** IP address, user agent, CAPTCHA token, honeypot value.
+- **Order:** honeypot → validation → rate limit → Turnstile → timing → save → email → record the email outcome.
+  If the save works but the email fails, the visitor still sees the thank-you page and the record is flagged
+  as failed in the admin. If neither works, the visitor is told to email instead.
+- **Who can see it:** CMS accounts only, after a password and an authenticator code (MFA). Access is checked on
+  every request. Anonymous API access is refused.
+- **Deletion:** an admin can delete one or many enquiries; deletion is permanent (no versions are kept).
+  Deleted enquiries remain in database backups until those backups expire.
+- **Retention:** `ENQUIRY_RETENTION_DAYS` with `pnpm cms:purge-enquiries` deletes older enquiries. **Not set:
+  nothing is purged until the owner decides the period (PRIV-04, U-17).** Backup retention must follow it.
+- **Audit log:** saving an enquiry, marking it read and deleting it are logged with the record id and the
+  action only, never personal data.
+
+**Admin sign-in data.** CMS accounts (email, name, roles, password hash, encrypted authenticator secret,
+hashed recovery codes, session records) and an audit log of sign-ins and changes are stored in the same
+database. Sign-in attempts are rate-limited by a one-way hash of the IP address; raw IP addresses are not
+stored in the CMS database. Editors receive session cookies (`payload-token`, `dts-mfa`; HttpOnly,
+SameSite=Strict, Secure on https). Public visitors receive no cookies from the CMS; a visitor using draft
+preview is always a signed-in editor.
+
+**Media.** Uploaded images are re-encoded on upload with all metadata removed (EXIF, GPS position, camera
+details), so a photograph cannot reveal where it was taken.
+
+**Processors.** The database and media storage are on the client's own infrastructure; no new third-party
+processor is added by the CMS. The production database host and its jurisdiction are still to be decided
+(U-2) and must be added to section 4 when chosen.
+
+**Before the inbox goes live:** the privacy notice must describe this storage, who can see it, how long it is
+kept and how to request deletion (suggested wording is in `docs/cms/MORNING_REPORT.md`; the client's adviser
+approves the final text); a retention period must be set; the database host must be listed above.
