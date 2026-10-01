@@ -15,6 +15,8 @@ export function PublicDocument({ children }: { children: React.ReactNode }) {
       lang="en-AU"
       className={`${fontArchivo.variable} ${fontPlexSans.variable} ${fontPlexMono.variable}`}
     >
+      {/* App Router document head; the rule only recognises layout files. */}
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         {analyticsDomain && (
           <script
