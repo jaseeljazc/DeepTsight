@@ -52,3 +52,51 @@ In the event of a site outage or critical vulnerability:
 - **Level 2 (Form Failure):** Verify Resend API status page. Check the application logs in the hosting dashboard.
 - **Level 3 (Code Level Issue):** Revert the deployment to the last known working commit while the fix is engineered.
 - **Primary Technical Contact:** [TBD - Insert Owner Name/Email]
+
+## 5. CMS database: backup and restore
+
+From Phase 2 the site has a PostgreSQL 17 database (the CMS content and the enquiry inbox) and a media
+folder. Both must be backed up. The scripts below print file names and counts only, never connection
+strings, passwords or content.
+
+**Development (this machine).** Backups go to `.data/backups/` (git-ignored):
+
+```bash
+pnpm cms:backup                      # pg_dump --format=custom --no-owner of DATABASE_URI, plus a copy of its media folder
+pnpm cms:restore --from .data/backups/<file>.dump --db DATABASE_URI_RESTORE
+pnpm cms:verify-backup DATABASE_URI DATABASE_URI_RESTORE   # row counts per table must match
+tsx scripts/cms/prove-backup.ts      # all three steps in one go
+```
+
+`restore.ts` refuses any database whose name does not end in `_test` or `_restore`. **Restoring the dev
+or production database is a manual owner action**, deliberately not automated:
+
+1. Stop the site (or put it in maintenance), so nothing writes during the restore.
+2. Take a fresh backup of the current state first (`pnpm cms:backup`), in case the restore is wrong.
+3. As the database owner, drop and recreate the `public` schema of the target database, then run
+   `pg_restore --no-owner --exit-on-error --dbname=<target> <file>.dump` and copy the matching
+   `<file>-media` folder over the target's media folder.
+4. Run `pnpm cms:verify-backup` against a copy restored into `DATABASE_URI_RESTORE` to compare counts.
+5. Start the site and check the admin and a few pages.
+
+**Production (to be set up before go-live; owner decision U-2).**
+
+- Daily automated backups: `pg_dump` from a scheduled job, or the database host's managed backups.
+- **An off-machine copy:** a backup on the same host as the database is not a backup. Store a copy in a
+  different location, encrypted at rest.
+- Media files are backed up together with the database dump they belong to.
+- Retention: follow the enquiry retention rule (PRIV-04). Deleted enquiries stay in backups until those
+  backups expire, so the backup retention must not be longer than the agreed enquiry retention.
+- One tested restore before go-live (`TECH_STACK.md` §4), then one at least every six months, recorded here.
+
+**Enquiry retention.** `pnpm cms:purge-enquiries` deletes enquiries older than `ENQUIRY_RETENTION_DAYS`.
+It deletes nothing until that variable is set (decision U-17). Schedule it daily once it is.
+
+## 6. CMS accounts
+
+- Accounts are created with `tsx scripts/cms/create-admin.ts --db DATABASE_URI --email <address>`; there is
+  no sign-up. The script writes the password, authenticator key and recovery codes to a file in `.data/`.
+  Move them to a password manager and delete the file.
+- Lost password: `tsx scripts/cms/reset-admin-password.ts --db DATABASE_URI --email <address>` (add
+  `--reset-mfa` only if the authenticator and the recovery codes are both lost).
+- Review the audit log (Admin → System → Audit log) monthly for unexpected sign-ins or approval changes.

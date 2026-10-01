@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 11 done; next Phase 12
-- Last commit: see git log (cms(phase 11))
-- Next step: Phase 12, backup and restore
+- Current phase: 12 done (partial: proof not run); next Phase 13
+- Last commit: see git log (cms(phase 12))
+- Next step: Phase 13, Insights
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -82,3 +82,6 @@ None (no database access).
 - **Phase 11** done (static verified). scripts/check-content-output.ts in check:content: 19 markers in static
   output (development); 13 in production mode, which fails as intended. Production publish block for
   marked documents. Parity 0; unit 24/24.
+- **Phase 12** partial. backup.ts (custom format, no owner, media copy), restore.ts (refuses non _test/_restore,
+  reset + pg_restore --exit-on-error, media), verify-backup.ts (row counts per table), prove-backup.ts (all three).
+  docs/MAINTENANCE_PLAN.md §5–§6. Refusal paths checked; the proof itself needs the databases (B-1).
