@@ -9,6 +9,8 @@ export const siteSource: Site = {
   email: "enquiries@deeptsight.com",
   // Founder's personal profile until the company page exists (docs/CONTENT_GAPS.md).
   linkedIn: "https://www.linkedin.com/in/deepak-pazhoor-a29b7b49",
+  responseTime: "Within 1 business day",
+  serviceArea: "Australia-wide",
   nav: [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },

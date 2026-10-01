@@ -7,6 +7,7 @@ import { SectionHeader } from "@/components/primitives/section-header";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { Link } from "@/components/primitives/link";
 import { RailWiring } from "@/components/content/rail-wiring";
+import { DotNumeral } from "@/components/content/dot-numeral";
 import type { HomeContent, Service } from "@/content/types";
 
 export type CapabilityRailProps = {
@@ -38,17 +39,14 @@ export function CapabilityRail({
     <Section aria-labelledby="capabilities-heading" spacing="tight">
       <RailTag label={title} />
       <Container rail>
-        <div className="rail-enter grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-12 lg:items-end">
-          <SectionHeader id="capabilities-heading" title={title} className="lg:col-span-5" />
-          <div className="lg:col-span-6 lg:col-start-7">
-            <p className="text-body text-ink-700 max-w-prose-md">{intro}</p>
-            <Link href="/services" className="mt-2">
-              All services
-            </Link>
-          </div>
+        <div className="rail-enter">
+          <SectionHeader id="capabilities-heading" title={title} intro={intro} size="h1" />
+          <p className="mt-4">
+            <Link href="/services">All services</Link>
+          </p>
         </div>
 
-        <ul className="rail-stagger mt-8 grid grid-cols-1 gap-px sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="rail-stagger mt-12 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
           {capabilities.map((capability, index) => {
             const service = serviceFor(capability.slug);
             const headingId = `capability-${capability.slug}`;
@@ -62,12 +60,13 @@ export function CapabilityRail({
                 <NextLink
                   href={`/services/${capability.slug}`}
                   aria-labelledby={headingId}
-                  className="group rounded-control border-control bg-panel hover:border-primary flex h-full flex-col gap-4 border p-5 transition-colors duration-150 hover:bg-white"
+                  className="group border-ink-900 flex h-full flex-col gap-4 border-t pt-6"
                 >
-                  <span className="text-steel-600 text-caption tabular font-mono">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3 id={headingId} className="font-display text-ink-900 text-h3 font-medium">
+                  <DotNumeral value={String(index + 1).padStart(2, "0")} className="w-numeral" />
+                  <h3
+                    id={headingId}
+                    className="font-display text-ink-900 group-hover:text-primary text-h3-lg font-medium transition-colors duration-150"
+                  >
                     {capability.title}
                   </h3>
                   {service && <p className="text-ink-700 text-small">{service.summary}</p>}

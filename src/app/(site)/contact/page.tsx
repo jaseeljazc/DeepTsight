@@ -73,7 +73,7 @@ export default async function ContactPage() {
             ),
           },
           { label: "Location", value: "Perth, Western Australia" },
-          { label: "Service area", value: "Australia-wide" },
+          { label: "Service area", value: site.serviceArea },
           {
             label: "LinkedIn",
             value: linkedInPending ? (
@@ -84,7 +84,7 @@ export default async function ContactPage() {
               </Link>
             ),
           },
-          { label: "Response time", value: "Within 1 business day" },
+          { label: "Response time", value: site.responseTime },
         ]}
       />
 

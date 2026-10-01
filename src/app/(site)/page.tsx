@@ -55,19 +55,35 @@ export default async function HomePage() {
         convergenceLabel={home.whyDeepTsight.convergenceLabel}
       />
       <WhyDeepTsight whyDeepTsight={home.whyDeepTsight} />
-      <ProblemsAddressed
-        problemsAddressed={home.problemsAddressed}
-        figure={figures[home.media.problems]}
-      />
+      <ProblemsAddressed problemsAddressed={home.problemsAddressed} />
       <DeliveryApproach deliveryApproach={home.deliveryApproach} />
       <SelectedProof title={home.selectedProofTitle} proofs={home.selectedProof} />
-      <PerthContext perthContext={home.perthContext} figure={figures[home.media.perth]} />
+      <PerthContext perthContext={home.perthContext} />
       <FinalCta
         finalCta={home.finalCta}
         email={site.email}
         phone={site.phone}
-        figure={figures[home.media.close]}
         rail
+        particulars={[
+          {
+            label: "Email",
+            value: (
+              <a href={`mailto:${site.email}`} className="link-rule">
+                {site.email}
+              </a>
+            ),
+          },
+          {
+            label: "Phone",
+            value: (
+              <a href={`tel:${site.phone.replace(/\s+/g, "")}`} className="link-rule">
+                {site.phone}
+              </a>
+            ),
+          },
+          { label: "Response time", value: site.responseTime },
+          { label: "Service area", value: site.serviceArea },
+        ]}
       />
     </div>
   );

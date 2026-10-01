@@ -204,8 +204,7 @@ export const homeSource: HomeContent = {
   ],
   perthContext: {
     title: "Based in Perth, working across Australia",
-    description:
-      "Operators of critical infrastructure and heavy industry, anywhere in Australia.",
+    description: "Operators of critical infrastructure and heavy industry, anywhere in Australia.",
     officeArea: "Perth, Western Australia",
     sectors: [
       "Heavy industry",

@@ -3,7 +3,6 @@ import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { SectionHeader } from "@/components/primitives/section-header";
 import { RailTag } from "@/components/primitives/rail-tag";
-import { Figure } from "@/components/primitives/figure";
 import {
   Table,
   TableBody,
@@ -12,29 +11,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/primitives/table";
-import type { FigureData, HomeContent } from "@/content/types";
+import type { HomeContent } from "@/content/types";
 
 export type ProblemsAddressedProps = {
   problemsAddressed: HomeContent["problemsAddressed"];
-  figure: FigureData | undefined;
 };
 
 /** Situation and approach as a two-column schedule. */
-export function ProblemsAddressed({ problemsAddressed, figure }: ProblemsAddressedProps) {
+export function ProblemsAddressed({ problemsAddressed }: ProblemsAddressedProps) {
   return (
     <Section spacing="tight" aria-labelledby="problems-heading">
       <RailTag label={problemsAddressed.title} />
-      <Container rail className="rail-enter grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-12">
-        <div className="lg:col-span-4">
-          <SectionHeader id="problems-heading" title={problemsAddressed.title} />
-          <Figure
-            figure={figure}
-            aspect="classic"
-            sizes="(max-width: 1024px) 100vw, 30vw"
-            className="mt-8 hidden lg:block"
-          />
-        </div>
-        <div className="lg:col-span-8">
+      <Container rail className="rail-enter">
+        <SectionHeader id="problems-heading" title={problemsAddressed.title} size="h1" />
+        <div className="mt-10">
           <Table caption="Operational problems and how DeepTsight approaches them">
             <TableHeader>
               <TableRow>

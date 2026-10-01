@@ -14,11 +14,12 @@ export function WhyDeepTsight({ whyDeepTsight }: WhyDeepTsightProps) {
   return (
     <Section ground="panel" spacing="tight" aria-labelledby="why-heading">
       <RailTag label={whyDeepTsight.title} />
-      <Container rail className="rail-enter grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-12">
-        <div className="lg:col-span-5">
+      <Container rail className="rail-enter grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-12">
+        <div className="lg:col-span-6">
           <SectionHeader
             id="why-heading"
             title={whyDeepTsight.title}
+            size="h1"
             introSize="body"
             intro={
               <div className="space-y-4">
@@ -30,11 +31,11 @@ export function WhyDeepTsight({ whyDeepTsight }: WhyDeepTsightProps) {
           />
         </div>
 
-        <ul className="border-ink-900 lg:col-span-6 lg:col-start-7 lg:border-t">
+        <ul className="border-ink-900 self-end border-t lg:col-span-5 lg:col-start-8">
           {whyDeepTsight.pillars.map((pillar) => (
-            <li key={pillar.title} className="border-rule border-b py-5">
-              <h3 className="text-ink-900 text-h3 font-medium">{pillar.title}</h3>
-              <p className="text-ink-700 text-small mt-1">{pillar.description}</p>
+            <li key={pillar.title} className="border-rule border-b py-6">
+              <h3 className="font-display text-ink-900 text-h3-lg font-medium">{pillar.title}</h3>
+              <p className="text-ink-700 text-body mt-2">{pillar.description}</p>
             </li>
           ))}
         </ul>

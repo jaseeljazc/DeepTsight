@@ -167,7 +167,8 @@ export const credentialsSource: CredentialGroup[] = [
         id: "plat-regulation",
         category: "platforms",
         title: "SOCI Act and AESCSF",
-        issuer: "Critical infrastructure security obligations and energy sector cyber security maturity",
+        issuer:
+          "Critical infrastructure security obligations and energy sector cyber security maturity",
         verified: true,
       },
     ],

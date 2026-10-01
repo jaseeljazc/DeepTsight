@@ -5,6 +5,7 @@ import { SectionHeader } from "@/components/primitives/section-header";
 import { Link } from "@/components/primitives/link";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { Figure } from "@/components/primitives/figure";
+import { SpecBlock, type SpecItem } from "@/components/primitives/spec-block";
 import type { FigureData, HomeContent } from "@/content/types";
 
 export type FinalCtaProps = {
@@ -15,10 +16,22 @@ export type FinalCtaProps = {
   id?: string;
   /** Home only: adds the rail terminal tag and leaves room for the core line. */
   rail?: boolean;
+  /** Contact particulars set like the hero's practice particulars; takes the figure's place. */
+  particulars?: SpecItem[];
 };
 
 /** Closing invitation. One primary action, with the direct email as the alternative. */
-export function FinalCta({ finalCta, email, phone, figure, id, rail = false }: FinalCtaProps) {
+export function FinalCta({
+  finalCta,
+  email,
+  phone,
+  figure,
+  id,
+  rail = false,
+  particulars,
+}: FinalCtaProps) {
+  const aside = particulars ? "particulars" : figure ? "figure" : null;
+
   return (
     <Section ground="ground-deep" id={id} aria-labelledby="final-cta-heading">
       {rail && <RailTag label="Enquiry" />}
@@ -26,18 +39,18 @@ export function FinalCta({ finalCta, email, phone, figure, id, rail = false }: F
         rail={rail}
         className="rail-enter grid grid-cols-1 gap-x-8 gap-y-14 lg:grid-cols-12"
       >
-        <div className={figure ? "lg:col-span-7" : "lg:col-span-9"}>
+        <div className={aside ? "lg:col-span-7" : "lg:col-span-9"}>
           <SectionHeader
             id="final-cta-heading"
             title={finalCta.title}
             intro={finalCta.supportingText}
-            size="h1"
+            size={particulars ? "display" : "h1"}
           />
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
             <Link href="/contact" variant="buttonPrimary" withArrow>
               {finalCta.ctaLabel}
             </Link>
-            {email && (
+            {email && !particulars && (
               <p className="text-ink-700 text-small">
                 Or email{" "}
                 <a href={`mailto:${email}`} className="link-rule text-ink-900 font-medium">
@@ -59,7 +72,15 @@ export function FinalCta({ finalCta, email, phone, figure, id, rail = false }: F
             )}
           </div>
         </div>
-        {figure && (
+        {aside === "particulars" && particulars && (
+          <div className="self-end lg:col-span-4 lg:col-start-9">
+            <div className="bg-panel rounded-panel border-rule border p-4 sm:p-5">
+              <p className="text-caption text-steel-600 mb-2 font-mono">Contact particulars</p>
+              <SpecBlock label="Contact particulars" items={particulars} density="compact" />
+            </div>
+          </div>
+        )}
+        {aside === "figure" && figure && (
           <div className="lg:col-span-4 lg:col-start-9">
             <Figure figure={figure} aspect="portrait" sizes="(max-width: 1024px) 100vw, 30vw" />
           </div>

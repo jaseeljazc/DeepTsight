@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/section";
 import { SectionHeader } from "@/components/primitives/section-header";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { ProcessSequence } from "@/components/content/process-sequence";
+import { DotRamp } from "@/components/content/dot-ramp";
 import type { HomeContent } from "@/content/types";
 
 export type DeliveryApproachProps = {
@@ -21,9 +22,11 @@ export function DeliveryApproach({ deliveryApproach }: DeliveryApproachProps) {
           title={deliveryApproach.title}
           intro={deliveryApproach.intro}
           introWidth="narrow"
+          size="h1"
           onDark
         />
-        <ProcessSequence steps={deliveryApproach.steps} onDark className="mt-12 md:mt-16" rail />
+        <DotRamp onDark className="mt-12 hidden md:mt-16 lg:block" />
+        <ProcessSequence steps={deliveryApproach.steps} onDark className="mt-10" rail />
       </Container>
     </Section>
   );

@@ -28,6 +28,9 @@ export const siteSchema = z.object({
   phone: z.string(),
   email: z.string().email(),
   linkedIn: z.string().optional(),
+  /** Stated reply time for enquiries. */
+  responseTime: z.string(),
+  serviceArea: z.string(),
   nav: z.array(navItemSchema),
   ctaLabels: ctaLabelsSchema,
   insightsEnabled: z.boolean(),

@@ -37,6 +37,12 @@
   --color-primary-on-dark: #7aa2ff;
   --color-on-primary: #ffffff;
 
+  /* Dot-matrix tone ramp (hero plant, globe and every dithered figure). Illustration only,
+     never text or UI; the deepest tone is --color-primary. */
+  --color-dot-faint: #dce5ff;
+  --color-dot-light: #a4beff;
+  --color-dot-mid: #4f7eff;
+
   --color-on-dark: #e6e9e8;
   --color-on-dark-muted: #a3adb1;
 
@@ -73,7 +79,10 @@
   --spacing-rule-active: 2px; /* active nav underline, schematic trunk */
   --spacing-rule-bar: 3px; /* primary button hover bar */
   --spacing-thumb: 11rem; /* index row hover thumbnail width */
+  --spacing-globe: 44rem; /* dot-matrix globe, wide screens */
+  --spacing-globe-stage: 36rem; /* minimum height of the section the globe rises into */
   --spacing-badge: 3.5rem; /* issuer credential badge in the register */
+  --spacing-numeral: 5.5rem; /* two-digit dot-matrix numeral, at the hero plant's dot scale */
   --spacing-rail-inset: 2.5rem; /* room left of the content for the rail core, from lg */
 
   /* ---------------------------------------------------------------- Widths */
@@ -687,6 +696,63 @@
   .rail-wire-node {
     fill: var(--color-primary);
   }
+
+  /* Perth on the dot-matrix globe: a hollow terminal with a lead out into the ocean */
+  .globe-pin {
+    --globe-lead: 2.25rem;
+    position: absolute;
+    left: var(--pin-x);
+    top: var(--pin-y);
+    width: calc(var(--spacing-marker) + 0.375rem);
+    height: calc(var(--spacing-marker) + 0.375rem);
+    border: var(--spacing-rule-active) solid var(--color-ink-900);
+    border-radius: var(--radius-control);
+    background-color: var(--color-white);
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+
+  @media (min-width: 64rem) {
+    .globe-pin {
+      --globe-lead: 3.5rem;
+    }
+  }
+
+  .globe-pin-lead {
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: var(--globe-lead);
+    height: var(--spacing-rule);
+    background-color: var(--color-ink-900);
+    transform-origin: right center;
+  }
+
+  /* Wide screens: the globe rises from the section's bottom-right edge, as the plant does in the hero */
+  @media (min-width: 80rem) {
+    .globe-stage {
+      min-height: var(--spacing-globe-stage);
+    }
+
+    /* Positioned with xl:absolute on the element, so the utility layer does not override it */
+    .globe-bleed {
+      right: calc(var(--spacing-globe) * -0.12);
+      bottom: calc(var(--spacing-globe) * -0.27);
+    }
+  }
+
+  .globe-pin-label {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + var(--globe-lead) + 0.375rem);
+    padding: 0.1875rem 0.5rem;
+    border: var(--spacing-rule-active) solid var(--color-ink-900);
+    border-radius: var(--radius-control);
+    background-color: var(--color-white);
+    color: var(--color-ink-900);
+    white-space: nowrap;
+    transform: translateY(-50%);
+  }
 }
 
 /*
@@ -965,6 +1031,13 @@
     }
     .rail-stagger > :nth-child(4) {
       animation-range: entry 6rem entry calc(var(--rail-enter) + 6rem);
+    }
+
+    /* The Perth lead draws out from the pin as the section enters */
+    .globe-pin-lead {
+      animation: fill-x linear both;
+      animation-timeline: view();
+      animation-range: entry 0px entry var(--rail-enter);
     }
   }
 }

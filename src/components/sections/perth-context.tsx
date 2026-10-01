@@ -2,63 +2,66 @@ import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { SectionHeader } from "@/components/primitives/section-header";
-import { Figure } from "@/components/primitives/figure";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { SpecBlock } from "@/components/primitives/spec-block";
 import { MarkedText } from "@/components/primitives/placeholder";
-import type { FigureData, HomeContent } from "@/content/types";
+import { DotGlobe } from "@/components/content/dot-globe";
+import type { HomeContent } from "@/content/types";
 
 export type PerthContextProps = {
   perthContext: HomeContent["perthContext"];
-  figure: FigureData | undefined;
 };
 
-export function PerthContext({ perthContext, figure }: PerthContextProps) {
+/**
+ * Composed like the hero: the statement and a particulars panel on the left, the dot-matrix
+ * globe rising from the bottom-right edge with Perth pinned.
+ */
+export function PerthContext({ perthContext }: PerthContextProps) {
   return (
-    <Section spacing="tight" aria-labelledby="perth-heading">
+    <Section
+      spacing="tight"
+      aria-labelledby="perth-heading"
+      className="globe-stage relative overflow-hidden"
+    >
       <RailTag label="Perth and sector context" />
-      <Container
-        rail
-        className="rail-enter grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-y-12"
-      >
-        <div className="lg:col-span-7">
-          <Figure
-            figure={figure}
-            aspect="landscape"
-            parallax
-            reveal
-            sizes="(max-width: 1024px) 100vw, 58vw"
-          />
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9 lg:pb-12">
+      <Container rail className="relative">
+        <div className="rail-enter relative z-10 xl:w-5/12">
           <SectionHeader
             id="perth-heading"
             title={perthContext.title}
             intro={perthContext.description}
+            size="h1"
             introSize="body"
             introWidth="narrow"
           />
-          <SpecBlock
-            className="mt-8 lg:mt-10"
-            label="Location and sectors"
-            items={[
-              { label: "Office", value: perthContext.officeArea },
-              {
-                label: "Sectors",
-                value: (
-                  <ul className="grid grid-cols-1 gap-x-6 gap-y-1 font-sans sm:grid-cols-2 lg:grid-cols-1">
-                    {perthContext.sectors.map((sector) => (
-                      <li key={sector}>
-                        <MarkedText text={sector} />
-                      </li>
-                    ))}
-                  </ul>
-                ),
-              },
-            ]}
-          />
+          <div className="bg-panel rounded-panel border-rule mt-10 border p-4 sm:p-5">
+            <p className="text-caption text-steel-600 mb-2 font-mono">Location and sectors</p>
+            <SpecBlock
+              label="Location and sectors"
+              density="compact"
+              items={[
+                { label: "Office", value: perthContext.officeArea },
+                {
+                  label: "Sectors",
+                  value: (
+                    <ul className="grid grid-cols-1 gap-x-4 gap-y-0.5 sm:grid-cols-2">
+                      {perthContext.sectors.map((sector) => (
+                        <li key={sector}>
+                          <MarkedText text={sector} />
+                        </li>
+                      ))}
+                    </ul>
+                  ),
+                },
+              ]}
+            />
+          </div>
         </div>
       </Container>
+      <DotGlobe
+        label="Perth, WA"
+        className="globe-bleed max-w-prose-sm xl:w-globe mx-auto mt-12 w-11/12 xl:absolute xl:mt-0 xl:max-w-none"
+      />
     </Section>
   );
 }
