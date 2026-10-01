@@ -5,8 +5,9 @@ import { ADMIN_FILE, EDITOR_FILE, LOCKOUT_FILE } from "./global-setup";
 import { freshCode, fullLogin, passwordLogin, readAccount, requireTestDatabase } from "./helpers";
 
 /*
- * Phase 2 admin security (docs/cms/03_SECURITY_AND_OPS.md §2–§6). Serial: the login rate limit
- * (10 per 15 minutes per IP) is shared by every test in this file, and the last test spends it.
+ * Phase 2 admin security (docs/cms/03_SECURITY_AND_OPS.md §2–§6). Serial. The login rate limit
+ * (10 per 15 minutes per IP) is shared by every CMS test from the default address; the lockout
+ * test uses its own address.
  */
 test.describe.configure({ mode: "serial" });
 requireTestDatabase();
@@ -150,18 +151,25 @@ test("repeated wrong passwords lock the account, then the IP limit applies", asy
   request,
 }) => {
   const account = readAccount(LOCKOUT_FILE);
-  for (let attempt = 1; attempt <= 5; attempt += 1) {
-    const wrong = await request.post("/api/users/login", {
-      data: { email: account.email, password: `wrong-password-${attempt}` },
-    });
-    expect(wrong.status(), `wrong attempt ${attempt}`).toBeGreaterThanOrEqual(400);
-  }
-  const correct = await passwordLogin(request, account);
-  expect(correct.status(), "correct password while locked").toBeGreaterThanOrEqual(400);
+  // A dedicated (documentation-range) address, so this test's attempts do not use up the
+  // allowance of the other CMS tests, which all come from the default address.
+  const headers = { "x-forwarded-for": "203.0.113.10" };
+  const attempt = (password: string) =>
+    request.post("/api/users/login", { headers, data: { email: account.email, password } });
 
-  // This file has now made 10 sign-in attempts from this address; the 11th is refused outright.
-  const limited = await request.post("/api/users/login", {
-    data: { email: account.email, password: account.password },
-  });
-  expect(limited.status()).toBe(429);
+  for (let n = 1; n <= 5; n += 1) {
+    expect(
+      (await attempt(`wrong-password-${n}`)).status(),
+      `wrong attempt ${n}`,
+    ).toBeGreaterThanOrEqual(400);
+  }
+  expect(
+    (await attempt(account.password)).status(),
+    "correct password while locked",
+  ).toBeGreaterThanOrEqual(400);
+  for (let n = 7; n <= 10; n += 1) {
+    expect((await attempt(`wrong-password-${n}`)).status()).toBeGreaterThanOrEqual(400);
+  }
+  // Ten attempts from this address in 15 minutes; the eleventh is refused before any password check.
+  expect((await attempt(account.password)).status()).toBe(429);
 });

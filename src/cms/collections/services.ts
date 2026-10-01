@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { serviceIconNames } from "../../content/schema";
+import { previewUrl } from "../preview-url";
 import {
   firstPublishedAtField,
   mediaField,
@@ -31,6 +32,7 @@ export const Services: CollectionConfig = {
   labels: { singular: "Service", plural: "Services" },
   admin: {
     group: GROUPS.services,
+    preview: (doc) => previewUrl(`/services/${String(doc["slug"] ?? "")}`),
     useAsTitle: "title",
     defaultColumns: ["title", "enabled", "sortOrder", "_status"],
     description:

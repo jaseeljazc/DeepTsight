@@ -33,6 +33,7 @@ export default defineConfig({
         timeout: 120 * 1000,
         env: {
           DATABASE_URI: testDb,
+          CONTENT_SOURCE: process.env["CONTENT_SOURCE"] ?? "static",
           RESEND_API_KEY: "",
           UPSTASH_REDIS_REST_URL: "",
           UPSTASH_REDIS_REST_TOKEN: "",

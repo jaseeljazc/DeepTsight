@@ -12,6 +12,7 @@ import {
   validateSite,
 } from "../hooks/validators";
 import { GROUPS } from "../collections/shared";
+import { previewUrl } from "../preview-url";
 
 /* Singletons: site settings, Home, About, page copy and SEO by route (02 Globals). */
 
@@ -50,6 +51,7 @@ export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Site settings",
   admin: {
+    preview: () => previewUrl("/"),
     group: GROUPS.website,
     description: "Company and contact details, labels and switches used on every page.",
   },
@@ -224,6 +226,7 @@ export const Home: GlobalConfig = {
   slug: "home",
   label: "Home page",
   admin: {
+    preview: () => previewUrl("/"),
     group: GROUPS.website,
     description: "Text for the nine Home sections. Their order is fixed.",
   },
@@ -376,6 +379,7 @@ export const About: GlobalConfig = {
   slug: "about",
   label: "About page",
   admin: {
+    preview: () => previewUrl("/about"),
     group: GROUPS.website,
     description: "Founder, narrative, principles and career record.",
   },
@@ -428,6 +432,7 @@ export const Pages: GlobalConfig = {
   slug: "pages",
   label: "Page introductions",
   admin: {
+    preview: () => previewUrl("/services"),
     group: GROUPS.website,
     description:
       "Introductions and closing text for Services, Credentials, Contact, thank-you and the service template.",

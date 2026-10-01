@@ -165,3 +165,13 @@ decision, reason, how to reverse.
   the adapter can load Payload (server only), which must never reach the browser bundle.
 - **D-55** `getEnquiryOptionsNow()` (uncached) was added to the adapter for the Server Action, so the server
   validates against the types enabled at that moment (Phase 8); pages use the cached `getEnquiryOptions()`.
+- **D-56** Preview (`/preview?path=`) needs an MFA-verified admin. Without one it redirects to
+  `/admin/mfa` (password-only session) or `/admin/login`. Paths must be internal; redirects use a relative
+  `Location`, so the Host header can never steer them. On the live site `/preview` is behind the same
+  `CMS_ADMIN_ENABLED` gate as the admin.
+- **D-57** `/credentials` re-renders daily (`revalidate = 86400`) in both modes, so an expired credential
+  drops off without a publish. Home's trust strip does not filter by expiry, so Home is unchanged.
+- **D-58** The lockout test sends a documentation-range `X-Forwarded-For` (203.0.113.10) so its attempts
+  do not use the default address's allowance. This also shows the IP limit trusts that header, as
+  `src/lib/rate-limit.ts` already notes: on a host that passes client values through, configure the
+  trusted header before launch. The per-account lockout (5 attempts) does not depend on it.

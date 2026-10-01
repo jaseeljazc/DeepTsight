@@ -9,6 +9,8 @@ import { CredentialGroup } from "@/components/content/credential-group";
 import { FinalCta } from "@/components/sections/final-cta";
 
 export const dynamic = "force-static";
+/** Re-rendered daily so an expired credential drops off without a publish (FR-21). */
+export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeo("/credentials");

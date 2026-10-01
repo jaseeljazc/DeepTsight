@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { legalStatuses } from "../../content/schema";
+import { previewUrl } from "../preview-url";
 import { approverOnlyField } from "../access";
 import {
   collectionAfterChange,
@@ -17,6 +18,7 @@ export const LegalPages: CollectionConfig = {
   labels: { singular: "Legal page", plural: "Legal pages" },
   admin: {
     group: GROUPS.website,
+    preview: (doc) => previewUrl(`/legal/${String(doc["slug"] ?? "")}`),
     useAsTitle: "title",
     defaultColumns: ["title", "status", "lastUpdated", "_status"],
     description:

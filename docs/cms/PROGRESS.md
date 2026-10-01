@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 6 done (partial: CMS mode unverified); next Phase 7
-- Last commit: see git log (cms(phase 6))
-- Next step: Phase 7, revalidation, preview, dates
+- Current phase: 7 done (partial); next Phase 8
+- Last commit: see git log (cms(phase 7))
+- Next step: Phase 8, editable enquiry types
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -28,8 +28,8 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | Playwright E2E (prod build) | 24/24 | 24/24 |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 17/17 |
-| CMS E2E (`pnpm test:cms`) | n/a | 9 written, all skipped (B-1) |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 19/19 |
+| CMS E2E (`pnpm test:cms`) | n/a | 11 written, all skipped (B-1) |
 
 ## Dev-database backups
 None (no database access).
@@ -65,3 +65,7 @@ None (no database access).
   cms-source.ts (Local API, published only, draft mode uncached, unstable_cache with tags), shared rules.ts.
   Media per database (D-52). Static parity 0; Playwright 52/52; unit 17/17. scripts/cms/parity-cms.ts
   (cms build + parity) written, not run (B-1). Full suite run (Phase 6 checkpoint): static green.
+- **Phase 7** partial. Revalidation hooks active (D-45); /preview and /preview/exit (MFA admin, internal
+  paths only, D-56); admin Preview buttons on services, legal pages and globals; footer revision from
+  site.updatedAt (done in Phase 3); /credentials daily revalidation (D-57). tests/cms/preview.spec.ts and
+  scripts/cms/test-cms.ts (full CMS run) written; not run (B-1). Parity 0; unit 19/19.

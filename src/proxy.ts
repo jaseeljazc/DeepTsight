@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * (NEXT_PUBLIC_ENV=production) the admin and its API answer 404 until the owner sets
  * CMS_ADMIN_ENABLED=true, which they do only after the CMS test suite (pnpm test:cms, including the
  * MFA tests) has passed against a real database. Outside production the gate is open.
- * Runs only on /admin and /api; public pages never pass through it.
+ * Runs only on /admin, /api and /preview; public pages never pass through it.
  */
 export function proxy(request: NextRequest) {
   const production = process.env.NEXT_PUBLIC_ENV === "production";
@@ -20,5 +20,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/api/:path*", "/preview", "/preview/:path*"],
 };
