@@ -213,3 +213,9 @@ decision, reason, how to reverse.
 - **D-70** `pnpm.overrides`: `undici@7.29.0` → `7.29.1` (patch release). `payload` pins undici 7.29.0, which
   has two high advisories (TLS certificate validation bypass; denial of service). Reverse: remove the
   override when Payload ships a fixed pin.
+- **D-71** A CMS account can update only itself; approvers can update any account (and only approvers
+  change roles or delete accounts). Found in a security review after Phase 14; the admin-security test now
+  checks that an editor cannot change another account's password.
+- **D-72** Because `NEXT_PUBLIC_ENV=production` now requires `DATABASE_URI`, `PAYLOAD_SECRET` and
+  `MFA_ENCRYPTION_KEY` (as the plan specifies), a production build of this branch needs them even with
+  `CONTENT_SOURCE=static`. `main` is unaffected.

@@ -130,6 +130,17 @@ test("an editor without the approver role cannot change roles", async ({ request
   expect(update.status()).toBeLessThan(500);
   const after = (await (await request.get(`/api/users/${id}`)).json()) as { roles: string[] };
   expect(after.roles).toEqual(["editor"]);
+
+  // An editor cannot change another account (here, the approver's).
+  const others = (await (await request.get("/api/users?limit=10")).json()) as {
+    docs: { id: number; email: string }[];
+  };
+  const other = others.docs.find((user) => user.email === "editor@example.com");
+  if (!other) throw new Error("approver account not found");
+  const takeover = await request.patch(`/api/users/${other.id}`, {
+    data: { password: "Takeover-password-1" },
+  });
+  expect([401, 403]).toContain(takeover.status());
 });
 
 test("admin and API responses are never cached or indexed", async ({ request }) => {

@@ -46,7 +46,9 @@ export const Users: CollectionConfig = {
     admin: ({ req }) => adminOnly({ req }) === true,
     read: adminOnly,
     create: nobody,
-    update: adminOnly,
+    // Your own account, or any account if you are an approver (roles are approver-only too).
+    update: ({ req, id }) =>
+      isApprover(req) || (adminOnly({ req }) === true && String(req.user?.id) === String(id)),
     delete: ({ req }) => isApprover(req),
     unlock: adminOnly,
   },
