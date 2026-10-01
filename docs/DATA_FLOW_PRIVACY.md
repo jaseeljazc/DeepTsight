@@ -45,3 +45,17 @@ The application communicates with the following external services during its ope
 2. **Upstash (Redis):** Stores the visitor's IP address (as the rate-limit key) and request timestamps for up to one hour, strictly for rate limiting.
 3. **Resend (Email API):** Receives the enquiry payloads strictly for the purpose of transmitting the email to the DeepTsight team.
 4. **Plausible (Analytics):** Receives anonymous, aggregated pageview and event data.
+
+## 5. Planned change in Phase 2 (CMS)
+
+Decided 2026-10-01 (`REQUIREMENTS.md` FR-38 changed, FR-44, PRIV-09). When the CMS ships, every enquiry will
+also be saved in the project database and shown in an admin inbox, so section 1 ("Zero Database Persistence")
+will no longer be true. Before that goes live:
+
+- The privacy notice must say enquiries are stored, where, who can see them, for how long, and how to request
+  deletion. The client's adviser approves the wording.
+- A retention period must be decided (PRIV-04) and enforced.
+- The database host and its jurisdiction must be added to the processor list above.
+- Only admin accounts with MFA can open the inbox (`docs/ACCESS_REGISTER.md`).
+
+Until the CMS ships, this document's sections 1 to 4 describe the live behaviour.

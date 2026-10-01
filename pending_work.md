@@ -20,7 +20,13 @@ Ticked items are done.
 
 - [ ] Insights articles (the page is built but switched off)
 - [ ] Downloadable capability statement, if the client wants one
-- [ ] CMS so the client can edit content (phase 2)
+- [ ] CMS so the client can edit content (phase 2). Agreed list of what is editable is in `PROJECT.md` §9
+- [x] Written scope change for the CMS quotation (approved 2026-10-01)
+- [ ] Service icons: the client to choose them (current ones are placeholders)
+- [ ] Before the CMS enquiry inbox goes live: update the privacy notice and decide how long enquiries are kept
+- [ ] Google Maps link for the contact details (decided: a link, not an embedded map; URL to come)
+- [ ] Office address (later, not in the first CMS release)
+- [ ] Business hours (later)
 - [ ] Analytics switched on, once the tool is agreed
 
 ## Before launch

@@ -97,6 +97,9 @@ Every other finding is unchanged and open.
 | Playwright E2E against `next start` (production build)                        | 24 of 24 pass, desktop and mobile                    |
 | Playwright a11y (axe) against `next start`                                    | 28 of 28 pass                                        |
 
+**Later change (same day):** service icons were added beside every service title (FR-45). Verified after the
+change: `pnpm build` passes, Playwright E2E 24 of 24 and axe 28 of 28 pass against the production build.
+
 **Not verified:** a build with `NEXT_PUBLIC_ENV=production`. It still fails on placeholders (H-02), so the
 live-site paths (Turnstile required, `/design-system` 404, robots allow) were checked by reading the code
 only. Lighthouse, `pnpm audit` and manual screen-reader checks were not run.

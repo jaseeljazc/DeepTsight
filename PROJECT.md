@@ -65,12 +65,12 @@ professional enquiry.
 
 ### Calls to action
 
-| Level      | Label                              | Destination            |
-| ---------- | ---------------------------------- | ---------------------- |
+| Level      | Label                  | Destination            |
+| ---------- | ---------------------- | ---------------------- |
 | Primary    | Discuss your challenge | `/contact`             |
-| Secondary  | Explore capabilities               | `/services`            |
-| Supporting | View credentials                   | `/credentials`         |
-| Supporting | Connect on LinkedIn                | external, TBD — CLIENT |
+| Secondary  | Explore capabilities   | `/services`            |
+| Supporting | View credentials       | `/credentials`         |
+| Supporting | Connect on LinkedIn    | external, TBD — CLIENT |
 
 The primary CTA label is a client decision (brief §19.3). Until confirmed, use the above and keep the
 label in `site.ts` so it is a one-line change.
@@ -236,6 +236,29 @@ Short form; email alternative; Perth location area; LinkedIn; privacy notice; re
 - CMS so the founder can edit copy, services, credentials, insights and metadata without a developer.
 - Insights publishing workflow (draft → review → publish).
 - Content migration from repo files into the CMS.
+
+**Agreed CMS content (owner decision, 2026-10-01).** Editable in the CMS:
+
+| Area            | What can be edited                                                                                                                                                                                                 |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Services        | Every part of each service page (challenge, why it matters, capability, scope and outputs, delivery steps, standards, evidence, related services, images, SEO), the service icon (FR-45), on/off and display order |
+| Projects        | Selected project notes, with the disclosure-approval flag                                                                                                                                                          |
+| Articles        | Insights articles with formatted text, categories, draft/preview/publish                                                                                                                                           |
+| Credentials     | The full register (groups, issuer, identifier, year, expiry, verify link, badge, verified flag) and the Home "Credentials on record" selection                                                                     |
+| Home page       | Every section's text: hero, why DeepTsight, problems addressed, delivery approach, Perth and sectors, closing call to action                                                                                       |
+| About page      | Founder name and title, narrative, career timeline, principles, images                                                                                                                                             |
+| Page intros     | Services, Credentials, Contact and thank-you page copy                                                                                                                                                             |
+| Legal pages     | Privacy, terms and accessibility (wording from the client's adviser)                                                                                                                                               |
+| SEO             | Title and description per page (web addresses are generated, not typed)                                                                                                                                            |
+| Labels          | Navigation and button labels (link destinations stay fixed)                                                                                                                                                        |
+| Media           | Image library with rights records (source, licence, usage rights) and approve-before-publish                                                                                                                       |
+| Enquiry form    | The list of enquiry types                                                                                                                                                                                          |
+| Contact details | Phone, email, social links, Google Maps link (FR-41, FR-42); office address and business hours later (FR-43)                                                                                                       |
+| Enquiries       | An inbox of every enquiry received (FR-44), replacing "email only" (FR-38 changed)                                                                                                                                 |
+
+Stays in code: page structure and section order, the nine-part service template, design and motion, form fields
+and validation messages, security settings. The fixed-price quotation `docs/CMS_Quotation.md` (CDG-Q-0008)
+covered only part of this list; the scope change for the rest was approved on 2026-10-01 (`TASKS.md` Q-13).
 
 The Phase 1 architecture is built specifically so Phase 2 replaces one adapter module and nothing else.
 See `ARCHITECTURE.md` §4. **Do not** defer content structure decisions to Phase 2 — the content model is
