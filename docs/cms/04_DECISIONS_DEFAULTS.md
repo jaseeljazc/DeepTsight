@@ -175,3 +175,12 @@ decision, reason, how to reverse.
   do not use the default address's allowance. This also shows the IP limit trusts that header, as
   `src/lib/rate-limit.ts` already notes: on a host that passes client values through, configure the
   trusted header before launch. The per-account lockout (5 attempts) does not depend on it.
+- **D-59** Enquiries are stored only in CMS mode; static mode stores nothing, exactly as before (FR-38).
+  The privacy notice is unchanged; suggested wording for storage is in the morning report (PRIV-09: it must
+  be approved before the inbox goes live).
+- **D-60** If the enquiry is saved but the email fails (including a live site with no email configured),
+  the visitor sees the thank-you page and the record shows `emailStatus: failed` with a short reason code
+  (`email-not-configured`, `email-service:<name>`, `email-error:<name>`), never a response body (D-14).
+  If neither the save nor the email worked, the existing error with the email address is shown.
+- **D-61** The inbox list shows unread and failed-notification counts above the table (a server component,
+  `src/cms/views/inbox-summary.tsx`); search covers name, email, organisation and message.

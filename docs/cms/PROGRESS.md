@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 8 done (partial); next Phase 9
-- Last commit: see git log (cms(phase 8))
-- Next step: Phase 9, enquiry inbox
+- Current phase: 9 done (partial); Tier A code complete. Next Phase 10
+- Last commit: see git log (cms(phase 9))
+- Next step: Phase 10, media hardening
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -29,7 +29,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
 | CMS unit tests (`pnpm test:cms-unit`) | n/a | 19/19 |
-| CMS E2E (`pnpm test:cms`) | n/a | 12 written, all skipped (B-1) |
+| CMS E2E (`pnpm test:cms`) | n/a | 13 written, all skipped (B-1) |
 
 ## Dev-database backups
 None (no database access).
@@ -72,3 +72,7 @@ None (no database access).
 - **Phase 8** partial. Contact page passes enabled types (cached, tag enquiry-types); the client schema is built
   from them; the Server Action validates with getEnquiryOptionsNow() (uncached, D-55); messages unchanged.
   tests/cms/enquiry-types.spec.ts written; not run (B-1).
+- **Phase 9** partial. Enquiries collection (no versions, hard delete, read flag only editable, admin-only),
+  inbox summary, save → email → status in the Server Action via src/content/enquiries.ts, purge script
+  (no-op while ENQUIRY_RETENTION_DAYS is unset), migration `enquiries` (offline), tests/cms/inbox.spec.ts.
+  Phase 9 checkpoint: typecheck, lint, build green; parity 0; Playwright 52/52; unit 19/19; CMS E2E 13 skipped (B-1).

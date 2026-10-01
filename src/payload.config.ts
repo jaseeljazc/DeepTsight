@@ -7,6 +7,7 @@ import sharp from "sharp";
 import { publicEnv } from "./lib/public-env";
 import { AuditLog } from "./cms/collections/audit-log";
 import { CredentialGroups, Credentials } from "./cms/collections/credentials";
+import { Enquiries } from "./cms/collections/enquiries";
 import { EnquiryTypes } from "./cms/collections/enquiry-types";
 import { LegalPages } from "./cms/collections/legal-pages";
 import { Media } from "./cms/collections/media";
@@ -68,6 +69,7 @@ export default buildConfig({
     CredentialGroups,
     Media,
     LegalPages,
+    Enquiries,
     EnquiryTypes,
     Users,
     AuditLog,

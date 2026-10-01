@@ -1,1 +1,9 @@
-["services", "proof-items", "credentials", "credential-groups", "legal-pages", "enquiry-types"]
+[
+  "services",
+  "proof-items",
+  "credentials",
+  "credential-groups",
+  "legal-pages",
+  "enquiry-types",
+  "enquiries"
+]

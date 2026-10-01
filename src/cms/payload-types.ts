@@ -73,6 +73,7 @@ export interface Config {
     "credential-groups": CredentialGroup;
     media: Media;
     "legal-pages": LegalPage;
+    enquiries: Enquiry;
     "enquiry-types": EnquiryType;
     users: User;
     "audit-log": AuditLog;
@@ -89,6 +90,7 @@ export interface Config {
     "credential-groups": CredentialGroupsSelect<false> | CredentialGroupsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     "legal-pages": LegalPagesSelect<false> | LegalPagesSelect<true>;
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     "enquiry-types": EnquiryTypesSelect<false> | EnquiryTypesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     "audit-log": AuditLogSelect<false> | AuditLogSelect<true>;
@@ -476,6 +478,38 @@ export interface LegalPage {
   _status?: ("draft" | "published") | null;
 }
 /**
+ * Every enquiry sent through the contact form. Search by name, email or keyword. Delete an enquiry when it is no longer needed or when the sender asks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  submittedAt: string;
+  /**
+   * Tick once you have dealt with it.
+   */
+  read?: boolean | null;
+  name: string;
+  workEmail: string;
+  organisation?: string | null;
+  phone?: string | null;
+  enquiryTypeValue: string;
+  /**
+   * As the form showed it, so it stays readable if the type is later changed.
+   */
+  enquiryTypeLabel: string;
+  message: string;
+  consent: boolean;
+  emailStatus: "pending" | "sent" | "failed" | "simulated";
+  /**
+   * Short reason only.
+   */
+  emailError?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Options in the contact form's “Area of enquiry” list. Switch one off rather than deleting it; old enquiries keep their own copy of the label.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -628,6 +662,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: "legal-pages";
         value: number | LegalPage;
+      } | null)
+    | ({
+        relationTo: "enquiries";
+        value: number | Enquiry;
       } | null)
     | ({
         relationTo: "enquiry-types";
@@ -843,6 +881,26 @@ export interface LegalPagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  submittedAt?: T;
+  read?: T;
+  name?: T;
+  workEmail?: T;
+  organisation?: T;
+  phone?: T;
+  enquiryTypeValue?: T;
+  enquiryTypeLabel?: T;
+  message?: T;
+  consent?: T;
+  emailStatus?: T;
+  emailError?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

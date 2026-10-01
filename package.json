@@ -26,7 +26,8 @@
     "cms:smoke": "tsx scripts/cms/smoke.ts",
     "cms:import": "tsx scripts/cms/import-from-source.ts --db DATABASE_URI --report",
     "cms:parity": "tsx scripts/cms/parity-cms.ts",
-    "cms:test": "tsx scripts/cms/test-cms.ts"
+    "cms:test": "tsx scripts/cms/test-cms.ts",
+    "cms:purge-enquiries": "tsx scripts/cms/purge-enquiries.ts --db DATABASE_URI"
   },
   "dependencies": {
     "@hookform/resolvers": "~5.9.1",
