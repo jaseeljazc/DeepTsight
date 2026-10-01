@@ -67,7 +67,7 @@ professional enquiry.
 
 | Level      | Label                              | Destination            |
 | ---------- | ---------------------------------- | ---------------------- |
-| Primary    | Discuss your operational challenge | `/contact`             |
+| Primary    | Discuss your challenge | `/contact`             |
 | Secondary  | Explore capabilities               | `/services`            |
 | Supporting | View credentials                   | `/credentials`         |
 | Supporting | Connect on LinkedIn                | external, TBD — CLIENT |

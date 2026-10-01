@@ -23,8 +23,9 @@ export const homeSource: HomeContent = {
   media: {
     hero: "img-hero-control-room",
     problems: "img-ot-industrial-rack",
+    why: "img-services-facility",
     perth: "img-perth-industrial-hub",
-    close: "slot-home-close",
+    close: "img-home-close",
     portrait: "img-portrait-founder",
   },
   trustStrip: [

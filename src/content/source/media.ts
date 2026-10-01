@@ -3,15 +3,19 @@ import type { MediaAsset, ImageSlot } from "../types";
 /*
  * Media register (CR-04).
  *
- * Every photograph currently in /public/images is an AI-generated mock supplied during early
- * development. None is approved photography, so each record is marked as a placeholder and
- * approvedForPublic is false. The founder portrait in particular is not a photograph of the
- * founder and must be replaced before launch.
- * TODO(CLIENT): approved photography with documented source, licence and usage rights.
+ * Every photograph currently in /public/images is AI-generated. Generated images are approved
+ * for public use only as representative images, and every caption says so (Q-05, 2026-10-01).
+ * The founder portrait is the exception: it is not a photograph of the founder, is never
+ * approved, and must be replaced before launch.
+ * TODO(CLIENT): approved photograph of the founder with documented source, licence and rights.
  */
 const MOCK_SOURCE = "[PLACEHOLDER] AI-generated development mock — replace before launch";
 const MOCK_LICENCE = "None — mock image, not licensed for publication";
 const MOCK_RIGHTS = "Not approved for public use";
+
+const GENERATED_SOURCE = "AI-generated image";
+const GENERATED_LICENCE = "Generated for DeepTsight";
+const GENERATED_RIGHTS = "Approved for public use as a representative image (Q-05)";
 
 export const mediaRegisterSource: MediaAsset[] = [
   {
@@ -33,10 +37,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Operator console, industrial control room. Representative image.",
     width: 1200,
     height: 896,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-ot-industrial-rack",
@@ -45,10 +49,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Control system enclosure with PLC and network modules. Representative image.",
     width: 1200,
     height: 896,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-perth-industrial-hub",
@@ -57,10 +61,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Port and processing infrastructure, Western Australia. Representative image.",
     width: 1376,
     height: 768,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-services-facility",
@@ -69,10 +73,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Process facility from the control room mezzanine. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-service-control",
@@ -81,10 +85,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Control systems engineering workstation. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-service-cyber",
@@ -93,10 +97,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "OT network monitoring console. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-service-idmz",
@@ -105,10 +109,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Communications rack, industrial boundary network. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-service-reliability",
@@ -117,10 +121,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Rotating machinery with vibration instrumentation. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-credentials-audit",
@@ -129,10 +133,10 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Standards documentation under review. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
   {
     id: "img-contact-office",
@@ -141,10 +145,22 @@ export const mediaRegisterSource: MediaAsset[] = [
     caption: "Engineering office, Perth. Representative image.",
     width: 1024,
     height: 1024,
-    source: MOCK_SOURCE,
-    licence: MOCK_LICENCE,
-    usageRights: MOCK_RIGHTS,
-    approvedForPublic: false,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
+  },
+  {
+    id: "img-home-close",
+    src: "/images/slot-home-close.jpg",
+    alt: "Processing plant silhouetted at dusk beyond red earth and spinifex",
+    caption: "Industrial site at dusk, Western Australia. Representative image.",
+    width: 896,
+    height: 1200,
+    source: GENERATED_SOURCE,
+    licence: GENERATED_LICENCE,
+    usageRights: GENERATED_RIGHTS,
+    approvedForPublic: true,
   },
 ];
 
@@ -188,11 +204,5 @@ export const imageSlotSource: ImageSlot[] = [
     subject: "Marked-up drawings, scale rule and field notebook on a site office desk",
     caption: "Drawing markup at a site office.",
     promptRef: "docs/image-prompts/slot-about-desk.md",
-  },
-  {
-    id: "slot-home-close",
-    subject: "Western Australian industrial landscape at dusk, plant lighting coming on",
-    caption: "Industrial site at dusk, Western Australia.",
-    promptRef: "docs/image-prompts/slot-home-close.md",
   },
 ];

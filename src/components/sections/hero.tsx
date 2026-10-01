@@ -21,7 +21,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="hero-section min-h-hero relative flex flex-col justify-between overflow-hidden pt-3 pb-0 sm:pt-4 lg:pt-4"
+      className="hero-section min-h-hero relative flex flex-col justify-between pt-3 pb-0 sm:pt-4 lg:pt-4"
     >
       {/* Background ASCII Power Plant telemetry */}
       <div

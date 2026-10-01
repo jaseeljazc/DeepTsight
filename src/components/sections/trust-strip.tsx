@@ -42,10 +42,10 @@ export function TrustStrip({ items, copy }: TrustStripProps) {
               <dt className="text-steel-600 text-caption font-mono">
                 {copy.categoryLabels[item.category] ?? item.category}
               </dt>
-              <dd className={cn("text-ink-900 text-small font-medium", item.badge && "pr-16")}>
+              <dd className={cn("text-ink-900 text-small font-medium", item.badge && "pr-32")}>
                 <MarkedText text={item.title} />
               </dd>
-              <dd className={cn("text-steel-600 text-caption", item.badge && "pr-16")}>
+              <dd className={cn("text-steel-600 text-caption", item.badge && "pr-32")}>
                 <MarkedText text={item.issuer} />
               </dd>
               {item.badge && (

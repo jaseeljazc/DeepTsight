@@ -54,9 +54,12 @@
 
   /* ---------------------------------------------------------------- Radius */
   --radius-*: initial;
-  --radius-control: 2px; /* buttons, inputs, label plates */
-  --radius-panel: 4px; /* form panel, project notes, placeholders */
-  --radius-full: 9999px; /* radio controls only */
+  --radius-control: 2px;
+  /* buttons, inputs, label plates */
+  --radius-panel: 4px;
+  /* form panel, project notes, placeholders */
+  --radius-full: 9999px;
+  /* radio controls only */
 
   /* ---------------------------------------------------------------- Depth: none */
   --shadow-*: initial;
@@ -67,36 +70,61 @@
   /* Base step. Every p-, m-, gap-, inset- and size utility (p-4, gap-8 ...) is a multiple of it. */
   --spacing: 0.25rem;
 
-  --spacing-header: 4.5rem; /* sticky header height */
-  --spacing-target: 2.75rem; /* minimum pointer target, 44px (A11Y-09) */
-  --spacing-control: 3.25rem; /* button and input height */
-  --spacing-menu-row: 4rem; /* mobile menu link row */
-  --spacing-part-indent: 2.75rem; /* body indent under a numbered heading */
-  --spacing-marker: 0.6875rem; /* terminal marker square */
-  --spacing-wordmark-mark: 0.625rem; /* square in the wordmark */
-  --spacing-lamp: 0.9375rem; /* delivery-sequence lamp */
-  --spacing-rule: 1px; /* hairline */
-  --spacing-rule-active: 2px; /* active nav underline, schematic trunk */
-  --spacing-rule-bar: 3px; /* primary button hover bar */
-  --spacing-thumb: 11rem; /* index row hover thumbnail width */
-  --spacing-globe: 44rem; /* dot-matrix globe, wide screens */
-  --spacing-globe-stage: 36rem; /* minimum height of the section the globe rises into */
-  --spacing-badge: 3.5rem; /* issuer credential badge in the register */
-  --spacing-numeral: 5.5rem; /* two-digit dot-matrix numeral, at the hero plant's dot scale */
-  --spacing-rail-inset: 2.5rem; /* room left of the content for the rail core, from lg */
+  --spacing-header: 4.5rem;
+  /* sticky header height */
+  --spacing-target: 2.75rem;
+  /* minimum pointer target, 44px (A11Y-09) */
+  --spacing-control: 3.25rem;
+  /* button and input height */
+  --spacing-menu-row: 4rem;
+  /* mobile menu link row */
+  --spacing-part-indent: 2.75rem;
+  /* body indent under a numbered heading */
+  --spacing-marker: 0.6875rem;
+  /* terminal marker square */
+  --spacing-wordmark-mark: 0.625rem;
+  /* square in the wordmark */
+  --spacing-lamp: 0.9375rem;
+  /* delivery-sequence lamp */
+  --spacing-rule: 1px;
+  /* hairline */
+  --spacing-rule-active: 2px;
+  /* active nav underline, schematic trunk */
+  --spacing-rule-bar: 3px;
+  /* primary button hover bar */
+  --spacing-thumb: 11rem;
+  /* index row hover thumbnail width */
+  --spacing-globe: 44rem;
+  /* dot-matrix globe, wide screens */
+  --spacing-globe-stage: 36rem;
+  /* minimum height of the section the globe rises into */
+  --spacing-badge: 7rem;
+  /* issuer credential badge in the register */
+  --spacing-numeral: 5.5rem;
+  /* two-digit dot-matrix numeral, at the hero plant's dot scale */
+  --spacing-rail-inset: 2.5rem;
+  /* room left of the content for the rail core, from lg */
 
   /* ---------------------------------------------------------------- Widths */
-  --container-*: initial; /* drop the default xs to 7xl sizes so only named widths exist */
-  --container-page: 84rem; /* 1280px content plus 32px gutters */
-  --container-measure: 68ch; /* long-form reading */
-  --container-prose-md: 54ch; /* hero lead */
-  --container-prose-sm: 40ch; /* side-column paragraphs */
+  --container-*: initial;
+  /* drop the default xs to 7xl sizes so only named widths exist */
+  --container-page: 84rem;
+  /* 1280px content plus 32px gutters */
+  --container-measure: 68ch;
+  /* long-form reading */
+  --container-prose-md: 54ch;
+  /* hero lead */
+  --container-prose-sm: 40ch;
+  /* side-column paragraphs */
   --container-headline-sm: 16ch;
   --container-headline: 18ch;
   --container-headline-lg: 22ch;
-  --container-cell-lg: 16rem; /* register table: credential column */
-  --container-cell-md: 12rem; /* register table: issuer column */
-  --container-cell-sm: 10rem; /* register table: status column */
+  --container-cell-lg: 16rem;
+  /* register table: credential column */
+  --container-cell-md: 12rem;
+  /* register table: issuer column */
+  --container-cell-sm: 10rem;
+  /* register table: status column */
 
   /* ---------------------------------------------------------------- Aspect ratios */
   --aspect-wide: 21 / 9;
@@ -141,11 +169,13 @@
   --text-body--line-height: 1.65;
   --text-small: 0.9375rem;
   --text-small--line-height: 1.5;
-  --text-field: 1rem; /* buttons and form fields: 16px so iOS does not zoom on focus */
+  --text-field: 1rem;
+  /* buttons and form fields: 16px so iOS does not zoom on focus */
   --text-field--line-height: 1.5;
   --text-caption: 0.8125rem;
   --text-caption--line-height: 1.5;
-  --text-inline-mono: 0.875em; /* mono inside running text */
+  --text-inline-mono: 0.875em;
+  /* mono inside running text */
 
   --tracking-heading: -0.02em;
   --tracking-snug: -0.01em;
@@ -163,23 +193,36 @@
   :root {
     color-scheme: light;
     --header-height: var(--spacing-header);
-    --icon-stroke: 1.5; /* every line icon */
-    --photo-saturation: 0.82; /* grade applied to every photograph */
-    --plate-offset: 0.4em; /* aligns a label plate with the cap height of its heading */
-    --sticky-gap: 2rem; /* space between the header and sticky rails */
-    --table-key-column: 38%; /* first column of two-column schedules */
-    --spec-label-column: minmax(7rem, 40%); /* label column of a SpecBlock */
-    --schematic-junction: 72%; /* where the discipline lines meet the trunk */
+    --icon-stroke: 1.5;
+    /* every line icon */
+    --photo-saturation: 0.82;
+    /* grade applied to every photograph */
+    --plate-offset: 0.4em;
+    /* aligns a label plate with the cap height of its heading */
+    --sticky-gap: 2rem;
+    /* space between the header and sticky rails */
+    --table-key-column: 38%;
+    /* first column of two-column schedules */
+    --spec-label-column: minmax(7rem, 40%);
+    /* label column of a SpecBlock */
+    --schematic-junction: 72%;
+    /* where the discipline lines meet the trunk */
     --lamp-border: 1.5px;
-    --rule-tick: 0.3125rem; /* drawing rule minor tick */
-    --rule-tick-major: 0.5rem; /* drawing rule tick at every third column */
-    --figure-parallax-overscan: 8%; /* how far a parallax image extends past its frame */
-    --figure-parallax-travel: 6%; /* how far it drifts while scrolling */
-    --section-space: clamp(5rem, 9vw, 9.5rem); /* vertical rhythm between sections */
+    --rule-tick: 0.3125rem;
+    /* drawing rule minor tick */
+    --rule-tick-major: 0.5rem;
+    /* drawing rule tick at every third column */
+    --figure-parallax-overscan: 8%;
+    /* how far a parallax image extends past its frame */
+    --figure-parallax-travel: 6%;
+    /* how far it drifts while scrolling */
+    --section-space: clamp(5rem, 9vw, 9.5rem);
+    /* vertical rhythm between sections */
     --section-space-tight: clamp(3.5rem, 6vw, 6rem);
     --focus-width: 2px;
     --focus-offset: 2px;
-    --anchor-gap: 1.5rem; /* space above an anchor target below the header */
+    --anchor-gap: 1.5rem;
+    /* space above an anchor target below the header */
     --link-underline-offset: 0.28em;
     --plate-height: 1.5rem;
     --plate-padding: 0.125rem 0.4rem;
@@ -187,13 +230,18 @@
     /* Rail: one line down the Home page, just left of the content, tapped off at every section */
     --rail-width: 2px;
     --wire-width: 1.5px;
-    --rail-px: 1.25rem; /* left margin of a railed container; the rail runs inside it */
-    --rail-offset: 1.25rem; /* distance from the rail to the content edge */
+    --rail-px: 1.25rem;
+    /* left margin of a railed container; the rail runs inside it */
+    --rail-offset: 1.25rem;
+    /* distance from the rail to the content edge */
     --rail-gutter: calc(max(0px, (100% - var(--container-page)) / 2) + var(--rail-px));
     --rail-x: calc(var(--rail-gutter) - var(--rail-offset));
-    --rail-rise: 0.875rem; /* how far a block travels as it fades in */
-    --rail-lead: 30%; /* the rail fills down to this far above the bottom of the screen */
-    --rail-enter: 15rem; /* scroll distance over which a block fades in */
+    --rail-rise: 0.875rem;
+    /* how far a block travels as it fades in */
+    --rail-lead: 30%;
+    /* the rail fills down to this far above the bottom of the screen */
+    --rail-enter: 15rem;
+    /* scroll distance over which a block fades in */
   }
 
   @media (min-width: 40rem) {
@@ -269,6 +317,7 @@
 
   /* Disable non-essential motion (A11Y-16) */
   @media (prefers-reduced-motion: reduce) {
+
     *,
     ::before,
     ::after {
@@ -280,6 +329,7 @@
 
   /* Windows High Contrast: keep hairlines and markers visible */
   @media (forced-colors: active) {
+
     .tag-plate,
     .marker-square {
       forced-color-adjust: none;
@@ -353,19 +403,20 @@
 /* Index rows: number, content, action column (the action column holds the hover thumbnail) */
 @utility grid-index {
   grid-template-columns: calc(var(--spacing) * 12) minmax(0, 1fr) auto;
+
   @variant sm {
     grid-template-columns: calc(var(--spacing) * 16) minmax(0, 1fr) auto;
   }
+
   @variant lg {
-    grid-template-columns: calc(var(--spacing) * 18) minmax(0, 1fr) calc(
-        var(--spacing-thumb) + var(--spacing) * 8
-      );
+    grid-template-columns: calc(var(--spacing) * 18) minmax(0, 1fr) calc(var(--spacing-thumb) + var(--spacing) * 8);
   }
 }
 
 /* Index rows without a number column: content, then the action column */
 @utility grid-index-bare {
   grid-template-columns: minmax(0, 1fr) auto;
+
   @variant lg {
     grid-template-columns: minmax(0, 1fr) calc(var(--spacing-thumb) + var(--spacing) * 8);
   }
@@ -395,6 +446,7 @@
   transition:
     text-decoration-color 150ms var(--ease-standard),
     text-decoration-thickness 150ms var(--ease-standard);
+
   &:hover,
   &:focus-visible {
     text-decoration-thickness: var(--spacing-rule-active);
@@ -411,6 +463,7 @@
 }
 
 @layer components {
+
   /* Engraved label plate: primary ground, white mono text */
   .tag-plate {
     display: inline-flex;
@@ -650,9 +703,11 @@
   .rail-page .bg-ground-deep {
     --rail-ground: var(--color-ground-deep);
   }
+
   .rail-page .bg-panel {
     --rail-ground: var(--color-panel);
   }
+
   .rail-page .bg-ink-900 {
     --rail-ground: var(--color-ink-900);
   }
@@ -728,16 +783,20 @@
     transform-origin: right center;
   }
 
-  /* Wide screens: the globe rises from the section's bottom-right edge, as the plant does in the hero */
+  .globe-stage {
+    overflow-x: clip;
+  }
+
+  /* Wide screens: the globe sits on the right edge of the section */
   @media (min-width: 80rem) {
     .globe-stage {
       min-height: var(--spacing-globe-stage);
     }
 
-    /* Positioned with xl:absolute on the element, so the utility layer does not override it */
+    /* Positioned with xl:absolute on the element, keeping the full sphere and Perth pin intact */
     .globe-bleed {
-      right: calc(var(--spacing-globe) * -0.12);
-      bottom: calc(var(--spacing-globe) * -0.27);
+      right: 0;
+      bottom: 0;
     }
   }
 
@@ -763,6 +822,7 @@
   from {
     transform: translate3d(0, calc(var(--figure-parallax-travel) * -1), 0);
   }
+
   to {
     transform: translate3d(0, var(--figure-parallax-travel), 0);
   }
@@ -772,6 +832,7 @@
   from {
     clip-path: inset(0 0 100% 0);
   }
+
   to {
     clip-path: inset(0 0 0 0);
   }
@@ -781,6 +842,7 @@
   from {
     border-bottom-color: transparent;
   }
+
   to {
     border-bottom-color: var(--color-rule);
   }
@@ -790,6 +852,7 @@
   from {
     transform: scale(0, 1);
   }
+
   to {
     transform: scale(1, 1);
   }
@@ -799,17 +862,20 @@
   from {
     transform: scale(1, 0);
   }
+
   to {
     transform: scale(1, 1);
   }
 }
 
 @keyframes lamp-1 {
+
   0%,
   8% {
     background-color: transparent;
     border-color: var(--color-control);
   }
+
   12%,
   100% {
     background-color: var(--lamp-on);
@@ -818,11 +884,13 @@
 }
 
 @keyframes lamp-2 {
+
   0%,
   34% {
     background-color: transparent;
     border-color: var(--color-control);
   }
+
   38%,
   100% {
     background-color: var(--lamp-on);
@@ -831,11 +899,13 @@
 }
 
 @keyframes lamp-3 {
+
   0%,
   60% {
     background-color: transparent;
     border-color: var(--color-control);
   }
+
   64%,
   100% {
     background-color: var(--lamp-on);
@@ -844,15 +914,86 @@
 }
 
 @keyframes lamp-4 {
+
   0%,
   86% {
     background-color: transparent;
     border-color: var(--color-control);
   }
+
   90%,
   100% {
     background-color: var(--lamp-on);
     border-color: var(--lamp-on);
+  }
+}
+
+@keyframes card-1 {
+
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  24%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-2 {
+
+  0%,
+  34% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  50%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-3 {
+
+  0%,
+  60% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  76%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-4 {
+
+  0%,
+  86% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes charge-ramp {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0% 0 0);
   }
 }
 
@@ -898,14 +1039,46 @@
     .sequence .sequence-lamp[data-step="1"] {
       animation-name: lamp-1;
     }
+
     .sequence .sequence-lamp[data-step="2"] {
       animation-name: lamp-2;
     }
+
     .sequence .sequence-lamp[data-step="3"] {
       animation-name: lamp-3;
     }
+
     .sequence .sequence-lamp[data-step="4"] {
       animation-name: lamp-4;
+    }
+
+    .sequence .sequence-step {
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+      animation-fill-mode: both;
+      animation-timeline: --sequence;
+      animation-range: entry 100% cover 60%;
+    }
+
+    .sequence .sequence-step[data-step="1"] {
+      animation-name: card-1;
+    }
+
+    .sequence .sequence-step[data-step="2"] {
+      animation-name: card-2;
+    }
+
+    .sequence .sequence-step[data-step="3"] {
+      animation-name: card-3;
+    }
+
+    .sequence .sequence-step[data-step="4"] {
+      animation-name: card-4;
+    }
+
+    .dot-ramp-charging {
+      animation: charge-ramp linear both;
+      animation-timeline: --sequence;
+      animation-range: entry 100% cover 60%;
     }
 
     .schematic .schematic-line {
@@ -955,6 +1128,7 @@
  */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
+
     /* The rail draws down as each section scrolls in */
     .rail-seg-fill {
       animation: rail-fill linear both;
@@ -963,8 +1137,21 @@
     }
 
     /* The first section (Hero) is already in the viewport on load; start its fill at the top */
+    .hero-section .rail-seg,
+    .rail-page>section:first-of-type .rail-seg {
+      view-timeline-inset: calc(var(--header-height) + 1rem) var(--rail-lead);
+    }
+
+    @media (max-width: 639px) {
+
+      .hero-section .rail-seg,
+      .rail-page>section:first-of-type .rail-seg {
+        view-timeline-inset: calc(var(--header-height) + 0.75rem) var(--rail-lead);
+      }
+    }
+
     .hero-section .rail-seg-fill,
-    .rail-page > section:first-of-type .rail-seg-fill {
+    .rail-page>section:first-of-type .rail-seg-fill {
       animation-range: contain 0% contain 100%;
     }
 
@@ -992,15 +1179,19 @@
     .rail-wire-1 {
       animation-range: entry-crossing 0px entry-crossing 12rem;
     }
+
     .rail-wire-2 {
       animation-range: entry-crossing 2rem entry-crossing 14rem;
     }
+
     .rail-wire-3 {
       animation-range: entry-crossing 4rem entry-crossing 16rem;
     }
+
     .rail-wire-4 {
       animation-range: entry-crossing 6rem entry-crossing 18rem;
     }
+
     .rail-wire-trunk {
       animation-range: entry-crossing 14rem entry-crossing 20rem;
     }
@@ -1023,13 +1214,15 @@
       animation-range: entry 0px entry var(--rail-enter);
     }
 
-    .rail-stagger > :nth-child(2) {
+    .rail-stagger> :nth-child(2) {
       animation-range: entry 2rem entry calc(var(--rail-enter) + 2rem);
     }
-    .rail-stagger > :nth-child(3) {
+
+    .rail-stagger> :nth-child(3) {
       animation-range: entry 4rem entry calc(var(--rail-enter) + 4rem);
     }
-    .rail-stagger > :nth-child(4) {
+
+    .rail-stagger> :nth-child(4) {
       animation-range: entry 6rem entry calc(var(--rail-enter) + 6rem);
     }
 

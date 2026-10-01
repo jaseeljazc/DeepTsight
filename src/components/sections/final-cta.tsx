@@ -18,6 +18,8 @@ export type FinalCtaProps = {
   rail?: boolean;
   /** Contact particulars set like the hero's practice particulars; takes the figure's place. */
   particulars?: SpecItem[];
+  /** A wide photograph above the invitation. Independent of the aside. */
+  band?: FigureData | undefined;
 };
 
 /** Closing invitation. One primary action, with the direct email as the alternative. */
@@ -29,6 +31,7 @@ export function FinalCta({
   id,
   rail = false,
   particulars,
+  band,
 }: FinalCtaProps) {
   const aside = particulars ? "particulars" : figure ? "figure" : null;
 
@@ -39,6 +42,11 @@ export function FinalCta({
         rail={rail}
         className="rail-enter grid grid-cols-1 gap-x-8 gap-y-14 lg:grid-cols-12"
       >
+        {band && (
+          <div className="lg:col-span-12">
+            <Figure figure={band} aspect="wide" reveal sizes="(max-width: 1280px) 100vw, 1200px" />
+          </div>
+        )}
         <div className={aside ? "lg:col-span-7" : "lg:col-span-9"}>
           <SectionHeader
             id="final-cta-heading"

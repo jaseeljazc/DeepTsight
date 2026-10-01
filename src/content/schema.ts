@@ -163,6 +163,7 @@ export const homeContentSchema = z.object({
   media: z.object({
     hero: z.string(),
     problems: z.string(),
+    why: z.string(),
     perth: z.string(),
     close: z.string(),
     portrait: z.string(),

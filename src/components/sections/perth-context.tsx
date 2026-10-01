@@ -18,11 +18,7 @@ export type PerthContextProps = {
  */
 export function PerthContext({ perthContext }: PerthContextProps) {
   return (
-    <Section
-      spacing="tight"
-      aria-labelledby="perth-heading"
-      className="globe-stage relative overflow-hidden"
-    >
+    <Section spacing="tight" aria-labelledby="perth-heading" className="globe-stage relative">
       <RailTag label="Perth and sector context" />
       <Container rail className="relative">
         <div className="rail-enter relative z-10 xl:w-5/12">

@@ -39,13 +39,20 @@ export function DotRamp({ cols = 160, rows = 5, onDark = false, className }: Dot
     <svg
       viewBox={`0 0 ${cols * CELL} ${rows * CELL}`}
       preserveAspectRatio="xMinYMid meet"
-      className={cn("block h-auto w-full", className)}
+      className={cn("dot-ramp-container block h-auto w-full", className)}
       aria-hidden="true"
       focusable="false"
     >
-      <path d={light.join("")} className={onDark ? "fill-rule-dark" : "fill-dot-light"} />
-      <path d={mid.join("")} className={onDark ? "fill-primary" : "fill-dot-mid"} />
-      <path d={deep.join("")} className={onDark ? "fill-primary-on-dark" : "fill-primary"} />
+      <g className="opacity-20">
+        <path d={light.join("")} className={onDark ? "fill-rule-dark" : "fill-dot-light"} />
+        <path d={mid.join("")} className={onDark ? "fill-primary" : "fill-dot-mid"} />
+        <path d={deep.join("")} className={onDark ? "fill-primary-on-dark" : "fill-primary"} />
+      </g>
+      <g className="dot-ramp-charging">
+        <path d={light.join("")} className={onDark ? "fill-rule-dark" : "fill-dot-light"} />
+        <path d={mid.join("")} className={onDark ? "fill-primary" : "fill-dot-mid"} />
+        <path d={deep.join("")} className={onDark ? "fill-primary-on-dark" : "fill-primary"} />
+      </g>
     </svg>
   );
 }

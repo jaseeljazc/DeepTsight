@@ -15,6 +15,8 @@ export type ProcessSequenceProps = {
   className?: string;
   /** Home only: extends the horizontal conductor to start from the rail on the left. */
   rail?: boolean;
+  /** Whether this component defines the --sequence view timeline. Set to false if wrapping in an external .sequence container. */
+  timelineRoot?: boolean;
 };
 
 /**
@@ -28,11 +30,12 @@ export function ProcessSequence({
   orientation = "responsive",
   className,
   rail = false,
+  timelineRoot = true,
 }: ProcessSequenceProps) {
   const horizontal = orientation === "responsive";
 
   return (
-    <div className={cn("sequence relative", !horizontal && "sequence-vertical", className)}>
+    <div className={cn(timelineRoot && "sequence", "relative", !horizontal && "sequence-vertical", className)}>
       {/* Horizontal conductor, wide screens */}
       {horizontal && (
         <div
@@ -62,7 +65,11 @@ export function ProcessSequence({
         )}
       >
         {steps.map((step, index) => (
-          <li key={step.step} className={cn("relative", horizontal && "lg:pt-12")}>
+          <li
+            key={step.step}
+            className={cn("sequence-step relative", horizontal && "lg:pt-12")}
+            data-step={Math.min(index + 1, 4)}
+          >
             <span
               aria-hidden="true"
               // The lamp keyframes in globals.css cover four stages; every sequence on the site has four.
