@@ -5,6 +5,8 @@ export const privacySource: LegalPage = {
   slug: "privacy",
   title: "Privacy notice",
   lastUpdated: "September 2026",
+  // Becomes "approved" only when the client's adviser has approved the wording.
+  status: "pending-adviser",
   sections: [
     {
       title: "1. Overview",

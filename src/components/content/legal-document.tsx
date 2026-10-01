@@ -38,10 +38,14 @@ export function LegalDocument({ page, reference, children }: LegalDocumentProps)
             items={[
               { label: "Last updated", value: page.lastUpdated, mono: true },
               { label: "Reference", value: reference },
-              {
-                label: "Status",
-                value: <MarkedText text="Wording pending adviser approval: TBD — CLIENT" />,
-              },
+              ...(page.status === "pending-adviser"
+                ? [
+                    {
+                      label: "Status",
+                      value: <MarkedText text="Wording pending adviser approval: TBD — CLIENT" />,
+                    },
+                  ]
+                : []),
             ]}
           />
         }

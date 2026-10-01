@@ -1,5 +1,7 @@
 import {
+  navRoutes,
   siteSchema,
+  siteSourceSchema,
   homeContentSchema,
   aboutContentSchema,
   serviceSchema,
@@ -28,8 +30,8 @@ import type {
   PagesContent,
   EnquiryOptions,
 } from "./types";
-import { enquiryTypes } from "./enquiry-schema";
-export { enquirySchema, type EnquiryData } from "./enquiry-schema";
+import { staticEnquiryTypes } from "./enquiry-schema";
+export { buildEnquirySchema, enquirySchema, type EnquiryData } from "./enquiry-schema";
 
 // Internal source imports (permitted only inside src/content/)
 import { siteSource } from "./source/site";
@@ -52,13 +54,55 @@ import { accessibilitySource } from "./source/legal/accessibility";
  */
 
 export async function getSite(): Promise<Site> {
-  const site = {
-    ...siteSource,
-    nav: siteSource.insightsEnabled
-      ? siteSource.nav
-      : siteSource.nav.filter((item) => item.href !== "/insights"),
-  };
-  return siteSchema.parse(site);
+  const source = siteSourceSchema.parse(siteSource);
+  // Routes and their order are fixed in code; only the labels are content (D-07).
+  const nav = navRoutes
+    .filter((route) => route.key !== "insights" || source.insightsEnabled)
+    .map((route) => ({ label: source.navLabels[route.key], href: route.href }));
+  return siteSchema.parse({ ...source, nav });
+}
+
+/** Every figure id the media register defines (photographs and reserved slots). */
+function figureIds(): Set<string> {
+  return new Set([
+    ...mediaRegisterSource.map((asset) => asset.id),
+    ...imageSlotSource.map((slot) => slot.id),
+  ]);
+}
+
+/** A reference to a figure that does not exist is a content error and fails the build. */
+function assertFigures(ids: Record<string, string>, where: string): void {
+  const known = figureIds();
+  for (const [field, id] of Object.entries(ids)) {
+    if (!known.has(id)) throw new Error(`${where} ${field} refers to unknown figure "${id}".`);
+  }
+}
+
+function byOrder(a: Service, b: Service): number {
+  return a.sortOrder - b.sortOrder || a.title.localeCompare(b.title);
+}
+
+/**
+ * Every service, validated, with reference checks: related services and figures must exist.
+ * Disabled services are then removed, and removed from other services' related lists (FR-19).
+ */
+function publishedServices(): Service[] {
+  const all = servicesSource.map((service) => serviceSchema.parse(service));
+  const slugs = new Set(all.map((service) => service.slug));
+  for (const service of all) {
+    for (const related of service.relatedSlugs) {
+      if (!slugs.has(related)) {
+        throw new Error(`Service "${service.slug}" lists unknown related service "${related}".`);
+      }
+    }
+    assertFigures(service.media, `Service "${service.slug}" media`);
+  }
+  const enabled = all.filter((service) => service.enabled).sort(byOrder);
+  const enabledSlugs = new Set(enabled.map((service) => service.slug));
+  return enabled.map((service) => ({
+    ...service,
+    relatedSlugs: service.relatedSlugs.filter((slug) => enabledSlugs.has(slug)),
+  }));
 }
 
 /**
@@ -81,6 +125,7 @@ function credentialById(id: string): Credential {
 export async function getHomeContent(): Promise<HomeContent> {
   const pending = showPending();
   const { trustStripIds, ...home } = homeSource;
+  assertFigures(home.media, "Home media");
 
   for (const capability of home.coreCapabilities) {
     if (!servicesSource.some((service) => service.slug === capability.slug)) {
@@ -110,27 +155,41 @@ export async function getFigures(): Promise<Record<string, FigureData>> {
 }
 
 export async function getAboutContent(): Promise<AboutContent> {
-  return aboutContentSchema.parse(aboutSource);
+  const about = aboutContentSchema.parse(aboutSource);
+  assertFigures(about.media, "About media");
+  return about;
 }
 
 /** Copy that belongs to a single page or template (about, services, credentials, contact, thank-you). */
 export async function getPageContent(): Promise<PagesContent> {
-  return pagesContentSchema.parse(pagesSource);
+  const pages = pagesContentSchema.parse(pagesSource);
+  assertFigures(
+    {
+      "services.figure": pages.services.figure,
+      "credentials.figure": pages.credentials.figure,
+      "contact.figure": pages.contact.figure,
+    },
+    "Page content",
+  );
+  return pages;
 }
 
-/** Options for the enquiry form's area-of-enquiry select. Values match the enquiry schema enum. */
+/** Options for the enquiry form's area-of-enquiry select: the enabled types, in display order. */
 export async function getEnquiryOptions(): Promise<EnquiryOptions> {
-  return enquiryOptionsSchema.parse({ placeholder: "Select an area", types: [...enquiryTypes] });
+  return enquiryOptionsSchema.parse({
+    placeholder: "Select an area",
+    types: staticEnquiryTypes.map(({ value, label }) => ({ value, label })),
+  });
 }
 
+/** Enabled services in display order. */
 export async function getServices(): Promise<Service[]> {
-  return servicesSource.map((s) => serviceSchema.parse(s));
+  return publishedServices();
 }
 
+/** One enabled service, or null when it does not exist or is switched off. */
 export async function getService(slug: string): Promise<Service | null> {
-  const service = servicesSource.find((s) => s.slug === slug);
-  if (!service) return null;
-  return serviceSchema.parse(service);
+  return publishedServices().find((service) => service.slug === slug) ?? null;
 }
 
 export async function getCredentials(): Promise<CredentialGroup[]> {

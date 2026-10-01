@@ -79,6 +79,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         email={site.email}
         copy={pages.serviceTemplate}
         ctaLabel={site.ctaLabels.primary}
+        labels={site.uiLabels}
       />
     </>
   );

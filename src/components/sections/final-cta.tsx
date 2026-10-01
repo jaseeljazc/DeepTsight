@@ -6,10 +6,12 @@ import { Link } from "@/components/primitives/link";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { Figure } from "@/components/primitives/figure";
 import { SpecBlock, type SpecItem } from "@/components/primitives/spec-block";
-import type { FigureData, FinalCtaData } from "@/content/types";
+import type { FigureData, FinalCtaData, UiLabels } from "@/content/types";
 
 export type FinalCtaProps = {
   finalCta: FinalCtaData;
+  /** Wording for the email and phone alternatives, from site.uiLabels. */
+  labels: Pick<UiLabels, "orEmail" | "orCall">;
   email?: string;
   phone?: string;
   figure?: FigureData;
@@ -25,6 +27,7 @@ export type FinalCtaProps = {
 /** Closing invitation. One primary action, with the direct email as the alternative. */
 export function FinalCta({
   finalCta,
+  labels,
   email,
   phone,
   figure,
@@ -60,14 +63,14 @@ export function FinalCta({
             </Link>
             {email && !particulars && (
               <p className="text-ink-700 text-small">
-                Or email{" "}
+                {labels.orEmail}{" "}
                 <a href={`mailto:${email}`} className="link-rule text-ink-900 font-medium">
                   {email}
                 </a>
                 {phone && (
                   <>
                     {" "}
-                    or call{" "}
+                    {labels.orCall}{" "}
                     <a
                       href={`tel:${phone.replace(/\s+/g, "")}`}
                       className="link-rule text-ink-900 font-medium whitespace-nowrap"

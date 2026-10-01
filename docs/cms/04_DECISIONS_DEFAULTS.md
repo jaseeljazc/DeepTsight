@@ -108,3 +108,22 @@ decision, reason, how to reverse.
 - **D-32** "login-failed" audit entries are not written: Payload has no hook for a failed password
   check, and a write inside the failing login would be rolled back. Failed attempts are still counted
   by the lockout (5) and the IP limit (10 per 15 minutes); MFA failures are audited.
+- **D-33** Enquiry-type `value`s keep the original wording (for example "Something else"), not a slug
+  pattern as `02_CONTENT_MODEL.md` suggests: the value is what the form posts and the email records, so
+  changing it would change behaviour. The Zod schema wins (`min(1)`); the CMS keeps `value` read-only
+  after creation. Reverse: migrate values to slugs and map them to labels in the email.
+- **D-34** Thank-you "Explore capabilities" reuses `site.ctaLabels.secondary` (identical text, same
+  destination) instead of a second copy in `uiLabels`.
+- **D-35** The default title template, description and OG/Twitter text in `src/lib/public-metadata.ts`
+  stay in code: "DeepTsight Consulting" cannot be derived identically from `displayName` ("DeepTsight")
+  or `legalName` ("... Pty Ltd"). The OG image's tagline and location now come from `site` (identical).
+- **D-36** A legal page with `status: approved` shows no Status row (rather than inventing approval
+  wording). Pending pages show the exact text as before.
+- **D-37** `socialLinks`, `officeAddress` + `showOfficeAddress` and `businessHours` + `showBusinessHours`
+  are stored and validated but not yet rendered (FR-41/FR-43 are a later release; rendering them is a
+  design decision). `mapsUrl` renders an "Open in Google Maps" link (FR-42 wording) beside the location
+  on the contact page, only when set.
+- **D-38** Site settings are stored with `navLabels`; the adapter returns the same `Site` shape as before
+  plus a derived `nav` (routes and order from `navRoutes` in `schema.ts`).
+- **D-39** Error pages ("Return to the home page" in `error.tsx` and `global-error.tsx`) keep their copy
+  in code (D-08: error and 404 copy stay in code); the thank-you page's link uses `uiLabels.returnHome`.

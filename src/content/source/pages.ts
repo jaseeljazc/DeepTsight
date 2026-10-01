@@ -20,6 +20,7 @@ export const pagesSource: PagesContent = {
       supportingText:
         "Most operational problems cross more than one. Describe the situation and the scope follows from it.",
     },
+    figure: "img-services-facility",
   },
   serviceTemplate: {
     engagement: "Founder-led",
@@ -35,8 +36,10 @@ export const pagesSource: PagesContent = {
       supportingText:
         "Detailed CVs, project references and supporting documents can be provided in response to a formal enquiry.",
     },
+    figure: "img-credentials-audit",
   },
   contact: {
+    figure: "img-contact-office",
     lead: "Describe the situation, the asset and the constraints around it. The enquiry goes directly to the practitioner who would do the work.",
     beforeYouWrite: {
       title: "Before you write",

@@ -14,6 +14,10 @@ import {
   getArticles,
   getLegalPage,
   getSeo,
+  getFigures,
+  getPageContent,
+  getEnquiryOptions,
+  getArticle,
 } from "../src/content/index";
 
 async function verifyAllContent() {
@@ -58,8 +62,31 @@ async function verifyAllContent() {
     console.log(`✓ getLegalPage('${slug}'): verified (${page.title})`);
   }
 
-  // 8. SEO
-  for (const route of ["/", "/about", "/services", "/credentials", "/contact"]) {
+  // 8. Figures, page copy and enquiry options (each checks its references)
+  const figures = await getFigures();
+  console.log(`✓ getFigures: verified (${Object.keys(figures).length} figures)`);
+  const pages = await getPageContent();
+  console.log(`✓ getPageContent: verified (${pages.thankYou.nextSteps.length} next steps)`);
+  const options = await getEnquiryOptions();
+  if (options.types.length === 0) throw new Error("No enabled enquiry types.");
+  console.log(`✓ getEnquiryOptions: verified (${options.types.length} types)`);
+  for (const article of articles) {
+    if (!(await getArticle(article.slug))) throw new Error(`Missing article: ${article.slug}`);
+  }
+
+  // 9. SEO
+  for (const route of [
+    "/",
+    "/about",
+    "/services",
+    "/credentials",
+    "/insights",
+    "/contact",
+    "/contact/thank-you",
+    "/legal/privacy",
+    "/legal/terms",
+    "/legal/accessibility",
+  ]) {
     const seo = await getSeo(route);
     if (!seo) throw new Error(`Missing SEO entry for route: ${route}`);
   }

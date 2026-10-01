@@ -53,6 +53,7 @@ export default async function HomePage() {
         capabilities={home.coreCapabilities}
         services={services}
         convergenceLabel={home.whyDeepTsight.convergenceLabel}
+        labels={site.uiLabels}
       />
       <WhyDeepTsight whyDeepTsight={home.whyDeepTsight} figure={figures[home.media.why]} />
       <ProblemsAddressed
@@ -63,6 +64,7 @@ export default async function HomePage() {
       <SelectedProof title={home.selectedProofTitle} proofs={home.selectedProof} />
       <PerthContext perthContext={home.perthContext} />
       <FinalCta
+        labels={site.uiLabels}
         finalCta={{ ...home.finalCta, ctaLabel: site.ctaLabels.primary }}
         email={site.email}
         phone={site.phone}

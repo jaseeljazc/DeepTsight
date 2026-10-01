@@ -14,23 +14,25 @@ export type FooterProps = {
   className?: string;
 };
 
-// Revision is the build date: the site is statically rendered, so this is when it was issued.
-const REVISION = new Date().toISOString().slice(0, 10);
+// Revision: the last change to the site settings when the CMS records it (D-11), otherwise the
+// build date, which is when a statically rendered page was issued.
+const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 /**
  * Footer laid out like the title block of an engineering drawing: link columns above,
  * a ruled strip of issue details below (FR-05).
  */
 export function Footer({ site, services, className }: FooterProps) {
-  const year = REVISION.slice(0, 4);
+  const revision = site.updatedAt ? site.updatedAt.slice(0, 10) : BUILD_DATE;
+  const year = revision.slice(0, 4);
   const linkedInPending = !site.linkedIn || isPlaceholder(site.linkedIn);
 
   const titleBlock: { label: string; value: string }[] = [
     { label: "Entity", value: site.legalName },
     { label: "ABN", value: site.abn ?? "TBD — CLIENT" },
-    { label: "Location", value: "Perth, Western Australia" },
+    { label: "Location", value: site.locationLabel },
     { label: "Document", value: siteHost },
-    { label: "Revision", value: REVISION },
+    { label: "Revision", value: revision },
     { label: "Copyright", value: `© ${year} ${site.legalName}` },
   ];
 

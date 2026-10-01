@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getSite } from "@/content";
 import { colorTokens as c } from "@/styles/tokens.generated";
 import { siteHost } from "@/lib/site-url";
 
@@ -14,6 +15,7 @@ export const contentType = "image/png";
  * generated from globals.css. Pixel sizes are specific to this fixed 1200 × 630 canvas.
  */
 export default async function Image() {
+  const site = await getSite();
   return new ImageResponse(
     <div
       style={{
@@ -44,7 +46,7 @@ export default async function Image() {
             maxWidth: "980px",
           }}
         >
-          Deep technical insight for safer, more reliable and more secure industrial operations.
+          {site.tagline}
         </div>
         <div style={{ fontSize: "24px", color: c.ink700, maxWidth: "860px", lineHeight: 1.4 }}>
           Control systems and E&I engineering, OT cybersecurity, IT/OT segregation and plant
@@ -63,7 +65,7 @@ export default async function Image() {
           color: c.steel600,
         }}
       >
-        <span>Perth, Western Australia</span>
+        <span>{site.locationLabel}</span>
         <span style={{ color: c.primary }}>{siteHost}</span>
       </div>
     </div>,

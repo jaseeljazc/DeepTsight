@@ -45,7 +45,7 @@ export default async function CredentialsPage() {
       />
 
       <Figure
-        figure={figures["img-credentials-audit"]}
+        figure={figures[pages.credentials.figure]}
         aspect="wide"
         parallax
         sizes="100vw"
@@ -79,6 +79,7 @@ export default async function CredentialsPage() {
       </Container>
 
       <FinalCta
+        labels={site.uiLabels}
         email={site.email}
         finalCta={{ ...pages.credentials.finalCta, ctaLabel: site.ctaLabels.primary }}
       />

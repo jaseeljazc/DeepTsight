@@ -8,7 +8,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="bg-ground flex min-h-screen flex-col">
-      <Header navItems={site.nav} ctaLabel={site.ctaLabels.header} />
+      <Header
+        navItems={site.nav}
+        ctaLabel={site.ctaLabels.header}
+        locationLabel={site.locationLabel}
+      />
       <main id="main-content" tabIndex={-1} className="figure-counter-scope flex-1 outline-none">
         {children}
       </main>

@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { getEnquiryOptions, getFigures, getPageContent, getSite, getSeo } from "@/content";
+import {
+  getAboutContent,
+  getEnquiryOptions,
+  getFigures,
+  getPageContent,
+  getSite,
+  getSeo,
+} from "@/content";
 import { PageHeader } from "@/components/layout/page-header";
 import { Figure } from "@/components/primitives/figure";
 import { Link } from "@/components/primitives/link";
@@ -27,11 +34,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const [site, figures, pages, enquiryOptions] = await Promise.all([
+  const [site, figures, pages, enquiryOptions, about] = await Promise.all([
     getSite(),
     getFigures(),
     getPageContent(),
     getEnquiryOptions(),
+    getAboutContent(),
   ]);
   const linkedInPending = !site.linkedIn || isPlaceholder(site.linkedIn);
 
@@ -72,7 +80,19 @@ export default async function ContactPage() {
               </a>
             ),
           },
-          { label: "Location", value: "Perth, Western Australia" },
+          {
+            label: "Location",
+            value: site.mapsUrl ? (
+              <>
+                {site.locationLabel}{" "}
+                <Link href={site.mapsUrl} isExternal>
+                  {site.uiLabels.openInMaps}
+                </Link>
+              </>
+            ) : (
+              site.locationLabel
+            ),
+          },
           { label: "Service area", value: site.serviceArea },
           {
             label: "LinkedIn",
@@ -80,7 +100,7 @@ export default async function ContactPage() {
               <MarkedText text="TBD — CLIENT" />
             ) : (
               <Link href={site.linkedIn ?? ""} isExternal>
-                Deepak Pazhoor on LinkedIn
+                {`${about.founder.name} ${site.uiLabels.onLinkedInSuffix}`}
               </Link>
             ),
           },
@@ -98,7 +118,7 @@ export default async function ContactPage() {
       </div>
 
       <Figure
-        figure={figures["img-contact-office"]}
+        figure={figures[pages.contact.figure]}
         aspect="landscape"
         sizes="(max-width: 1024px) 100vw, 40vw"
         className="mt-14 hidden lg:block"

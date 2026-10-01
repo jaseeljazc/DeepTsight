@@ -4,6 +4,8 @@ export const termsSource: LegalPage = {
   slug: "terms",
   title: "Website terms of use",
   lastUpdated: "September 2026",
+  // Becomes "approved" only when the client's adviser has approved the wording.
+  status: "pending-adviser",
   sections: [
     {
       title: "1. Acceptance of terms",

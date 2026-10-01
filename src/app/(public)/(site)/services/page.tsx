@@ -85,7 +85,7 @@ export default async function ServicesPage() {
       />
 
       <Figure
-        figure={figures["img-services-facility"]}
+        figure={figures[pages.services.figure]}
         aspect="wide"
         parallax
         preload
@@ -139,7 +139,7 @@ export default async function ServicesPage() {
                         ]}
                       />
                       <Link href={`/services/${service.slug}`}>
-                        View {lowerFirst(service.shortTitle)}
+                        {site.uiLabels.viewPrefix} {lowerFirst(service.shortTitle)}
                       </Link>
                     </div>
                   </div>
@@ -188,6 +188,7 @@ export default async function ServicesPage() {
       </Section>
 
       <FinalCta
+        labels={site.uiLabels}
         email={site.email}
         finalCta={{ ...pages.services.finalCta, ctaLabel: site.ctaLabels.primary }}
       />

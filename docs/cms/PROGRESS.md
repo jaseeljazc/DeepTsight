@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 2 done (partial: no database); next Phase 3
-- Last commit: see git log (cms(phase 2))
-- Next step: Phase 3, content model changes in Zod and the static source
+- Current phase: 3 done; next Phase 4
+- Last commit: see git log (cms(phase 3))
+- Next step: Phase 4, collections and globals
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -28,7 +28,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | Playwright E2E (prod build) | 24/24 | 24/24 |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 11/11 |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 16/16 |
 | CMS E2E (`pnpm test:cms`) | n/a | 9 written, all skipped (B-1) |
 
 ## Dev-database backups
@@ -47,3 +47,8 @@ None (no database access).
   admin/API CSP + noindex + no-store, GraphQL 404 route, create-admin and reset-admin-password scripts,
   production fail-closed gate (D-29). Migration `admin_security` created offline. Unit tests 11/11.
   `tests/cms/admin-security.spec.ts` (9 tests) written; skipped (B-1). Parity 0; Playwright 52/52.
+- **Phase 3** done. Site (navLabels → derived nav, uiLabels, locationLabel, socialLinks, mapsUrl,
+  office address/hours + show flags), services (enabled, sortOrder, related pruning), page figure ids,
+  legal status, Lexical article body, updatedAt, enquiry types {value,label,enabled,sortOrder} with
+  buildEnquirySchema, D-08 strings moved, integrity checks, verify-content calls every getter.
+  Parity 0; Playwright 52/52; unit 16/16.

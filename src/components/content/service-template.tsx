@@ -7,7 +7,7 @@ import { SpecBlock } from "@/components/primitives/spec-block";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ServiceBody } from "./service-body";
 import { ServiceIcon } from "./service-icon";
-import type { FigureData, PagesContent, Service } from "@/content/types";
+import type { FigureData, PagesContent, Service, UiLabels } from "@/content/types";
 import { lowerFirst } from "@/lib/utils";
 
 export type ServiceTemplateProps = {
@@ -18,6 +18,7 @@ export type ServiceTemplateProps = {
   copy: PagesContent["serviceTemplate"];
   /** Label of the closing call-to-action button (the site-wide primary CTA). */
   ctaLabel: string;
+  labels: Pick<UiLabels, "orEmail" | "orCall">;
 };
 
 /**
@@ -31,6 +32,7 @@ export function ServiceTemplate({
   email,
   copy,
   ctaLabel,
+  labels,
 }: ServiceTemplateProps) {
   const contents: AnchorItem[] = [
     { id: "challenge", number: "1.0", label: "Client challenge" },
@@ -88,6 +90,7 @@ export function ServiceTemplate({
 
       <FinalCta
         id="enquire"
+        labels={labels}
         email={email}
         finalCta={{
           title: `${copy.enquiryTitlePrefix} ${lowerFirst(service.shortTitle)}`,

@@ -92,11 +92,11 @@ export default async function AboutPage() {
               <Link href="/credentials">{site.ctaLabels.credentials}</Link>
               {linkedInPending ? (
                 <span className="text-small min-h-target inline-flex items-center">
-                  <MarkedText text="Connect on LinkedIn: TBD — CLIENT" />
+                  <MarkedText text={`${site.uiLabels.connectOnLinkedIn}: TBD — CLIENT`} />
                 </span>
               ) : (
                 <Link href={site.linkedIn ?? ""} isExternal>
-                  Connect on LinkedIn
+                  {site.uiLabels.connectOnLinkedIn}
                 </Link>
               )}
             </div>
@@ -150,6 +150,7 @@ export default async function AboutPage() {
       </Section>
 
       <FinalCta
+        labels={site.uiLabels}
         email={site.email}
         finalCta={{ ...pages.about.finalCta, ctaLabel: site.ctaLabels.primary }}
       />

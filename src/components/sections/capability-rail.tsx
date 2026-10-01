@@ -9,7 +9,7 @@ import { Link } from "@/components/primitives/link";
 import { RailWiring } from "@/components/content/rail-wiring";
 import { DotNumeral } from "@/components/content/dot-numeral";
 import { ServiceIcon } from "@/components/content/service-icon";
-import type { HomeContent, Service } from "@/content/types";
+import type { HomeContent, Service, UiLabels } from "@/content/types";
 
 export type CapabilityRailProps = {
   title: string;
@@ -18,6 +18,8 @@ export type CapabilityRailProps = {
   services: Service[];
   /** The line on the common terminal where the disciplines meet. */
   convergenceLabel: string;
+  /** "All services" and "View service" wording, from site.uiLabels. */
+  labels: Pick<UiLabels, "allServices" | "viewService">;
 };
 
 const OUTPUTS_SHOWN = 3;
@@ -35,6 +37,7 @@ export function CapabilityRail({
   capabilities,
   services,
   convergenceLabel,
+  labels,
 }: CapabilityRailProps) {
   const summaryFor = (slug: string) => capabilities.find((capability) => capability.slug === slug);
 
@@ -45,7 +48,7 @@ export function CapabilityRail({
         <div className="rail-enter">
           <SectionHeader id="capabilities-heading" title={title} intro={intro} size="h1" />
           <p className="mt-4">
-            <Link href="/services">All services</Link>
+            <Link href="/services">{labels.allServices}</Link>
           </p>
         </div>
 
@@ -90,7 +93,7 @@ export function CapabilityRail({
                     <p className="text-steel-600 text-caption mt-auto font-mono">{standards}</p>
                   )}
                   <span className="text-ink-900 text-small flex items-center gap-2 font-medium">
-                    View service
+                    {labels.viewService}
                     <ArrowRight
                       className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
                       aria-hidden="true"

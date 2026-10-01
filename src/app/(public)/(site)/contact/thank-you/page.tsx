@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getPageContent, getSeo } from "@/content";
+import { getPageContent, getSeo, getSite } from "@/content";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/layout/page-header";
 import { Link } from "@/components/primitives/link";
@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ThankYouPage() {
-  const { thankYou } = await getPageContent();
+  const [{ thankYou }, site] = await Promise.all([getPageContent(), getSite()]);
 
   return (
     <>
@@ -52,9 +52,9 @@ export default async function ThankYouPage() {
 
           <div className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-4 lg:col-span-8 lg:col-start-5">
             <Link href="/services" variant="buttonPrimary" withArrow>
-              Explore capabilities
+              {site.ctaLabels.secondary}
             </Link>
-            <Link href="/">Return to the home page</Link>
+            <Link href="/">{site.uiLabels.returnHome}</Link>
           </div>
         </div>
       </Container>
