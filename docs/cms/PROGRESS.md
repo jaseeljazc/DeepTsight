@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 0 done; next Phase 1
-- Last commit: `0f1d77a` cms(phase 0): add build plan
-- Next step: Phase 1, install Payload (no migrations can be applied: B-1)
+- Current phase: 1 done (partial: no database); next Phase 2
+- Last commit: see git log (cms(phase 1) commits)
+- Next step: Phase 2, admin security
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -31,3 +31,12 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 
 ## Dev-database backups
 None (no database access).
+
+## Phase log
+- **Phase 0** done. Baseline green; parity harness built; DB check blocked (B-1).
+- **Phase 1** partial. Payload 3.90.2 installed (all @payloadcms/* 3.90.2, sharp 0.35.5, graphql 16.14.2
+  as a required peer). Public site moved under `(public)`; `global-not-found.tsx` for unmatched URLs.
+  `withPayload`, admin and REST routes (no GraphQL routes), env rules, ESLint Payload boundary,
+  `.env.local` secrets generated (key names only), initial migration created offline.
+  Parity 0 differences; 52/52 Playwright. **Not done (B-1):** `payload migrate` on dev and test,
+  `/admin` loading in `pnpm dev` (answers 500 without a database).

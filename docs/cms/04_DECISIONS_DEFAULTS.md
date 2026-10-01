@@ -61,3 +61,21 @@ decision, reason, how to reverse.
 
 ## Decisions made during the run
 (The agent appends D-16 onwards here.)
+- **D-16** `withPayload` adds `Accept-CH`, `Vary` and `Critical-CH` (colour-scheme client hints) to
+  every route. `next.config.ts` re-scopes that rule to `/admin/:path*`, so public responses keep
+  exactly their previous headers. Reverse: remove `scopePayloadHeaders` in `next.config.ts`.
+- **D-17** No database access tonight (`.env.local` missing; blocker B-1 in PROGRESS). All code,
+  migrations (created offline with `payload migrate:create`, which does not connect) and tests are
+  written; anything that needs a running database is marked unverified in the report. Reverse: n/a;
+  create `.env.local` and run the verification list in the morning report.
+- **D-18** Unmatched URLs now render `src/app/global-not-found.tsx` (Next 16 `experimental.globalNotFound`),
+  because the app has two root layouts. It reuses the public 404 body and document. `notFound()` inside
+  the site still renders `src/app/(public)/not-found.tsx`. Parity: identical. Reverse: move the public
+  layout back to `src/app/layout.tsx` (only possible without the Payload admin).
+- **D-19** The installed Next.js is 16.3.5 (lockfile), not 16.3.7 as the plan says. Payload 3.90.2 accepts
+  `>=16.3.3 <17`, so the version was left alone (the plan forbids changing it). Reverse: n/a.
+- **D-20** `disableCreateDatabase: true` on the Postgres adapter: Payload would otherwise try
+  `CREATE DATABASE` when the database is missing, which the app role must never attempt.
+- **D-21** The template's empty `(payload)/custom.scss` is not copied: it would need the `sass` package
+  in the app for no styling. Reverse: add the file and `sass`.
+- **D-22** Payload's admin and API currently answer 500 when the database is unreachable (fails closed).

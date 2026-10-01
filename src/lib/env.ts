@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { productionEnvProblems } from "./env-rules";
+import { CONTENT_SOURCES, cmsEnvProblems, productionEnvProblems } from "./env-rules";
 import { appEnv, isProductionSite, publicEnv } from "./public-env";
 
 /*
@@ -20,6 +20,8 @@ const serverEnvSchema = z.object({
   ENQUIRY_FROM_EMAIL: z.string().email().optional(),
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+  CONTENT_SOURCE: z.enum(CONTENT_SOURCES).default("static"),
+  ENQUIRY_RETENTION_DAYS: z.coerce.number().int().positive().optional(),
 });
 
 function parseServerEnv() {
@@ -27,6 +29,12 @@ function parseServerEnv() {
     const problems = productionEnvProblems(process.env);
     if (problems.length > 0) {
       throw new Error(`Production environment is incomplete: ${problems.join("; ")}.`);
+    }
+  } else {
+    // CMS variables (DATABASE_URI, PAYLOAD_SECRET, MFA_ENCRYPTION_KEY) are read by src/cms only.
+    const problems = cmsEnvProblems(process.env, { production: false });
+    if (problems.length > 0) {
+      throw new Error(`CMS environment is incomplete: ${problems.join("; ")}.`);
     }
   }
 
@@ -37,6 +45,8 @@ function parseServerEnv() {
     ENQUIRY_FROM_EMAIL: process.env["ENQUIRY_FROM_EMAIL"] || undefined,
     UPSTASH_REDIS_REST_URL: process.env["UPSTASH_REDIS_REST_URL"] || undefined,
     UPSTASH_REDIS_REST_TOKEN: process.env["UPSTASH_REDIS_REST_TOKEN"] || undefined,
+    CONTENT_SOURCE: process.env["CONTENT_SOURCE"] || undefined,
+    ENQUIRY_RETENTION_DAYS: process.env["ENQUIRY_RETENTION_DAYS"] || undefined,
   });
 
   if (!parsed.success) {

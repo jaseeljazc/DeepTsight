@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 // The dev server needs eval for React Refresh. Production builds never get it.
 const isDev = process.env.NODE_ENV === "development";
@@ -74,11 +75,33 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        // Public pages only. The CMS admin (/admin) and its API (/api) get their own policy.
+        source: "/((?!admin(?:/|$)|api(?:/|$)).*)",
         headers: securityHeaders,
       },
     ];
   },
 };
 
-export default nextConfig;
+/**
+ * withPayload adds colour-scheme client hint headers (Accept-CH, Vary, Critical-CH) to every route.
+ * They are only useful to the admin UI, so they are scoped to /admin and public responses keep
+ * exactly the headers above (D-16).
+ */
+function scopePayloadHeaders(config: NextConfig): NextConfig {
+  const headers = config.headers;
+  if (!headers) return config;
+  return {
+    ...config,
+    async headers() {
+      const rules = await headers();
+      return rules.map((rule) =>
+        rule.source === "/:path*" && rule.headers.some((header) => header.key === "Accept-CH")
+          ? { ...rule, source: "/admin/:path*" }
+          : rule,
+      );
+    },
+  };
+}
+
+export default scopePayloadHeaders(withPayload(nextConfig, { devBundleServerPackages: false }));
