@@ -18,7 +18,10 @@ const valid = {
 test("buildEnquirySchema accepts only the given types, with the original message", () => {
   const schema = buildEnquirySchema(["Something else"]);
   assert.ok(schema.safeParse(valid).success);
-  const refused = schema.safeParse({ ...valid, enquiryType: "Plant reliability and asset lifecycle" });
+  const refused = schema.safeParse({
+    ...valid,
+    enquiryType: "Plant reliability and asset lifecycle",
+  });
   assert.ok(!refused.success);
   assert.deepEqual(refused.error?.flatten().fieldErrors.enquiryType, ["Select an area of enquiry"]);
   const missing = schema.safeParse({ ...valid, enquiryType: undefined });
@@ -54,7 +57,10 @@ test("services come back enabled, in sort order, with valid related links", asyn
   const services = await getServices();
   assert.ok(services.every((service) => service.enabled));
   const orders = services.map((service) => service.sortOrder);
-  assert.deepEqual(orders, [...orders].sort((a, b) => a - b));
+  assert.deepEqual(
+    orders,
+    [...orders].sort((a, b) => a - b),
+  );
   const slugs = new Set(services.map((service) => service.slug));
   for (const service of services) {
     for (const related of service.relatedSlugs) assert.ok(slugs.has(related));

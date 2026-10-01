@@ -28,7 +28,7 @@ export default async function AccessibilityPage() {
   if (!page) notFound();
 
   return (
-    <LegalDocument page={page} reference="WCAG 2.2 Level AA">
+    <LegalDocument page={page} reference={page.reference}>
       <section aria-labelledby="feedback-heading" className="border-ink-900 mt-4 border-t pt-8">
         <h2 id="feedback-heading" className="font-display text-h3 text-ink-900 font-medium">
           Report an accessibility barrier

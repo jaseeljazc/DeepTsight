@@ -6,6 +6,13 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { publicEnv } from "./lib/public-env";
 import { AuditLog } from "./cms/collections/audit-log";
+import { CredentialGroups, Credentials } from "./cms/collections/credentials";
+import { EnquiryTypes } from "./cms/collections/enquiry-types";
+import { LegalPages } from "./cms/collections/legal-pages";
+import { Media } from "./cms/collections/media";
+import { ProofItems } from "./cms/collections/proof-items";
+import { Services } from "./cms/collections/services";
+import { About, Home, Pages, Seo, SiteSettings } from "./cms/globals";
 import { Users } from "./cms/collections/users";
 import { noEmailAdapter } from "./cms/lib/no-email";
 
@@ -54,7 +61,20 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, AuditLog],
+  collections: [
+    Services,
+    ProofItems,
+    Credentials,
+    CredentialGroups,
+    Media,
+    LegalPages,
+    EnquiryTypes,
+    Users,
+    AuditLog,
+  ],
+  globals: [SiteSettings, Home, About, Pages, Seo],
+  // Uploads: 10 MB at most (03 §8).
+  upload: { limits: { fileSize: 10 * 1024 * 1024 } },
   editor: lexicalEditor(),
   email: noEmailAdapter,
   db: postgresAdapter({

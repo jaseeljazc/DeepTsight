@@ -127,3 +127,21 @@ decision, reason, how to reverse.
   plus a derived `nav` (routes and order from `navRoutes` in `schema.ts`).
 - **D-39** Error pages ("Return to the home page" in `error.tsx` and `global-error.tsx`) keep their copy
   in code (D-08: error and 404 copy stay in code); the thank-you page's link uses `uiLabels.returnHome`.
+- **D-40** Reserved image positions (image slots) are media records with `kind: slot` and no file
+  (`upload.filesRequiredOnCreate: false`), so `getFigures()` keeps returning the slot. Media uses drafts
+  like every content collection.
+- **D-41** The audit log records create, update, publish and delete. Unpublishing is recorded as an
+  update: Payload's hooks do not say whether a save is a draft save or an unpublish.
+- **D-42** The import script sets `skipAudit` and `disableRevalidate`: loading the existing content is not
+  an editor's change. Every later change, including approval flags, is audited.
+- **D-43** Legal `lastUpdated` stays text ("September 2026"), not a date: the Zod schema and the page show it
+  as written (02 says date; the Zod schema wins).
+- **D-44** The legal pages' "Reference" line moved from the page files into legal-page content so it is
+  editable; output is identical.
+- **D-45** Revalidation uses `revalidateTag(tag, { expire: 0 })` (Next 16 signature): the next visit after a
+  publish renders fresh content instead of serving the old page once.
+- **D-46** The Home publish guard validates Home's own fields; the trust strip and proof relationships are
+  validated by their own collections' guards.
+- **D-47** Media files are readable anonymously outside production (unapproved images render as marked
+  mocks, as today) and only approved, published images on the live site. Rights fields (source, licence,
+  usage rights, attribution) are hidden from anonymous reads.

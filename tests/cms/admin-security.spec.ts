@@ -25,6 +25,15 @@ test("anonymous REST requests are refused", async ({ request }) => {
   }
 });
 
+test("anonymous requests cannot read globals or draft versions", async ({ request }) => {
+  for (const slug of ["site-settings", "home", "about", "pages", "seo"]) {
+    const response = await request.get(`/api/globals/${slug}`);
+    expect([401, 403], `GET /api/globals/${slug}`).toContain(response.status());
+  }
+  const versions = await request.get("/api/services/versions");
+  expect([401, 403, 404]).toContain(versions.status());
+});
+
 test("GraphQL is not served", async ({ request }) => {
   expect((await request.get("/api/graphql")).status()).toBe(404);
   expect((await request.post("/api/graphql", { data: { query: "{ __typename }" } })).status()).toBe(

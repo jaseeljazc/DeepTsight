@@ -26,5 +26,5 @@ export default async function PrivacyPage() {
   const page = await getLegalPage("privacy");
   if (!page) notFound();
 
-  return <LegalDocument page={page} reference="Privacy Act 1988 (Cth), APPs"></LegalDocument>;
+  return <LegalDocument page={page} reference={page.reference}></LegalDocument>;
 }

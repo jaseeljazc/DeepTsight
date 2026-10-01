@@ -39,6 +39,9 @@ async function main(): Promise<void> {
       showHiddenFields: true,
       data: {
         password,
+        // Clears any lockout from failed attempts.
+        loginAttempts: 0,
+        lockUntil: null,
         ...(resetMfa
           ? {
               totpSecret: null,
@@ -49,7 +52,6 @@ async function main(): Promise<void> {
           : {}),
       },
     });
-    await payload.unlock({ collection: "users", data: { email }, overrideAccess: true });
 
     const out = path.resolve(".data", `password-reset-${timestamp()}.txt`);
     fs.mkdirSync(path.dirname(out), { recursive: true });

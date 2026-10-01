@@ -26,5 +26,5 @@ export default async function TermsPage() {
   const page = await getLegalPage("terms");
   if (!page) notFound();
 
-  return <LegalDocument page={page} reference="Website terms of use"></LegalDocument>;
+  return <LegalDocument page={page} reference={page.reference}></LegalDocument>;
 }

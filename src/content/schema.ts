@@ -431,6 +431,8 @@ export const legalPageSchema = z.object({
   slug: z.enum(["privacy", "terms", "accessibility"]),
   title: z.string(),
   lastUpdated: z.string(),
+  /** Shown in the document details ("Privacy Act 1988 (Cth), APPs"). */
+  reference: z.string(),
   /** Set by an approver only once the client's adviser has approved the wording. */
   status: z.enum(legalStatuses),
   updatedAt: z.string().optional(),

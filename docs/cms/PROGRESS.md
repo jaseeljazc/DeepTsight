@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 3 done; next Phase 4
-- Last commit: see git log (cms(phase 3))
-- Next step: Phase 4, collections and globals
+- Current phase: 4 done (partial: no database); next Phase 5
+- Last commit: see git log (cms(phase 4))
+- Next step: Phase 5, import script
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -52,3 +52,9 @@ None (no database access).
   legal status, Lexical article body, updatedAt, enquiry types {value,label,enabled,sortOrder} with
   buildEnquirySchema, D-08 strings moved, integrity checks, verify-content calls every getter.
   Parity 0; Playwright 52/52; unit 16/16.
+- **Phase 4** partial (code complete, smoke not run). Collections: services, proof-items, credentials,
+  credential-groups, media, legal-pages, enquiry-types; globals: site-settings, home, about, pages, seo.
+  Drafts (25 versions), publish guard (mappers + Zod), approver-only flags with audit, slug lock (D-09),
+  revalidation hooks, admin groups and descriptions. Mappers in src/content/mappers. Types generated
+  (src/cms/payload-types.ts); migration `collections` created offline. scripts/cms/smoke.ts written, not run (B-1).
+  Parity 0; unit 16/16.
