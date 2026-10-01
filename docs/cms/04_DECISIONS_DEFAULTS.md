@@ -184,3 +184,10 @@ decision, reason, how to reverse.
   If neither the save nor the email worked, the existing error with the email address is shown.
 - **D-61** The inbox list shows unread and failed-notification counts above the table (a server component,
   `src/cms/views/inbox-summary.tsx`); search covers name, email, organisation and message.
+- **D-62** Uploads are sanitised in the media collection's `beforeOperation` hook, so admin uploads,
+  REST uploads and the import all pass through it: decoded with sharp, refused unless JPEG, PNG, WebP or
+  AVIF (SVG, GIF and anything undecodable get a 400), then re-encoded in the same format with EXIF
+  orientation applied and no metadata. The file name keeps its stem; the extension follows the real
+  format. The imported images are therefore re-encoded too (dimensions and names unchanged).
+- **D-63** `images.localPatterns` now lists the only local image paths: `/images/**`, `/badges/**`,
+  `/dither/**` and `/api/media/file/**`. Any other path is refused by the optimiser (checked: 400).

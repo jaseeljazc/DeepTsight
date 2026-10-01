@@ -9,6 +9,7 @@ import {
   collectionBeforeChange,
 } from "../hooks/lifecycle";
 import { validateMedia } from "../hooks/validators";
+import { sanitizeUpload } from "../media/hook";
 import { GROUPS, contentAccess, contentVersions } from "./shared";
 
 const tags = () => ["media"];
@@ -67,6 +68,7 @@ export const Media: CollectionConfig = {
     filesRequiredOnCreate: false,
   },
   hooks: {
+    beforeOperation: [sanitizeUpload],
     beforeChange: [collectionBeforeChange("media", validateMedia)],
     afterChange: [collectionAfterChange("media", { flags: ["approvedForPublic"], tags })],
     afterDelete: [collectionAfterDelete("media", tags)],

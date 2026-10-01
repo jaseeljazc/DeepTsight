@@ -96,6 +96,13 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Local images only: the static site's files and, in CMS mode, Payload's media route.
+    localPatterns: [
+      { pathname: "/images/**" },
+      { pathname: "/badges/**" },
+      { pathname: "/dither/**" },
+      { pathname: "/api/media/file/**" },
+    ],
   },
   async headers() {
     return [

@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 9 done (partial); Tier A code complete. Next Phase 10
-- Last commit: see git log (cms(phase 9))
-- Next step: Phase 10, media hardening
+- Current phase: 10 done; next Phase 11
+- Last commit: see git log (cms(phase 10))
+- Next step: Phase 11, placeholder and integrity gates
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -28,7 +28,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | Playwright E2E (prod build) | 24/24 | 24/24 |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 19/19 |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 23/23 |
 | CMS E2E (`pnpm test:cms`) | n/a | 13 written, all skipped (B-1) |
 
 ## Dev-database backups
@@ -76,3 +76,6 @@ None (no database access).
   inbox summary, save → email → status in the Server Action via src/content/enquiries.ts, purge script
   (no-op while ENQUIRY_RETENTION_DAYS is unset), migration `enquiries` (offline), tests/cms/inbox.spec.ts.
   Phase 9 checkpoint: typecheck, lint, build green; parity 0; Playwright 52/52; unit 19/19; CMS E2E 13 skipped (B-1).
+- **Phase 10** done (unit-verified; Local API check in smoke not run). Upload sanitiser (D-62): type by
+  decoding, JPEG/PNG/WebP/AVIF only, re-encode without metadata; 10 MB limit; images.localPatterns (D-63).
+  Unit: EXIF/GPS removed, orientation applied, SVG/GIF/text refused. Parity 0; Playwright 52/52; unit 23/23.

@@ -8,12 +8,15 @@
  * Only DATABASE_URI_TEST is touched (D-15). Test data uses example.com and "Test" names only.
  */
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import sharp from "sharp";
 import type { Payload } from "payload";
 import { redact } from "./lib/db";
 import { payloadFor } from "./lib/payload";
 import { migrate } from "./migrate";
 import { DISABLE_REVALIDATE } from "../../src/cms/hooks/revalidate";
+import { MEDIA_DIR } from "../../src/cms/collections/media";
 
 const context = { [DISABLE_REVALIDATE]: true };
 const results: string[] = [];
@@ -62,6 +65,42 @@ async function smoke(payload: Payload): Promise<void> {
       id: mediaId,
       data: { _status: "published", source: "Test", licence: "Test", usageRights: "Test" },
     });
+  });
+
+  await step("uploads lose EXIF/GPS and SVG is refused (03 §8)", async () => {
+    const withGps = await sharp({
+      create: { width: 32, height: 16, channels: 3, background: "#808080" },
+    })
+      .jpeg()
+      .withExif({
+        IFD0: { Make: "Test camera" },
+        IFD3: { GPSLatitudeRef: "S", GPSLatitude: "31/1 57/1 0/1" },
+      })
+      .toBuffer();
+    const uploaded = await payload.create({
+      ...base,
+      collection: "media",
+      draft: true,
+      data: { kind: "image", assetClass: "photograph", caption: "Test GPS", alt: "Test" },
+      file: { data: withGps, mimetype: "image/jpeg", name: "smoke-gps.jpg", size: withGps.length },
+    });
+    const stored = path.join(MEDIA_DIR, String(uploaded.filename));
+    const meta = await sharp(fs.readFileSync(stored)).metadata();
+    assert.equal(meta.exif, undefined, "stored file has no EXIF");
+    assert.ok(!fs.readFileSync(stored).includes(Buffer.from("Test camera")));
+    await payload.delete({ ...base, collection: "media", id: uploaded.id });
+
+    const svg = Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>',
+    );
+    await assert.rejects(
+      payload.create({
+        ...base,
+        collection: "media",
+        data: { kind: "image", assetClass: "photograph", caption: "Test SVG", alt: "Test" },
+        file: { data: svg, mimetype: "image/svg+xml", name: "smoke.svg", size: svg.length },
+      }),
+    );
   });
 
   await step("publish guard refuses an incomplete media record", async () => {
