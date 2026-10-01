@@ -205,3 +205,11 @@ decision, reason, how to reverse.
   `rel="noopener noreferrer"`. Unknown node types (including any HTML node) render their text only.
 - **D-68** Article categories use drafts like other content; only published categories are shown on an
   article. The sitemap lists `/insights` and each article only while Insights is on and has articles.
+- **D-69** `next` and `eslint-config-next` upgraded from 16.3.5 to **16.3.7** (exact pins). `pnpm audit
+  --prod` reported a **critical** advisory for 16.3.5 (remote code execution in `next/og` ImageResponse,
+  fixed in 16.3.6), and the site uses `next/og` for its share image. 16.3.7 is the version the plan names;
+  16.3.8 is also available. Verified after the upgrade: typecheck, lint, build, parity 0, Playwright 56/56,
+  unit 28/28. Reverse: revert the commit and run `pnpm install`.
+- **D-70** `pnpm.overrides`: `undici@7.29.0` → `7.29.1` (patch release). `payload` pins undici 7.29.0, which
+  has two high advisories (TLS certificate validation bypass; denial of service). Reverse: remove the
+  override when Payload ships a fixed pin.

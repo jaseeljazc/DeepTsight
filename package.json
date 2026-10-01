@@ -46,7 +46,7 @@
     "clsx": "^2.1.1",
     "graphql": "16.14.2",
     "lucide-react": "^1.16.0",
-    "next": "^16.3.5",
+    "next": "16.3.7",
     "payload": "3.90.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -65,7 +65,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "eslint": "^9.20.0",
-    "eslint-config-next": "^16.3.5",
+    "eslint-config-next": "16.3.7",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "postcss": "^8.5.1",
     "prettier": "^3.5.0",
@@ -81,5 +81,10 @@
     "*.{css,md,mjs}": [
       "prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "undici@7.29.0": "7.29.1"
+    }
   }
 }
