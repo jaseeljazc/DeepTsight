@@ -19,7 +19,7 @@
     "tokens": "tsx scripts/generate-tokens.ts",
     "dither": "tsx scripts/generate-dither.ts",
     "test:cms": "playwright test -c playwright.cms.config.ts",
-    "test:cms-unit": "tsx --test tests/cms/unit/*.test.ts",
+    "test:cms-unit": "tsx --test tests/cms/unit/*.test.ts tests/cms/unit/*.test.tsx",
     "cms:migrate": "tsx scripts/cms/migrate.ts --db DATABASE_URI",
     "cms:backup": "tsx scripts/cms/backup.ts --db DATABASE_URI",
     "cms:check-db": "tsx scripts/cms/check-db.ts",

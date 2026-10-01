@@ -3,6 +3,8 @@ import { getPayload, type Payload, type Where } from "payload";
 import config from "@payload-config";
 import {
   aboutContentSchema,
+  articleSchema,
+  articleSummarySchema,
   credentialGroupSchema,
   enquiryOptionsSchema,
   figureSchema,
@@ -29,6 +31,7 @@ import type {
 import {
   figureKey,
   mapAbout,
+  mapArticle,
   mapCredential,
   mapEnquiryType,
   mapHome,
@@ -288,13 +291,38 @@ export async function getCredentials(): Promise<CredentialGroup[]> {
   });
 }
 
-/** Insights arrives in Phase 13. */
+/** Published articles, newest first. Whether Insights is shown at all is decided by the pages. */
 export async function getArticles(): Promise<ArticleSummary[]> {
-  return [];
+  return read(["articles"], ["articles"], async (draft) => {
+    const docs = await findAll("articles", draft, 1, ["-publishedAt", "title"]);
+    return docs.map((doc) => {
+      const { slug, title, summary, publishedAt, readingMinutes, tags } = mapArticle(doc, draft);
+      return articleSummarySchema.parse({
+        slug,
+        title,
+        summary,
+        publishedAt,
+        readingMinutes,
+        tags,
+      });
+    });
+  });
 }
 
-export async function getArticle(_slug: string): Promise<Article | null> {
-  return null;
+export async function getArticle(slug: string): Promise<Article | null> {
+  return read(["article", slug], ["articles", `article:${slug}`], async (draft) => {
+    const payload = await cms();
+    const result = await payload.find({
+      collection: "articles",
+      where: draft ? { slug: { equals: slug } } : { and: [{ slug: { equals: slug } }, PUBLISHED] },
+      draft,
+      limit: 1,
+      depth: 1,
+      overrideAccess: true,
+    });
+    const doc = result.docs[0];
+    return doc ? articleSchema.parse(mapArticle(asDoc(doc), draft)) : null;
+  });
 }
 
 export async function getLegalPage(slug: LegalSlug): Promise<LegalPage | null> {

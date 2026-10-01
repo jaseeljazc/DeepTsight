@@ -84,14 +84,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Include insights only if enabled & articles exist
-  const insightRoutes: MetadataRoute.Sitemap = site.insightsEnabled
-    ? articles.map((article) => ({
-        url: `${baseUrl}/insights/${article.slug}`,
-        lastModified: new Date(article.publishedAt),
-        changeFrequency: "monthly",
-        priority: 0.7,
-      }))
-    : [];
+  // Insights only while it is switched on and has articles (FR-27): the index, then each article.
+  const insightRoutes: MetadataRoute.Sitemap =
+    site.insightsEnabled && articles.length > 0
+      ? [
+          {
+            url: `${baseUrl}/insights`,
+            lastModified: changed(articles[0]?.publishedAt),
+            changeFrequency: "monthly",
+            priority: 0.7,
+          },
+          ...articles.map((article) => ({
+            url: `${baseUrl}/insights/${article.slug}`,
+            lastModified: new Date(article.publishedAt),
+            changeFrequency: "monthly" as const,
+            priority: 0.7,
+          })),
+        ]
+      : [];
 
   return [...staticRoutes, ...serviceRoutes, ...insightRoutes];
 }

@@ -72,6 +72,8 @@ export interface Config {
     credentials: Credential;
     "credential-groups": CredentialGroup;
     media: Media;
+    articles: Article;
+    "article-categories": ArticleCategory;
     "legal-pages": LegalPage;
     enquiries: Enquiry;
     "enquiry-types": EnquiryType;
@@ -89,6 +91,8 @@ export interface Config {
     credentials: CredentialsSelect<false> | CredentialsSelect<true>;
     "credential-groups": CredentialGroupsSelect<false> | CredentialGroupsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    "article-categories": ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
     "legal-pages": LegalPagesSelect<false> | LegalPagesSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     "enquiry-types": EnquiryTypesSelect<false> | EnquiryTypesSelect<true>;
@@ -442,6 +446,92 @@ export interface CredentialGroup {
   _status?: ("draft" | "published") | null;
 }
 /**
+ * Technical notes for the Insights section. Save drafts freely; only published articles appear, and only while Insights is switched on in Site settings. Never name a client, site, plant or network.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  /**
+   * Web address of the article, after /insights/. Lowercase letters, numbers and hyphens. Cannot be changed after the first publish.
+   */
+  slug: string;
+  title: string;
+  /**
+   * One or two sentences for the article list and search results.
+   */
+  summary: string;
+  /**
+   * Headings (H2, H3), bold, italic, links, lists and quotations only.
+   */
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  categories?: (number | ArticleCategory)[] | null;
+  /**
+   * Set on the first publish.
+   */
+  publishedAt?: string | null;
+  /**
+   * Worked out from the length.
+   */
+  readingMinutes?: number | null;
+  /**
+   * How this page appears in search results. The web address is generated from the page, not typed here.
+   */
+  seo: {
+    /**
+     * Aim for 60 characters or fewer. The site name is added automatically.
+     */
+    title: string;
+    /**
+     * Aim for 160 characters or fewer.
+     */
+    description: string;
+  };
+  /**
+   * Set automatically on first publish.
+   */
+  firstPublishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ("draft" | "published") | null;
+}
+/**
+ * Categories shown on articles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories".
+ */
+export interface ArticleCategory {
+  id: number;
+  name: string;
+  /**
+   * Short identifier for the category. Lowercase letters, numbers and hyphens. Cannot be changed after the first publish.
+   */
+  slug: string;
+  /**
+   * Set automatically on first publish.
+   */
+  firstPublishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ("draft" | "published") | null;
+}
+/**
  * Privacy notice, terms of use and accessibility statement. Wording must come from the client's adviser; do not edit it yourself.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -660,6 +750,14 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: "articles";
+        value: number | Article;
+      } | null)
+    | ({
+        relationTo: "article-categories";
+        value: number | ArticleCategory;
+      } | null)
+    | ({
         relationTo: "legal-pages";
         value: number | LegalPage;
       } | null)
@@ -860,6 +958,41 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  summary?: T;
+  body?: T;
+  categories?: T;
+  publishedAt?: T;
+  readingMinutes?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  firstPublishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories_select".
+ */
+export interface ArticleCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  firstPublishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -268,6 +268,8 @@ export const articleSchema = articleSummarySchema.extend({
   updatedAt: z.string().optional(),
   status: z.enum(["draft", "published"]),
   body: richTextSchema,
+  /** Search result title and description; the canonical is derived from the slug. */
+  seo: seoEntrySchema.optional(),
 });
 
 export const mediaAssetSchema = z.object({

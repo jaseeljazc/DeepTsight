@@ -194,3 +194,14 @@ decision, reason, how to reverse.
 - **D-64** `check-content-output.ts` runs as the last step of `check:content` (so on every build). In CMS
   mode it reads the database the build uses. It reports field paths only. The publish guard also refuses,
   on the live site only, to publish any document containing a marker (the import is exempt; D-48).
+- **D-65** Insights pages take their H1 and lead from the existing `/insights` SEO entry, and their labels
+  from `navLabels.insights`, rather than new page copy. Article details use the labels "Published",
+  "Reading time" and "Categories"; reading time is shown as "N min". The index is a ruled schedule (no
+  cards), with dates in mono (data). Categories are joined with commas, not middle dots (DESIGN.md §0.2 #11).
+- **D-66** The Zod article contract gained an optional `seo` (title, description, derived canonical) so
+  the stored SEO fields reach the page; without them the title and summary are used.
+- **D-67** Rich text links accept http, https, mailto and site paths; internal-document links are off in
+  the editor (`enabledCollections: []`). Anything else renders as plain text. External links get
+  `rel="noopener noreferrer"`. Unknown node types (including any HTML node) render their text only.
+- **D-68** Article categories use drafts like other content; only published categories are shown on an
+  article. The sitemap lists `/insights` and each article only while Insights is on and has articles.

@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 12 done (partial: proof not run); next Phase 13
-- Last commit: see git log (cms(phase 12))
-- Next step: Phase 13, Insights
+- Current phase: 13 done (partial); next Phase 14
+- Last commit: see git log (cms(phase 13))
+- Next step: Phase 14, documentation, QA, morning report
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -25,11 +25,11 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | typecheck | pass | pass |
 | lint | pass | pass |
 | build (static) | pass (22 static pages) | pass |
-| Playwright E2E (prod build) | 24/24 | 24/24 |
+| Playwright E2E (prod build) | 24/24 | 28/28 (4 new: Insights off) |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 24/24 |
-| CMS E2E (`pnpm test:cms`) | n/a | 13 written, all skipped (B-1) |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 28/28 |
+| CMS E2E (`pnpm test:cms`) | n/a | 14 written, all skipped (B-1) |
 
 ## Dev-database backups
 None (no database access).
@@ -85,3 +85,8 @@ None (no database access).
 - **Phase 12** partial. backup.ts (custom format, no owner, media copy), restore.ts (refuses non _test/_restore,
   reset + pg_restore --exit-on-error, media), verify-backup.ts (row counts per table), prove-backup.ts (all three).
   docs/MAINTENANCE_PLAN.md §5–§6. Refusal paths checked; the proof itself needs the databases (B-1).
+- **Phase 13** partial. articles + article-categories (restricted Lexical: H2/H3, bold, italic, links, lists,
+  quote), reading time at 220 wpm, publishedAt on first publish; RichText renderer (React nodes only);
+  /insights, /insights/[slug], /insights/rss.xml (XML-escaped), Article + Breadcrumb JSON-LD, sitemap entries,
+  all gated by insightsEnabled. Migration `insights` (offline). tests/e2e/insights-off.spec.ts (runs now:
+  404s, no menu link); tests/cms/insights.spec.ts (not run, B-1). Parity 0; Playwright 56/56; unit 28/28.

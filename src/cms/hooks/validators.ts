@@ -1,6 +1,7 @@
 import type { ZodType } from "zod";
 import {
   aboutContentSchema,
+  articleSchema,
   credentialSchema,
   homeContentSchema,
   legalPageSchema,
@@ -20,7 +21,7 @@ import {
   mapService,
   mapSite,
 } from "../../content/mappers";
-import { mapLegalPage } from "../../content/mappers";
+import { mapArticle, mapLegalPage } from "../../content/mappers";
 import type { Doc } from "../../content/mappers/util";
 import type { PublishIssue, PublishValidator } from "./lifecycle";
 
@@ -124,3 +125,12 @@ export const validateSeo: PublishValidator = (doc) =>
   Object.entries(mapSeo(doc)).flatMap(([route, entry]) =>
     zodIssues(seoEntrySchema, entry).map((issue) => ({ ...issue, path: `${route} ${issue.path}` })),
   );
+
+export const validateArticle: PublishValidator = (doc) => {
+  // publishedAt is stamped by the articles hook just before this check on the first publish.
+  const issues = zodIssues(articleSchema, { ...mapArticle(doc, true), status: "published" });
+  const body = doc["body"] as { root?: { children?: unknown[] } } | undefined;
+  if (!body?.root?.children?.length)
+    issues.push({ path: "body", message: "Write the article before publishing." });
+  return issues;
+};

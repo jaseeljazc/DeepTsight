@@ -5,6 +5,7 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { publicEnv } from "./lib/public-env";
+import { ArticleCategories, Articles } from "./cms/collections/articles";
 import { AuditLog } from "./cms/collections/audit-log";
 import { CredentialGroups, Credentials } from "./cms/collections/credentials";
 import { Enquiries } from "./cms/collections/enquiries";
@@ -68,6 +69,8 @@ export default buildConfig({
     Credentials,
     CredentialGroups,
     Media,
+    Articles,
+    ArticleCategories,
     LegalPages,
     Enquiries,
     EnquiryTypes,
