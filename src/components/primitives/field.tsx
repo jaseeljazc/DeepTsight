@@ -9,12 +9,15 @@ export type FieldErrorProps = {
   children: React.ReactNode;
 };
 
-/** Inline error text under a control: icon plus words, never colour alone (A11Y-14). */
+/**
+ * Inline error text under a control: icon plus words, never colour alone (A11Y-14).
+ * Not a live region: the error summary announces errors on submit, and the control reads this text
+ * through aria-describedby when it is focused. Announcing both repeated every error.
+ */
 export function FieldError({ id, className, children }: FieldErrorProps) {
   return (
     <p
       id={id}
-      role="alert"
       className={cn("text-error text-small flex items-start gap-1.5 font-medium", className)}
     >
       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />

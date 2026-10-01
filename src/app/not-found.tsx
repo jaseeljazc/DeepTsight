@@ -1,10 +1,16 @@
 import * as React from "react";
+import type { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import NextLink from "next/link";
 import { Link } from "@/components/primitives/link";
 import { DrawingRule } from "@/components/primitives/drawing-rule";
 import { Wordmark } from "@/components/layout/wordmark";
 import { siteHost } from "@/lib/site-url";
+
+/** Its own tab title (A11Y-10); the root layout's template adds the brand. */
+export const metadata: Metadata = {
+  title: "Page not found",
+};
 
 /**
  * Rendered outside the site layout, so it carries its own landmarks and a way home (FR-08).

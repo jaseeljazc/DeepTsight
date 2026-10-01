@@ -85,6 +85,11 @@ test.describe("Phase 7 Quality Assurance Test Suite", () => {
     // Focus starts on the first menu link.
     await expect(menu.getByRole("link", { name: "Home" })).toBeFocused();
 
+    // The page behind the menu is inert, so screen readers cannot reach it either (L-17).
+    const mainIsInert = () =>
+      page.evaluate(() => Boolean(document.getElementById("main-content")?.closest("[inert]")));
+    expect(await mainIsInert()).toBe(true);
+
     // Tabbing many times never leaves the menu.
     for (let i = 0; i < 15; i++) {
       await page.keyboard.press("Tab");
@@ -99,6 +104,7 @@ test.describe("Phase 7 Quality Assurance Test Suite", () => {
     await page.keyboard.press("Escape");
     await expect(menu).toBeHidden();
     await expect(trigger).toBeFocused();
+    expect(await mainIsInert()).toBe(false);
   });
 
   test("keyboard reaches the primary navigation in reading order", async ({ page }) => {
@@ -119,6 +125,7 @@ test.describe("Phase 7 Quality Assurance Test Suite", () => {
   test("404 page renders gracefully with return navigation", async ({ page }) => {
     const response = await page.goto("/non-existent-page-for-testing");
     expect(response?.status()).toBe(404);
+    await expect(page).toHaveTitle(/^Page not found/);
 
     const heading = page.locator("h1");
     await expect(heading).toBeVisible();
