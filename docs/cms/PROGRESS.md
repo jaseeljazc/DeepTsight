@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 7 done (partial); next Phase 8
-- Last commit: see git log (cms(phase 7))
-- Next step: Phase 8, editable enquiry types
+- Current phase: 8 done (partial); next Phase 9
+- Last commit: see git log (cms(phase 8))
+- Next step: Phase 9, enquiry inbox
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -29,7 +29,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
 | CMS unit tests (`pnpm test:cms-unit`) | n/a | 19/19 |
-| CMS E2E (`pnpm test:cms`) | n/a | 11 written, all skipped (B-1) |
+| CMS E2E (`pnpm test:cms`) | n/a | 12 written, all skipped (B-1) |
 
 ## Dev-database backups
 None (no database access).
@@ -69,3 +69,6 @@ None (no database access).
   paths only, D-56); admin Preview buttons on services, legal pages and globals; footer revision from
   site.updatedAt (done in Phase 3); /credentials daily revalidation (D-57). tests/cms/preview.spec.ts and
   scripts/cms/test-cms.ts (full CMS run) written; not run (B-1). Parity 0; unit 19/19.
+- **Phase 8** partial. Contact page passes enabled types (cached, tag enquiry-types); the client schema is built
+  from them; the Server Action validates with getEnquiryOptionsNow() (uncached, D-55); messages unchanged.
+  tests/cms/enquiry-types.spec.ts written; not run (B-1).
