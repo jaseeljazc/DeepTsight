@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/primitives/table";
 import { FinalCta } from "@/components/sections/final-cta";
+import { ServiceIcon } from "@/components/content/service-icon";
 import { lowerFirst } from "@/lib/utils";
 
 export const dynamic = "force-static";
@@ -115,6 +116,7 @@ export default async function ServicesPage() {
                     <SectionHeader
                       number={String(index + 1).padStart(2, "0")}
                       title={service.title}
+                      icon={<ServiceIcon name={service.icon} />}
                       size="part"
                     />
                     <div className="sm:pl-part-indent mt-6 space-y-6">
@@ -166,9 +168,12 @@ export default async function ServicesPage() {
                 {services.map((service) => (
                   <TableRow key={service.slug}>
                     <TableHead scope="row" className="py-5">
-                      <Link href={`/services/${service.slug}`} className="text-small">
-                        {service.shortTitle}
-                      </Link>
+                      <span className="text-small flex items-start gap-2">
+                        <ServiceIcon name={service.icon} size="inline" />
+                        <Link href={`/services/${service.slug}`} className="text-small">
+                          {service.shortTitle}
+                        </Link>
+                      </span>
                     </TableHead>
                     <TableCell className="py-5">{service.challenge}</TableCell>
                     <TableCell className="text-ink-900 text-caption py-5 font-mono">

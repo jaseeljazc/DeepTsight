@@ -1,5 +1,9 @@
 import type { Service } from "../types";
 
+/*
+ * Service icons are developer-chosen placeholders until the client picks them (TASKS.md,
+ * 2026-10-01). Choices are limited to serviceIconNames in schema.ts.
+ */
 export const servicesSource: Service[] = [
   {
     slug: "control-systems-ei-engineering",
@@ -9,6 +13,7 @@ export const servicesSource: Service[] = [
       "PLC, DCS and electrical instrumentation engineering for continuous process plants and critical utilities.",
     outcome:
       "Reduce delivery risk, improve operability and integrate complex modifications within live industrial environments.",
+    icon: "Cpu",
     challenge:
       "Ageing DCS and PLC platforms lose reliability, and the shutdown needed to upgrade them costs production.",
     whyItMatters:
@@ -89,6 +94,7 @@ export const servicesSource: Service[] = [
       "ISA/IEC 62443-aligned security architecture, asset visibility and segmentation for live industrial control networks.",
     outcome:
       "Improve visibility, segmentation and cyber resilience with controls designed around plant availability.",
+    icon: "Network",
     challenge:
       "Standard corporate IT security controls (such as aggressive scanning or uncoordinated reboots) can trigger PLC halts and trip critical processes.",
     whyItMatters:
@@ -177,6 +183,7 @@ export const servicesSource: Service[] = [
       "Defensible separation between corporate and control networks, without breaking essential data flows.",
     outcome:
       "Reduce attack surface exposure while preserving production telemetry, historian replication and secure remote support.",
+    icon: "Split",
     challenge:
       "Business demands for cloud analytics, MES connectivity and remote vendor support frequently erode boundary defences and bridge networks insecurely.",
     whyItMatters:
@@ -257,6 +264,7 @@ export const servicesSource: Service[] = [
       "Engineering analysis, failure mode risk reduction and lifecycle optimisation for ageing automation and electrical assets.",
     outcome:
       "Improve operational resilience, prioritise capital expenditure and balance technical risk against lifecycle value.",
+    icon: "Gauge",
     challenge:
       "Obsolescence, unpredictable component failures and uncoordinated upgrades lead to frequent reactive work and rising CAPEX.",
     whyItMatters:

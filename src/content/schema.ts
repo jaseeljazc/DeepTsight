@@ -37,6 +37,25 @@ export const siteSchema = z.object({
   insightsEnabled: z.boolean(),
 });
 
+/**
+ * Icons a service may use, shown beside its title. A fixed set of Lucide line icons: no shields,
+ * padlocks or globes (DESIGN.md §0.2 #6). The CMS offers these as a choice, never free text.
+ */
+export const serviceIconNames = [
+  "Cpu",
+  "Network",
+  "Split",
+  "Gauge",
+  "Activity",
+  "Cable",
+  "Server",
+  "Workflow",
+  "Waypoints",
+  "Router",
+  "Cog",
+  "Wrench",
+] as const;
+
 export const serviceScopeOutputSchema = z.object({
   scope: z.string(),
   outputs: z.array(z.string()),
@@ -54,6 +73,7 @@ export const serviceSchema = z.object({
   shortTitle: z.string(),
   summary: z.string(),
   outcome: z.string(),
+  icon: z.enum(serviceIconNames),
   challenge: z.string(),
   whyItMatters: z.string(),
   capability: z.string(),

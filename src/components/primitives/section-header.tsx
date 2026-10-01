@@ -6,6 +6,8 @@ export type SectionHeaderProps = {
   /** Document-style number ("3.0"). Only where the page has a contents list to match. */
   number?: string;
   intro?: React.ReactNode;
+  /** Decorative icon set beside the title text, inside the heading (for example a service icon). */
+  icon?: React.ReactNode;
   id?: string;
   as?: "h1" | "h2";
   size?: "h1" | "h2" | "part" | "display";
@@ -25,6 +27,7 @@ export function SectionHeader({
   title,
   number,
   intro,
+  icon,
   id,
   as: Heading = "h2",
   size = "h2",
@@ -50,9 +53,11 @@ export function SectionHeader({
             size === "h2" && "text-h2",
             size === "part" && "text-h3-lg max-w-none",
             onDark ? "text-on-dark" : "text-ink-900",
+            icon && "flex items-start gap-3",
           )}
         >
-          {title}
+          {icon}
+          {icon ? <span>{title}</span> : title}
         </Heading>
       </div>
       {intro && (

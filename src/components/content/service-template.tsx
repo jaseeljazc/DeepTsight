@@ -6,6 +6,7 @@ import { Figure } from "@/components/primitives/figure";
 import { SpecBlock } from "@/components/primitives/spec-block";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ServiceBody } from "./service-body";
+import { ServiceIcon } from "./service-icon";
 import type { FigureData, PagesContent, Service } from "@/content/types";
 import { lowerFirst } from "@/lib/utils";
 
@@ -48,6 +49,7 @@ export function ServiceTemplate({
       <PageHeader
         breadcrumbs={[{ label: "Services", href: "/services" }, { label: service.shortTitle }]}
         title={service.title}
+        titleIcon={<ServiceIcon name={service.icon} size="title" />}
         lead={service.summary}
         aside={
           <SpecBlock

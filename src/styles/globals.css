@@ -263,6 +263,16 @@
     stroke-width: var(--icon-stroke);
   }
 
+  /* A box one line of the surrounding text tall, so an icon beside a wrapping title lines up with
+     its first line. 1.2em is the fallback where the lh unit is unsupported. */
+  .icon-line {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 1.2em;
+    height: 1lh;
+  }
+
   html {
     font-family: var(--font-sans);
     color: var(--color-ink-700);
@@ -317,7 +327,6 @@
 
   /* Disable non-essential motion (A11Y-16) */
   @media (prefers-reduced-motion: reduce) {
-
     *,
     ::before,
     ::after {
@@ -329,7 +338,6 @@
 
   /* Windows High Contrast: keep hairlines and markers visible */
   @media (forced-colors: active) {
-
     .tag-plate,
     .marker-square {
       forced-color-adjust: none;
@@ -409,7 +417,9 @@
   }
 
   @variant lg {
-    grid-template-columns: calc(var(--spacing) * 18) minmax(0, 1fr) calc(var(--spacing-thumb) + var(--spacing) * 8);
+    grid-template-columns: calc(var(--spacing) * 18) minmax(0, 1fr) calc(
+        var(--spacing-thumb) + var(--spacing) * 8
+      );
   }
 }
 
@@ -463,7 +473,6 @@
 }
 
 @layer components {
-
   /* Engraved label plate: primary ground, white mono text */
   .tag-plate {
     display: inline-flex;
@@ -869,7 +878,6 @@
 }
 
 @keyframes lamp-1 {
-
   0%,
   8% {
     background-color: transparent;
@@ -884,7 +892,6 @@
 }
 
 @keyframes lamp-2 {
-
   0%,
   34% {
     background-color: transparent;
@@ -899,7 +906,6 @@
 }
 
 @keyframes lamp-3 {
-
   0%,
   60% {
     background-color: transparent;
@@ -914,7 +920,6 @@
 }
 
 @keyframes lamp-4 {
-
   0%,
   86% {
     background-color: transparent;
@@ -929,7 +934,6 @@
 }
 
 @keyframes card-1 {
-
   0%,
   8% {
     opacity: 0;
@@ -944,7 +948,6 @@
 }
 
 @keyframes card-2 {
-
   0%,
   34% {
     opacity: 0;
@@ -959,7 +962,6 @@
 }
 
 @keyframes card-3 {
-
   0%,
   60% {
     opacity: 0;
@@ -974,7 +976,6 @@
 }
 
 @keyframes card-4 {
-
   0%,
   86% {
     opacity: 0;
@@ -1128,7 +1129,6 @@
  */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-
     /* The rail draws down as each section scrolls in */
     .rail-seg-fill {
       animation: rail-fill linear both;
@@ -1138,20 +1138,19 @@
 
     /* The first section (Hero) is already in the viewport on load; start its fill at the top */
     .hero-section .rail-seg,
-    .rail-page>section:first-of-type .rail-seg {
+    .rail-page > section:first-of-type .rail-seg {
       view-timeline-inset: calc(var(--header-height) + 1rem) var(--rail-lead);
     }
 
     @media (max-width: 639px) {
-
       .hero-section .rail-seg,
-      .rail-page>section:first-of-type .rail-seg {
+      .rail-page > section:first-of-type .rail-seg {
         view-timeline-inset: calc(var(--header-height) + 0.75rem) var(--rail-lead);
       }
     }
 
     .hero-section .rail-seg-fill,
-    .rail-page>section:first-of-type .rail-seg-fill {
+    .rail-page > section:first-of-type .rail-seg-fill {
       animation-range: contain 0% contain 100%;
     }
 
@@ -1214,15 +1213,15 @@
       animation-range: entry 0px entry var(--rail-enter);
     }
 
-    .rail-stagger> :nth-child(2) {
+    .rail-stagger > :nth-child(2) {
       animation-range: entry 2rem entry calc(var(--rail-enter) + 2rem);
     }
 
-    .rail-stagger> :nth-child(3) {
+    .rail-stagger > :nth-child(3) {
       animation-range: entry 4rem entry calc(var(--rail-enter) + 4rem);
     }
 
-    .rail-stagger> :nth-child(4) {
+    .rail-stagger > :nth-child(4) {
       animation-range: entry 6rem entry calc(var(--rail-enter) + 6rem);
     }
 

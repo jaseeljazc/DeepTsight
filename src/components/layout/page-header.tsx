@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 export type PageHeaderProps = {
   breadcrumbs?: BreadcrumbItem[];
   title: string;
+  /** Decorative icon set beside the H1 text (service pages). */
+  titleIcon?: React.ReactNode;
   lead?: React.ReactNode;
   /** Right-hand column: usually a SpecBlock. With layout="form", the enquiry form. */
   aside?: React.ReactNode;
@@ -20,6 +22,7 @@ export type PageHeaderProps = {
 export function PageHeader({
   breadcrumbs,
   title,
+  titleIcon,
   lead,
   aside,
   layout = "default",
@@ -47,9 +50,11 @@ export function PageHeader({
               className={cn(
                 "font-display text-h1 text-ink-900 font-medium",
                 isForm ? "max-w-headline-sm" : "max-w-headline-lg",
+                titleIcon && "flex items-start gap-4",
               )}
             >
-              {title}
+              {titleIcon}
+              {titleIcon ? <span>{title}</span> : title}
             </h1>
             {lead && (
               <div

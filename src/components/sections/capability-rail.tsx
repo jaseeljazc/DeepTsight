@@ -8,6 +8,7 @@ import { RailTag } from "@/components/primitives/rail-tag";
 import { Link } from "@/components/primitives/link";
 import { RailWiring } from "@/components/content/rail-wiring";
 import { DotNumeral } from "@/components/content/dot-numeral";
+import { ServiceIcon } from "@/components/content/service-icon";
 import type { HomeContent, Service } from "@/content/types";
 
 export type CapabilityRailProps = {
@@ -69,9 +70,10 @@ export function CapabilityRail({
                   <DotNumeral value={String(index + 1).padStart(2, "0")} className="w-numeral" />
                   <h3
                     id={headingId}
-                    className="font-display text-ink-900 group-hover:text-primary text-h3-lg font-medium transition-colors duration-150"
+                    className="font-display text-ink-900 group-hover:text-primary text-h3-lg flex items-start gap-3 font-medium transition-colors duration-150"
                   >
-                    {title}
+                    <ServiceIcon name={service.icon} />
+                    <span>{title}</span>
                   </h3>
                   <p className="text-ink-700 text-small">{service.summary}</p>
                   <p className="text-ink-900 text-small border-rule border-t pt-4">{outcome}</p>

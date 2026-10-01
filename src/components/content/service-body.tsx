@@ -12,6 +12,7 @@ import {
 import { Part } from "./part";
 import { ProcessSequence } from "./process-sequence";
 import { IndexList } from "./index-list";
+import { ServiceIcon } from "./service-icon";
 import type { FigureData, Service } from "@/content/types";
 
 export type ServiceBodyProps = {
@@ -106,6 +107,7 @@ export function ServiceBody({ service, relatedServices, detailFigure, figures }:
           items={relatedServices.map((related) => ({
             href: `/services/${related.slug}`,
             title: related.title,
+            icon: <ServiceIcon name={related.icon} />,
             description: related.outcome,
             figure: figures[related.media.hero],
           }))}

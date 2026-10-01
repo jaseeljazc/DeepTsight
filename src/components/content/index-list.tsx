@@ -10,6 +10,8 @@ export type IndexListItem = {
   /** Omit where the order carries no meaning, such as related services. */
   number?: string;
   title: string;
+  /** Decorative icon set beside the title (for example a service icon). */
+  icon?: React.ReactNode;
   description: string;
   figure?: FigureData;
 };
@@ -57,9 +59,11 @@ export function IndexList({
                   className={cn(
                     "font-display text-ink-900 tracking-heading font-medium",
                     size === "large" ? "text-h3-lg" : "text-h3",
+                    item.icon && "flex items-start gap-3",
                   )}
                 >
-                  {item.title}
+                  {item.icon}
+                  {item.icon ? <span>{item.title}</span> : item.title}
                 </Heading>
                 <span className="text-ink-700 measure text-small md:text-body mt-3 block">
                   {item.description}
