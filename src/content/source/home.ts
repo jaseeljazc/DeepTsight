@@ -11,7 +11,7 @@ export const homeSource: HomeContent = {
       "Deep technical insight for safer, more reliable and more secure industrial operations.",
     supportingText:
       "DeepTsight combines hands-on control systems and E&I engineering experience with practical OT cybersecurity and reliability thinking to solve complex operational challenges without losing sight of plant availability, lifecycle value or implementation reality.",
-    primaryCta: "Discuss your operational challenge",
+    primaryCta: "Discuss your challenge",
     secondaryCta: "Explore capabilities",
     facts: [
       { label: "Based", value: "Perth, WA. Working Australia-wide" },
@@ -222,6 +222,6 @@ export const homeSource: HomeContent = {
     title: "Talk through an operational challenge",
     supportingText:
       "Speak directly with Deepak Pazhoor about control systems, OT security architecture or plant reliability.",
-    ctaLabel: "Discuss your operational challenge",
+    ctaLabel: "Discuss your challenge",
   },
 };

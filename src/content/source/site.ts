@@ -20,7 +20,7 @@ export const siteSource: Site = {
     { label: "Contact", href: "/contact" },
   ],
   ctaLabels: {
-    primary: "Discuss your operational challenge",
+    primary: "Discuss your challenge",
     secondary: "Explore capabilities",
     credentials: "View credentials",
     header: "Discuss a challenge",

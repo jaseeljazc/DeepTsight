@@ -44,8 +44,8 @@ export const aboutSource: AboutContent = {
   },
   media: {
     portrait: "img-portrait-founder",
-    site: "slot-about-site",
-    desk: "slot-about-desk",
+    site: "img-about-site",
+    desk: "img-about-desk",
   },
   timeline: [
     {

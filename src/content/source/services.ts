@@ -73,7 +73,7 @@ export const servicesSource: Service[] = [
     relatedSlugs: ["ot-cybersecurity", "it-ot-segregation", "plant-reliability"],
     media: {
       hero: "img-service-control",
-      detail: "slot-service-control-detail",
+      detail: "img-service-control-detail",
     },
     seo: {
       title: "Control systems and E&I engineering",
@@ -162,7 +162,7 @@ export const servicesSource: Service[] = [
     relatedSlugs: ["it-ot-segregation", "control-systems-ei-engineering", "plant-reliability"],
     media: {
       hero: "img-service-cyber",
-      detail: "slot-service-cyber-detail",
+      detail: "img-service-cyber-detail",
     },
     seo: {
       title: "OT cybersecurity and network architecture",
@@ -243,7 +243,7 @@ export const servicesSource: Service[] = [
     relatedSlugs: ["ot-cybersecurity", "control-systems-ei-engineering", "plant-reliability"],
     media: {
       hero: "img-service-idmz",
-      detail: "slot-service-idmz-detail",
+      detail: "img-service-idmz-detail",
     },
     seo: {
       title: "IT/OT segregation and IDMZ architecture",

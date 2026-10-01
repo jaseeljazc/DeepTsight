@@ -62,7 +62,7 @@ export const seoSource: Record<string, SeoEntry> = {
   "/contact": {
     title: "Contact",
     description:
-      "Discuss your operational challenge directly with the engineer who would do the work. Based in Perth.",
+      "Discuss your challenge directly with the engineer who would do the work. Based in Perth.",
     canonical: "https://deeptsight.com.au/contact",
   },
   "/contact/thank-you": {
