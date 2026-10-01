@@ -1,6 +1,8 @@
 # AGENTS.md
 
 Operating rules for AI coding agents — Claude Code, Antigravity, Cursor, Codex — on the **DeepTsight Consulting** website.
+**`CLAUDE.md` is the source of these rules.** This file repeats it word for word for agents that read
+`AGENTS.md`, and adds §10 on specialist agents. When `CLAUDE.md` changes, copy the change here.
 These rules override default agent behaviour. Read this file before touching anything.
 
 ---
@@ -9,7 +11,7 @@ These rules override default agent behaviour. Read this file before touching any
 
 Before your first edit in a session, read in this order:
 
-1. `AGENTS.md` (this file — `CLAUDE.md` imports it, so Claude Code gets it automatically)
+1. `AGENTS.md` (this file, the same rules as `CLAUDE.md`)
 2. `PROJECT.md` — who the client is, what we are building, what is in scope
 3. `REQUIREMENTS.md` — the acceptance criteria you are being measured against
 4. `DESIGN.md` — the design system. Non-negotiable values.
@@ -59,7 +61,7 @@ the installed package or the version-matched docs. Do not write code from memory
 
 **Read `DESIGN.md` §0 before writing any markup.** It states the standard the site is held to — it must
 look designed by a person for this specific client, not generated from a template — and lists the
-twenty-one specific patterns that make a page read as machine-made. The rules below are the mechanism;
+specific patterns that make a page read as machine-made. The rules below are the mechanism;
 §0 is the goal, and it governs cases the rules do not anticipate.
 
 The rest of this section comes from `DESIGN.md`. Violating any of it is a defect, not a style preference.
@@ -73,7 +75,18 @@ The rest of this section comes from `DESIGN.md`. Violating any of it is a defect
   Never Inter, Roboto, Arial, Poppins, Montserrat, `system-ui` or a bare `sans-serif` fallback chain.
 - **No gradients, glass/blur effects, glows, coloured shadows, emoji icons, decorative illustrations,
   animated counters, or particle/circuit-pattern backgrounds.**
-- **Icons:** 1.5px stroke line icons only, `steel-700` by default, from the single approved set.
+- **Motion** is limited to the effects listed in `DESIGN.md` §7 (CSS scroll timelines, no library), and
+  every one must have a reduced-motion state.
+- **`src/styles/globals.css` is the single source of truth** for colour, spacing, sizes, widths, radius,
+  aspect ratios, type and motion. Components use token utilities only (`bg-primary`, `h-control`,
+  `max-w-measure`, `aspect-wide`). Arbitrary values (`w-[12px]`, `max-w-[40ch]`), raw hex and
+  `strokeWidth` props fail lint. Need a new value? Add a token to `globals.css` first.
+- Places CSS cannot reach (email HTML, `next/og` image) import `colorTokens` from
+  `src/styles/tokens.generated.ts`, which `pnpm tokens` / every build regenerates from `globals.css`.
+  Never edit that file by hand.
+- **Icons:** 1.5px stroke line icons only, `ink-700` or `ink-900` by default, from the single approved set.
+- **Primary `#0E50ED`** (client brand colour) marks actions, label plates, markers, active states and
+  focus. Never a section fill or body copy. On the dark band use `primary-on-dark`.
 - Mono is used sparingly, for data. It is not a decorative label font. Do not add an uppercase mono
   eyebrow above every section heading.
 - Sentence case for all headings, buttons and labels. No Title Case, no ALL CAPS except the defined

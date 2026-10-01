@@ -7,6 +7,35 @@ Nothing outside this document may be added without approval. See `CLAUDE.md` §7
 
 ---
 
+## 0. Installed versions (recorded 1 October 2026)
+
+What `node_modules` actually contains, as §8 asks. Where it differs from the planned version in the sections
+below, the installed version is what the code is written against.
+
+| Package                                              | Installed           | Planned below   | Note                                                                           |
+| ---------------------------------------------------- | ------------------- | --------------- | ------------------------------------------------------------------------------ |
+| `next`, `eslint-config-next`                         | 16.3.7              | 16.3.x          |                                                                                |
+| `react`, `react-dom`                                 | 19.3.0              | 19.2.x          | Newer minor                                                                    |
+| `typescript`                                         | 5.9.3               | 5.9.x           |                                                                                |
+| `tailwindcss`, `@tailwindcss/postcss`                | 4.3.3               | 4.3.x           |                                                                                |
+| `class-variance-authority`, `clsx`, `tailwind-merge` | 0.7.1, 2.1.1, 3.7.0 | 0.7.x, 2.x, 3.x |                                                                                |
+| `zod`                                                | **3.25.76**         | 4.x             | Code uses the Zod 3 API. Decide 3 or 4 before writing CMS schemas (audit M-18) |
+| `react-hook-form`, `@hookform/resolvers`             | 7.88.0, 5.9.1       | 7.x, 5.x        |                                                                                |
+| `lucide-react`                                       | **1.49.0**          | 0.5xx.x         | Major version 1; icons imported individually                                   |
+| `resend`                                             | 4.8.0               | 4.x             |                                                                                |
+| `@marsidev/react-turnstile`                          | 1.6.1               | 1.x             |                                                                                |
+| `@upstash/ratelimit`, `@upstash/redis`               | 2.2.0, 1.39.0       | listed          |                                                                                |
+| `eslint`, `eslint-plugin-jsx-a11y`                   | 9.39.5, 6.10.2      | 9.x, 6.x        |                                                                                |
+| `prettier`, `prettier-plugin-tailwindcss`            | 3.9.9, 0.6.14       | 3.x, 0.6.x      |                                                                                |
+| `@playwright/test`, `@axe-core/playwright`           | 1.63.0, 4.13.0      | 1.5x, 4.x       |                                                                                |
+| `tsx`                                                | 4.23.15             | —               | Runs the build scripts                                                         |
+| Node / pnpm                                          | 22 / 10.28.2        | 22 / 10.x       | A `package-lock.json` is also committed; pnpm's lockfile is the one used       |
+
+**Planned but not installed:** `@tailwindcss/typography`, the Radix packages for shadcn
+`dialog`/`accordion`/`tabs`, `@next/mdx` or `next-mdx-remote`, `gray-matter`, `reading-time`,
+`rehype-slug`, `rehype-autolink-headings`, `husky`, `lint-staged`, `lighthouse-ci`, `@next/bundle-analyzer`.
+Install each one when the feature that needs it is built, not before.
+
 ## 1. Core
 
 | Package               | Version               | Why                                                                                                                                                                                                        |
@@ -25,8 +54,11 @@ better answer — that is not this project.
 **Next.js configuration notes**
 
 - `output` stays default (not `export`) so Server Actions work.
-- Middleware is `proxy.ts` in Next 16, not `middleware.ts`.
-- Security headers set in `next.config.ts`; CSP uses a nonce, not `unsafe-inline`.
+- Middleware is `proxy.ts` in Next 16, not `middleware.ts`. None exists yet.
+- Security headers set in `next.config.ts`. **As built:** the CSP allows `'unsafe-inline'` scripts, because
+  Next.js writes inline scripts into every static page and a per-request nonce would make every route
+  dynamic. Owner decision, 1 October 2026; `'unsafe-eval'` is development-only. Revisit when the CMS admin
+  needs its own policy.
 - Cache Components / PPR: **not used in Phase 1.** Everything is static. Revisit in Phase 2.
 
 ---
@@ -154,13 +186,15 @@ service, GROQ to learn, content living in a vendor's cloud, per-seat pricing abo
   "build": "pnpm check:content && next build",
   "start": "next start",
   "typecheck": "tsc --noEmit",
-  "lint": "next lint",
+  "lint": "eslint .", // `next lint` was removed in Next 16
   "format": "prettier --write .",
   "test:e2e": "playwright test tests/e2e",
   "test:a11y": "playwright test tests/a11y",
   "test:perf": "lhci autorun",
-  "check:content": "tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts",
-  "analyze": "ANALYZE=true next build",
+  "check:content": "tsx scripts/check-env.ts && tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts",
+  "analyze": "ANALYZE=true next build", // needs @next/bundle-analyzer and a POSIX shell
+  "tokens": "tsx scripts/generate-tokens.ts",
+  "dither": "tsx scripts/generate-dither.ts",
 }
 ```
 

@@ -75,17 +75,24 @@ working tree. Each decision is recorded in the `TASKS.md` decisions log.
 | M-12 | Fixed        | `<noscript>` navigation row on small screens                                                                                                                                                                                             |
 | M-13 | Fixed        | `Figure` uses `preload`                                                                                                                                                                                                                  |
 | M-14 | Mostly fixed | Tests added for no-JS submission, rate limit, blur focus, mobile menu focus trap, keyboard order. Run against a production build via `PLAYWRIGHT_TEST_BASE_URL`; the config still defaults to the dev server; no CI                      |
-| M-16 | Partly fixed | `DATA_FLOW_PRIVACY.md` and `LICENCES_SERVICES.md` corrected. `CONTENT_EDITING_GUIDE.md`, `AGENTS.md` and `ARCHITECTURE.md` still open                                                                                                    |
+| M-16 | Mostly fixed | `DATA_FLOW_PRIVACY.md`, `LICENCES_SERVICES.md`, `ARCHITECTURE.md`, `TECH_STACK.md` and `AGENTS.md` now match the code. `CONTENT_EDITING_GUIDE.md` is still open (rewrite it for the CMS)                                                 |
 | L-01 | Partly fixed | Removed `ascii-hero-plate.tsx`, `power-plant-ascii.ts`, `enquiry-sent.tsx`, unused `icon` and media fields, the ignored hero `figure` prop. Remaining items listed under L-01                                                            |
 | L-03 | Partly fixed | `global-error.tsx` added. A favicon waits for the logo                                                                                                                                                                                   |
 | L-04 | Fixed        | `/design-system` returns 404 when `NEXT_PUBLIC_ENV=production`                                                                                                                                                                           |
 | L-06 | Fixed        | External `UrlObject` uses its `href`                                                                                                                                                                                                     |
 | L-07 | Partly fixed | Capability rail follows the service list; the four-stage lamp animation remains                                                                                                                                                          |
-| L-09 | Partly fixed | Root canonical removed; the 404 still has the default title                                                                                                                                                                              |
+| L-09 | Fixed        | Root canonical removed; the 404 page has its own title, "Page not found"                                                                                                                                                                 |
 | L-12 | Fixed        | `priceRange` removed; person name and title from `about.ts`; Person JSON-LD guarded against placeholders                                                                                                                                 |
+| M-09 | Fixed        | `DESIGN.md` restored from the sibling project; new §10 lists eleven departures for the owner to settle (several overlap M-08 and H-04)                                                                                                   |
+| M-18 | Partly fixed | `TECH_STACK.md` §0 records the installed versions and what is not installed. Zod 3 vs 4 and the duplicate lockfile are still open                                                                                                        |
+| L-11 | Fixed        | Inline field errors are no longer live regions; the focused error summary announces them once                                                                                                                                            |
+| L-17 | Fixed        | The mobile menu renders into `<body>` and makes the rest of the page inert while open; tested                                                                                                                                            |
 | L-18 | Fixed (new)  | The E2E happy path selected an enquiry type that does not exist and used realistic organisation names; fixtures are now fictional                                                                                                        |
 
 Every other finding is unchanged and open.
+
+**Second round (same day):** M-09, M-16, M-18, L-09, L-11 and L-17 updated above. Verified: `pnpm build` passes,
+Playwright E2E 24 of 24 and axe 28 of 28 pass against the production build.
 
 **Verification after the fixes** (development environment values, so placeholders are allowed):
 
@@ -280,7 +287,7 @@ prop, and `about.portrait`. Still present: `convergence-schematic.tsx` (listed i
 - **Fix applied:** valid enquiry type; `example.com` address, "Example Organisation", an ACMA fictional-use
   phone number.
 
-### L-11 Repeated live-region announcements — Low — **Open**
+### L-11 Repeated live-region announcements — Low — **Fixed**
 
 - **Where:** `FieldError` has `role="alert"` (`field.tsx:17`) and the error summary is also an alert, so a
   failed submit announces each error twice. `Alert` always sets `role="alert"`, including for static
@@ -447,7 +454,7 @@ prop, and `about.portrait`. Still present: `convergence-schematic.tsx` (listed i
   `ProjectNote`, `DotGlobe`, `AsciiHeroPowerPlant`) to a layer sections may import, or update the layer table;
   keep `Header` a server component and make only the active-link part client-side.
 
-### M-09 `DESIGN.md` is missing from the repository — Medium — **Open**
+### M-09 `DESIGN.md` is missing from the repository — Medium — **Fixed**
 
 - **Evidence:** not in the working tree or git history; `TASKS.md` decisions log 2026-09-30 records it.
   `CLAUDE.md` §1, §4, §5, §8 and `PROJECT.md` §9 depend on it.
@@ -466,7 +473,7 @@ prop, and `about.portrait`. Still present: `convergence-schematic.tsx` (listed i
 - **Correction:** add a check to `check:content` that every image under `public/` (except fonts) has a record,
   and that every referenced figure id exists.
 
-### M-16 Handover documents describe behaviour the code does not have — Medium — **Partly fixed**
+### M-16 Handover documents describe behaviour the code does not have — Medium — **Mostly fixed**
 
 | Document                           | Statement                                                                               | Code                                                                                                    |
 | ---------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -560,14 +567,14 @@ Design source: `../deeptsight-website/DESIGN.md` (see "How this audit was done")
 - **Rule:** FR-05 (four columns: services, company, contact, legal/LinkedIn).
 - **Correction:** split contact and legal, or amend FR-05.
 
-### L-09 Fallback canonical and title on pages without metadata — Low — **Partly fixed**
+### L-09 Fallback canonical and title on pages without metadata — Low — **Fixed**
 
 - **Files:** `src/app/layout.tsx:15-17` sets `alternates.canonical` to the site root; `/insights` and the 404
   have no metadata of their own, so they inherit the home canonical and the default title.
 - **Rules:** SEO-03 (canonical on every page, which implies the correct one); A11Y-10 (unique `<title>`).
 - **Correction:** remove the root canonical; give the 404 its own title.
 
-### L-17 Mobile menu does not make the page behind it inert — Low — **Open**
+### L-17 Mobile menu does not make the page behind it inert — Low — **Fixed**
 
 - **File:** `src/components/layout/mobile-nav.tsx:96-102`. `aria-modal="true"` without `inert` on the rest of
   the page; some screen readers can still reach background content. The focus trap covers keyboard users.
@@ -577,7 +584,7 @@ Design source: `../deeptsight-website/DESIGN.md` (see "How this audit was done")
 
 ## 4. Technology violations
 
-### M-18 Installed stack departs from `TECH_STACK.md` — Medium — **Open**
+### M-18 Installed stack departs from `TECH_STACK.md` — Medium — **Partly fixed**
 
 | Item                                                             | `TECH_STACK.md`                                     | Repository                                                                                | Impact                                                                                |
 | ---------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -872,19 +879,19 @@ complete because the code exists").
 
 ### Medium priority issues
 
-Fixed: M-01 rate limiting; M-02 environment validation; M-04 duplicate sources of truth; M-12 mobile nav
-without JS; M-13 deprecated `priority`. Mostly or partly fixed: M-03 hardcoded copy; M-14 test coverage; M-16
-inaccurate documents. Open: M-05 sitemap dates; M-06 Insights not implemented; M-07 layer and client-boundary
-departures; M-08 design departures; M-09 `DESIGN.md` missing; M-10 CR-04 not enforced; M-11 credential status
-and expiry; M-15 unapproved media in production; M-17 analytics events; M-18 stack departures.
+Fixed: M-01 rate limiting; M-02 environment validation; M-04 duplicate sources of truth; M-09 `DESIGN.md`
+restored; M-12 mobile nav without JS; M-13 deprecated `priority`. Mostly or partly fixed: M-03 hardcoded copy;
+M-14 test coverage; M-16 inaccurate documents; M-18 stack departures. Open: M-05 sitemap dates; M-06 Insights
+not implemented; M-07 layer and client-boundary departures; M-08 design departures; M-10 CR-04 not enforced;
+M-11 credential status and expiry; M-15 unapproved media in production; M-17 analytics events.
 
 ### Low priority issues
 
-Fixed: L-04 `/design-system` in production; L-06 `Link` `UrlObject`; L-12 JSON-LD claims; L-18 E2E fixtures.
-Partly fixed: L-01 dead code; L-03 favicon and `global-error.tsx`; L-07 fifth-service friction; L-09 canonical
-and title fallbacks. Open: L-02 metadata duplication; L-05 ESLint rule gaps; L-08 footer columns; L-10
-formatting not enforced; L-11 duplicate announcements; L-13 unexplained files; L-14 known content
-inconsistencies; L-15 third-party budget on Contact; L-16 `security.txt` expiry; L-17 mobile menu not inert.
+Fixed: L-04 `/design-system` in production; L-06 `Link` `UrlObject`; L-09 canonical and title fallbacks; L-11
+duplicate announcements; L-12 JSON-LD claims; L-17 mobile menu not inert; L-18 E2E fixtures. Partly fixed: L-01
+dead code; L-03 favicon and `global-error.tsx`; L-07 fifth-service friction. Open: L-02 metadata duplication;
+L-05 ESLint rule gaps; L-08 footer columns; L-10 formatting not enforced; L-13 unexplained files; L-14 known
+content inconsistencies; L-15 third-party budget on Contact; L-16 `security.txt` expiry.
 
 ### Rule violations (by source document)
 
