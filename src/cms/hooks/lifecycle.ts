@@ -7,6 +7,8 @@ import {
   type GlobalBeforeChangeHook,
   type PayloadRequest,
 } from "payload";
+import { isProductionSite } from "../../lib/public-env";
+import { placeholderPaths } from "../../lib/placeholder";
 import { writeAudit } from "./audit";
 import { revalidateTags, shouldRevalidate } from "./revalidate";
 
@@ -52,6 +54,16 @@ function isPublishing(data: Record<string, unknown>): boolean {
   return data["_status"] === "published";
 }
 
+/** On the live site nothing carrying a placeholder marker can be published (Phase 11, CLAUDE.md §3). */
+function placeholderIssues(doc: Record<string, unknown>): PublishIssue[] {
+  if (!isProductionSite) return [];
+  return placeholderPaths(doc).map((path) => ({
+    path,
+    message:
+      "Still contains a placeholder marker ([PLACEHOLDER], TODO(CLIENT) or TBD — CLIENT). Replace it before publishing.",
+  }));
+}
+
 export function collectionBeforeChange(
   slug: string,
   validate: PublishValidator,
@@ -60,7 +72,7 @@ export function collectionBeforeChange(
     if (!isPublishing(data)) return data;
     const merged = { ...(originalDoc ?? {}), ...data } as Record<string, unknown>;
     if (context[IMPORT_PUBLISH] !== true) {
-      const issues = await validate(merged, req);
+      const issues = [...(await validate(merged, req)), ...placeholderIssues(merged)];
       if (issues.length > 0) throw toValidationError(issues, slug);
     }
     if (!merged["firstPublishedAt"]) data["firstPublishedAt"] = new Date().toISOString();
@@ -75,7 +87,7 @@ export function globalBeforeChange(
   return async ({ data, originalDoc, req }) => {
     if (!isPublishing(data)) return data;
     const merged = { ...(originalDoc ?? {}), ...data } as Record<string, unknown>;
-    const issues = await validate(merged, req);
+    const issues = [...(await validate(merged, req)), ...placeholderIssues(merged)];
     if (issues.length > 0) throw toValidationError(issues, undefined, slug);
     return data;
   };

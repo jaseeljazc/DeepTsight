@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: 10 done; next Phase 11
-- Last commit: see git log (cms(phase 10))
-- Next step: Phase 11, placeholder and integrity gates
+- Current phase: 11 done; next Phase 12
+- Last commit: see git log (cms(phase 11))
+- Next step: Phase 12, backup and restore
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -28,7 +28,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | Playwright E2E (prod build) | 24/24 | 24/24 |
 | axe (prod build) | 28/28 | 28/28 |
 | parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 23/23 |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 24/24 |
 | CMS E2E (`pnpm test:cms`) | n/a | 13 written, all skipped (B-1) |
 
 ## Dev-database backups
@@ -79,3 +79,6 @@ None (no database access).
 - **Phase 10** done (unit-verified; Local API check in smoke not run). Upload sanitiser (D-62): type by
   decoding, JPEG/PNG/WebP/AVIF only, re-encode without metadata; 10 MB limit; images.localPatterns (D-63).
   Unit: EXIF/GPS removed, orientation applied, SVG/GIF/text refused. Parity 0; Playwright 52/52; unit 23/23.
+- **Phase 11** done (static verified). scripts/check-content-output.ts in check:content: 19 markers in static
+  output (development); 13 in production mode, which fails as intended. Production publish block for
+  marked documents. Parity 0; unit 24/24.

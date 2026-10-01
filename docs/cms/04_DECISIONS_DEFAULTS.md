@@ -191,3 +191,6 @@ decision, reason, how to reverse.
   format. The imported images are therefore re-encoded too (dimensions and names unchanged).
 - **D-63** `images.localPatterns` now lists the only local image paths: `/images/**`, `/badges/**`,
   `/dither/**` and `/api/media/file/**`. Any other path is refused by the optimiser (checked: 400).
+- **D-64** `check-content-output.ts` runs as the last step of `check:content` (so on every build). In CMS
+  mode it reads the database the build uses. It reports field paths only. The publish guard also refuses,
+  on the live site only, to publish any document containing a marker (the import is exempt; D-48).
