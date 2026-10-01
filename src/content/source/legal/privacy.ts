@@ -1,4 +1,5 @@
 import type { LegalPage } from "../../types";
+import { siteSource } from "../site";
 
 export const privacySource: LegalPage = {
   slug: "privacy",
@@ -33,8 +34,7 @@ export const privacySource: LegalPage = {
     },
     {
       title: "6. Your rights and contact",
-      content:
-        "You have the right to request access to, or correction of, any personal information DeepTsight holds about you. For privacy questions or requests, email enquiries@deeptsight.com.",
+      content: `You have the right to request access to, or correction of, any personal information DeepTsight holds about you. For privacy questions or requests, email ${siteSource.email}.`,
     },
   ],
 };

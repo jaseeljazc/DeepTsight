@@ -1,4 +1,5 @@
 import type { LegalPage } from "../../types";
+import { siteSource } from "../site";
 
 export const accessibilitySource: LegalPage = {
   slug: "accessibility",
@@ -22,8 +23,7 @@ export const accessibilitySource: LegalPage = {
     },
     {
       title: "4. Feedback and contact",
-      content:
-        "If you find an accessibility barrier or have difficulty accessing content, email enquiries@deeptsight.com. [PLACEHOLDER] TODO(CLIENT): confirmed response time for accessibility feedback.",
+      content: `If you find an accessibility barrier or have difficulty accessing content, email ${siteSource.email}. [PLACEHOLDER] TODO(CLIENT): confirmed response time for accessibility feedback.`,
     },
   ],
 };

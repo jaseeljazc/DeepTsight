@@ -87,7 +87,7 @@ export default async function ServicesPage() {
         figure={figures["img-services-facility"]}
         aspect="wide"
         parallax
-        priority
+        preload
         sizes="100vw"
         captionClassName="mx-auto max-w-page px-5 sm:px-8"
       />

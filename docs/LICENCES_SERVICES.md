@@ -14,7 +14,7 @@ This register details all external services, keys, and licences required to oper
 
 ## 2. Environment Variables
 
-To run the site in production, the following environment variables must be securely configured in the hosting environment (e.g., Vercel):
+To run the site in production, the following environment variables must be securely configured in the hosting environment (e.g., Vercel). With `NEXT_PUBLIC_ENV="production"`, every variable below except `NEXT_PUBLIC_ANALYTICS_DOMAIN` is required: `scripts/check-env.ts` fails the build if one is missing, if `NEXT_PUBLIC_SITE_URL` is not https, or if a Cloudflare test key is used. `.env.example` lists them all.
 
 ### Client-Side Variables
 
@@ -36,5 +36,5 @@ _Never commit these values to the repository._
 
 ## 3. Fonts & Assets
 
-- **Fonts:** Archivo, IBM Plex Sans, and IBM Plex Mono. These are self-hosted via `@fontsource` and are licensed under the SIL Open Font License (OFL), permitting commercial use without royalty.
+- **Fonts:** Archivo, IBM Plex Sans, and IBM Plex Mono. These are downloaded once as WOFF2 files (`scripts/download-fonts.mjs`), committed to `public/fonts/` and self-hosted with `next/font/local`. They are licensed under the SIL Open Font License (OFL), permitting commercial use without royalty.
 - **Icons:** Lucide React (`lucide-react`). Licensed under the ISC License, permitting commercial use.

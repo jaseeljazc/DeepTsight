@@ -87,7 +87,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       return (
         <a
           ref={ref}
-          href={typeof href === "string" ? href : href.toString()}
+          href={typeof href === "string" ? href : (href.href ?? "")}
           target="_blank"
           rel="noopener noreferrer"
           className={classes}

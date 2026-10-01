@@ -18,11 +18,13 @@ When a user submits an enquiry at `/contact`:
 2. **Spam Prevention (Turnstile & Honeypot):**
    - A Cloudflare Turnstile token is generated (this runs entirely client-side and communicates securely with Cloudflare).
    - An invisible "honeypot" field ensures automated bots fail instantly.
-3. **Server Action Transmission:** Data is POSTed securely over HTTPS to the Next.js Server Action (`actions/enquiry.ts`).
-4. **Server-Side Security Checks:**
-   - The server verifies the Turnstile token with Cloudflare.
-   - The server verifies the submission took longer than 2.5 seconds (human speed check).
-   - The IP address is checked against a sliding-window rate limit (Upstash Redis). The payload itself is NOT sent to Redis.
+3. **Server Action Transmission:** Data is POSTed securely over HTTPS to the Next.js Server Action (`src/app/actions/enquiry.ts`).
+4. **Server-Side Security Checks**, in this order:
+   - The honeypot field must be empty.
+   - The fields are validated with the shared Zod schema. Invalid submissions stop here and do not count against the rate limit.
+   - The visitor's IP address is checked against a sliding-window rate limit (5 per hour per IP, 30 per hour overall) in Upstash Redis. The raw IP address is used as the key and expires with the one-hour window. The payload itself is NOT sent to Redis.
+   - The server verifies the Turnstile token with Cloudflare. On the live site a submission without a token is refused, so the form needs JavaScript there (open question Q-11 in `TASKS.md`).
+   - The server checks that at least 3 seconds passed between the Turnstile challenge (Cloudflare's own timestamp) and the submission.
 5. **Email Dispatch:** The validated payload is formatted into plain-text and HTML emails and securely POSTed to the **Resend API**.
 6. **Data Destruction:** The server responds to the client, and all variables holding the payload fall out of scope and are deleted from memory.
 
@@ -39,7 +41,7 @@ Strict rules (PRIV-08) govern the application logs. No user inputs (Names, Email
 
 The application communicates with the following external services during its operation:
 
-1. **Cloudflare (Turnstile):** Processes IP and browser fingerprint signals strictly for bot mitigation.
-2. **Upstash (Redis):** Stores IP address hashes and timestamps strictly for rate limiting to prevent abuse.
+1. **Cloudflare (Turnstile):** Processes IP and browser signals strictly for bot mitigation.
+2. **Upstash (Redis):** Stores the visitor's IP address (as the rate-limit key) and request timestamps for up to one hour, strictly for rate limiting.
 3. **Resend (Email API):** Receives the enquiry payloads strictly for the purpose of transmitting the email to the DeepTsight team.
 4. **Plausible (Analytics):** Receives anonymous, aggregated pageview and event data.

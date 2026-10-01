@@ -66,6 +66,28 @@ export function Header({ navItems, ctaLabel, className }: HeaderProps) {
           <MobileNav items={navItems} ctaLabel={ctaLabel} />
         </div>
       </Container>
+
+      {/* The menu button needs JavaScript. Without it, small screens get the links as a plain
+          row instead, so navigation still works (REQUIREMENTS.md §8). */}
+      <noscript>
+        <nav aria-label="Primary" className="border-rule border-t lg:hidden">
+          <Container>
+            <ul className="flex flex-wrap items-center gap-x-1">
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    variant="nav"
+                    aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Container>
+        </nav>
+      </noscript>
     </header>
   );
 }

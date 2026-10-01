@@ -4,6 +4,7 @@ import { getFigures, getPageContent, getService, getServices, getSite } from "@/
 import { ServiceTemplate } from "@/components/content/service-template";
 import { serviceLd, breadcrumbLd } from "@/lib/jsonld";
 import { JsonLd } from "@/components/seo/json-ld";
+import { absoluteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-static";
 
@@ -62,9 +63,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   const sLd = serviceLd(service, site);
   const bcLd = breadcrumbLd([
-    { name: "Home", url: "https://deeptsight.com.au" },
-    { name: "Services", url: "https://deeptsight.com.au/services" },
-    { name: service.title, url: `https://deeptsight.com.au/services/${service.slug}` },
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Services", url: absoluteUrl("/services") },
+    { name: service.title, url: absoluteUrl(`/services/${service.slug}`) },
   ]);
 
   return (

@@ -13,6 +13,7 @@ import {
   enquiryOptionsSchema,
 } from "./schema";
 import type {
+  Credential,
   Site,
   HomeContent,
   AboutContent,
@@ -68,12 +69,29 @@ function showPending(): boolean {
   return process.env["NEXT_PUBLIC_ENV"] !== "production";
 }
 
+/** Looks a credential up in the register by id. A missing id is a content error and fails the build. */
+function credentialById(id: string): Credential {
+  for (const group of credentialsSource) {
+    const item = group.items.find((candidate) => candidate.id === id);
+    if (item) return item;
+  }
+  throw new Error(`Home trust strip refers to unknown credential "${id}".`);
+}
+
 export async function getHomeContent(): Promise<HomeContent> {
   const pending = showPending();
+  const { trustStripIds, ...home } = homeSource;
+
+  for (const capability of home.coreCapabilities) {
+    if (!servicesSource.some((service) => service.slug === capability.slug)) {
+      throw new Error(`Home core capabilities refer to unknown service "${capability.slug}".`);
+    }
+  }
+
   const filteredHome: HomeContent = {
-    ...homeSource,
-    trustStrip: homeSource.trustStrip.filter((item) => item.verified || pending),
-    selectedProof: homeSource.selectedProof.filter((item) => item.disclosureApproved || pending),
+    ...home,
+    trustStrip: trustStripIds.map(credentialById).filter((item) => item.verified || pending),
+    selectedProof: home.selectedProof.filter((item) => item.disclosureApproved || pending),
   };
 
   return homeContentSchema.parse(filteredHome);
@@ -153,7 +171,7 @@ export async function getSeo(route: string): Promise<SeoEntry> {
     title: "Industrial engineering and OT cybersecurity",
     description:
       "Engineering consulting for critical infrastructure and heavy industry: control systems, OT cybersecurity, IT/OT segregation and plant reliability.",
-    canonical: `https://deeptsight.com.au${route === "/" ? "" : route}`,
+    canonical: route,
   };
 
   return seoEntrySchema.parse(entry);

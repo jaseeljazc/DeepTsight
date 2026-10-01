@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
 import { fontArchivo, fontPlexSans, fontPlexMono } from "@/styles/fonts";
+import { isProductionSite, publicEnv } from "@/lib/public-env";
+import { siteUrl } from "@/lib/site-url";
 import "@/styles/globals.css";
-
-const siteUrl = process.env["NEXT_PUBLIC_SITE_URL"] ?? "https://deeptsight.com.au";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  // Preview, staging and local builds are never indexed (SEO-07).
+  ...(isProductionSite ? {} : { robots: { index: false, follow: false } }),
   title: {
     template: "%s | DeepTsight Consulting",
     default: "DeepTsight Consulting | Industrial engineering and OT cybersecurity",
   },
   description:
     "Engineering consulting for critical infrastructure and heavy industry: control systems, OT cybersecurity, IT/OT segregation and plant reliability.",
-  alternates: {
-    canonical: siteUrl,
-  },
   openGraph: {
     title: "DeepTsight Consulting | Industrial engineering and OT cybersecurity",
     description:
@@ -37,7 +36,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const analyticsDomain = process.env["NEXT_PUBLIC_ANALYTICS_DOMAIN"];
+  const analyticsDomain = publicEnv.analyticsDomain;
 
   return (
     <html

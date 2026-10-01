@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isProductionSite } from "@/lib/public-env";
 import { Button } from "@/components/primitives/button";
 import { Link } from "@/components/primitives/link";
 import { Field } from "@/components/primitives/field";
@@ -53,6 +55,9 @@ const swatches = [
 
 /** Internal harness, excluded from indexing. Every primitive in its main states. */
 export default function DesignSystemPage() {
+  // Internal specimen: never served on the live site (TASKS.md Phase 2).
+  if (isProductionSite) notFound();
+
   return (
     <main id="main-content" tabIndex={-1} className="bg-ground min-h-screen outline-none">
       <Container className="py-10">

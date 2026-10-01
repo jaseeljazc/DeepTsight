@@ -45,7 +45,7 @@ export default async function HomePage() {
       <JsonLd data={localBusinessLd(site)} />
 
       {/* Nine homepage sections in the order set by PROJECT.md §7 (FR-11) */}
-      <HeroSection hero={home.hero} figure={figures[home.media.hero]} />
+      <HeroSection hero={home.hero} ctaLabels={site.ctaLabels} />
       <TrustStrip items={home.trustStrip} copy={home.trustStripCopy} />
       <CapabilityRail
         title={home.coreCapabilitiesTitle}
@@ -63,7 +63,7 @@ export default async function HomePage() {
       <SelectedProof title={home.selectedProofTitle} proofs={home.selectedProof} />
       <PerthContext perthContext={home.perthContext} />
       <FinalCta
-        finalCta={home.finalCta}
+        finalCta={{ ...home.finalCta, ctaLabel: site.ctaLabels.primary }}
         email={site.email}
         phone={site.phone}
         band={figures[home.media.close]}

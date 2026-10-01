@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 import { getServices, getArticles, getSite } from "@/content";
+import { siteUrl } from "@/lib/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = await getSite();
   const services = await getServices();
   const articles = await getArticles();
-  const baseUrl = "https://deeptsight.com.au";
+  const baseUrl = siteUrl;
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {

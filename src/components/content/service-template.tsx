@@ -65,7 +65,7 @@ export function ServiceTemplate({
         figure={figures[service.media.hero]}
         aspect="wide"
         parallax
-        priority
+        preload
         sizes="100vw"
         captionClassName="mx-auto max-w-page px-5 sm:px-8"
       />

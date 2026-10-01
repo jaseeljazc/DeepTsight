@@ -14,7 +14,7 @@
     "test:e2e": "playwright test tests/e2e",
     "test:a11y": "playwright test tests/a11y",
     "test:perf": "lhci autorun",
-    "check:content": "tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts",
+    "check:content": "tsx scripts/check-env.ts && tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts",
     "analyze": "ANALYZE=true next build",
     "tokens": "tsx scripts/generate-tokens.ts",
     "dither": "tsx scripts/generate-dither.ts"

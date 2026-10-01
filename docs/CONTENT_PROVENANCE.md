@@ -6,11 +6,11 @@ not reproduced here or on the site (CLAUDE.md §6).
 
 Sources:
 
-- **FD**: `docs/sources/DeepTsight_founder_details.md` — the founder's reviewed answers to
-  `docs/review/DeepTsight_founder_details_review.pdf`. **Source of truth** (user, 2026-09-30).
+- **FD**: `../deeptsight-private/sources/DeepTsight_founder_details.md` — the founder's reviewed answers to
+  `../deeptsight-private/review/DeepTsight_founder_details_review.pdf`. **Source of truth** (user, 2026-09-30).
   Where it differs from LI or RM, FD wins.
-- **LI**: `docs/sources/Linkedin_profile_data.md`
-- **RM**: `docs/sources/DeepTsight_Content_Reference_README.md`
+- **LI**: `../deeptsight-private/sources/Linkedin_profile_data.md`
+- **RM**: `../deeptsight-private/sources/DeepTsight_Content_Reference_README.md`
 - **User**: answered in session
 
 | Field                             | Value                                                                                                                                 | Source                 | Applied    | Status                                      |

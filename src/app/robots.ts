@@ -1,12 +1,10 @@
 import type { MetadataRoute } from "next";
+import { isProductionSite } from "@/lib/public-env";
+import { absoluteUrl } from "@/lib/site-url";
 
 export default function robots(): MetadataRoute.Robots {
-  const isProduction =
-    process.env["NEXT_PUBLIC_ENV"] === "production" || process.env.NODE_ENV === "production";
-  const baseUrl = "https://deeptsight.com.au";
-
-  if (!isProduction) {
-    // Disallow all crawlers outside production (SEO-07)
+  // Decided by NEXT_PUBLIC_ENV only: `next build` sets NODE_ENV=production for previews too (SEO-07).
+  if (!isProductionSite) {
     return {
       rules: [
         {
@@ -25,6 +23,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/design-system", "/contact/thank-you"],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: absoluteUrl("/sitemap.xml"),
   };
 }

@@ -1,11 +1,6 @@
 import type { Site, AboutContent, Service, Article } from "@/content/types";
-
-function hasPlaceholder(val?: string | null): boolean {
-  if (!val) return false;
-  return (
-    val.includes("[PLACEHOLDER]") || val.includes("TBD — CLIENT") || val.includes("TODO(CLIENT)")
-  );
-}
+import { isPlaceholder as hasPlaceholder } from "@/lib/placeholder";
+import { absoluteUrl, siteUrl } from "@/lib/site-url";
 
 /**
  * Organization JSON-LD schema (SEO-04)
@@ -21,7 +16,7 @@ export function organizationLd(site: Site) {
     "@type": "Organization",
     name: site.displayName,
     legalName: site.legalName,
-    url: "https://deeptsight.com.au",
+    url: siteUrl,
     email: site.email,
     ...(site.phone && !hasPlaceholder(site.phone) ? { telephone: site.phone } : {}),
     ...(site.address && !hasPlaceholder(site.address)
@@ -51,7 +46,7 @@ export function localBusinessLd(site: Site) {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     name: site.displayName,
-    url: "https://deeptsight.com.au",
+    url: siteUrl,
     ...(site.phone && !hasPlaceholder(site.phone) ? { telephone: site.phone } : {}),
     email: site.email,
     // No street address is published (founder instruction); locality only.
@@ -66,7 +61,6 @@ export function localBusinessLd(site: Site) {
       "@type": "Country",
       name: "Australia",
     },
-    priceRange: "$$$$",
   };
 }
 
@@ -74,15 +68,19 @@ export function localBusinessLd(site: Site) {
  * Person JSON-LD schema (About page) (SEO-04)
  */
 export function personLd(about: AboutContent, site: Site) {
+  if (hasPlaceholder(about.founder.name) || hasPlaceholder(about.founder.jobTitle)) {
+    return null;
+  }
+
   return {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: "Deepak Pazhoor",
-    jobTitle: "Founder and principal consultant",
+    name: about.founder.name,
+    jobTitle: about.founder.jobTitle,
     worksFor: {
       "@type": "Organization",
       name: site.displayName,
-      url: "https://deeptsight.com.au",
+      url: siteUrl,
     },
     description: about.narrative.title,
     ...(site.linkedIn && !hasPlaceholder(site.linkedIn) ? { sameAs: [site.linkedIn] } : {}),
@@ -106,9 +104,9 @@ export function serviceLd(service: Service, site: Site) {
     provider: {
       "@type": "Organization",
       name: site.displayName,
-      url: "https://deeptsight.com.au",
+      url: siteUrl,
     },
-    url: `https://deeptsight.com.au/services/${service.slug}`,
+    url: absoluteUrl(`/services/${service.slug}`),
   };
 }
 
@@ -126,13 +124,13 @@ export function articleLd(article: Article, site: Site) {
     headline: article.title,
     description: article.summary,
     datePublished: article.publishedAt,
-    dateModified: article.publishedAt,
+    dateModified: article.updatedAt ?? article.publishedAt,
     publisher: {
       "@type": "Organization",
       name: site.displayName,
-      url: "https://deeptsight.com.au",
+      url: siteUrl,
     },
-    url: `https://deeptsight.com.au/insights/${article.slug}`,
+    url: absoluteUrl(`/insights/${article.slug}`),
   };
 }
 

@@ -1,13 +1,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { isPlaceholder } from "@/lib/placeholder";
 
-const MARKERS = ["[PLACEHOLDER]", "TODO(CLIENT)", "TBD — CLIENT"];
-
-/** True when a content string still carries an unverified-copy marker (CLAUDE.md §3). */
-export function isPlaceholder(text: string | undefined | null): boolean {
-  if (!text) return false;
-  return MARKERS.some((marker) => text.includes(marker));
-}
+export { isPlaceholder };
 
 export type PlaceholderProps = {
   label?: string;

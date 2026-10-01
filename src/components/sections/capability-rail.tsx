@@ -15,7 +15,7 @@ export type CapabilityRailProps = {
   intro: string;
   capabilities: HomeContent["coreCapabilities"];
   services: Service[];
-  /** The line on the common terminal where the four disciplines meet. */
+  /** The line on the common terminal where the disciplines meet. */
   convergenceLabel: string;
 };
 
@@ -23,8 +23,10 @@ const OUTPUTS_SHOWN = 3;
 const STANDARDS_SHOWN = 2;
 
 /**
- * The four disciplines as terminals on one rail, each a single link to its service page (FR-14),
- * wired together onto a common terminal: one practitioner across all four.
+ * Every service as a terminal on one rail, each a single link to its service page (FR-14), wired
+ * together onto a common terminal: one practitioner across all of them. The service list drives
+ * the rail, so a new service appears here without a Home edit (FR-19); `capabilities` only
+ * supplies Home's shorter title and outcome where one exists.
  */
 export function CapabilityRail({
   title,
@@ -33,7 +35,7 @@ export function CapabilityRail({
   services,
   convergenceLabel,
 }: CapabilityRailProps) {
-  const serviceFor = (slug: string) => services.find((service) => service.slug === slug);
+  const summaryFor = (slug: string) => capabilities.find((capability) => capability.slug === slug);
 
   return (
     <Section aria-labelledby="capabilities-heading" spacing="tight">
@@ -47,18 +49,20 @@ export function CapabilityRail({
         </div>
 
         <ul className="rail-stagger mt-12 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
-          {capabilities.map((capability, index) => {
-            const service = serviceFor(capability.slug);
-            const headingId = `capability-${capability.slug}`;
-            const outputs =
-              service?.scopeAndOutputs.flatMap((group) => group.outputs).slice(0, OUTPUTS_SHOWN) ??
-              [];
-            const standards = service?.standards.slice(0, STANDARDS_SHOWN).join(" · ");
+          {services.map((service, index) => {
+            const summary = summaryFor(service.slug);
+            const title = summary?.title ?? service.title;
+            const outcome = summary?.outcome ?? service.outcome;
+            const headingId = `capability-${service.slug}`;
+            const outputs = service.scopeAndOutputs
+              .flatMap((group) => group.outputs)
+              .slice(0, OUTPUTS_SHOWN);
+            const standards = service.standards.slice(0, STANDARDS_SHOWN).join(" · ");
 
             return (
-              <li key={capability.slug} className="rail-rise">
+              <li key={service.slug} className="rail-rise">
                 <NextLink
-                  href={`/services/${capability.slug}`}
+                  href={`/services/${service.slug}`}
                   aria-labelledby={headingId}
                   className="group border-ink-900 flex h-full flex-col gap-4 border-t pt-6"
                 >
@@ -67,12 +71,10 @@ export function CapabilityRail({
                     id={headingId}
                     className="font-display text-ink-900 group-hover:text-primary text-h3-lg font-medium transition-colors duration-150"
                   >
-                    {capability.title}
+                    {title}
                   </h3>
-                  {service && <p className="text-ink-700 text-small">{service.summary}</p>}
-                  <p className="text-ink-900 text-small border-rule border-t pt-4">
-                    {capability.outcome}
-                  </p>
+                  <p className="text-ink-700 text-small">{service.summary}</p>
+                  <p className="text-ink-900 text-small border-rule border-t pt-4">{outcome}</p>
                   {outputs.length > 0 && (
                     <ul className="text-ink-700 text-small divide-rule border-rule divide-y border-t">
                       {outputs.map((output) => (

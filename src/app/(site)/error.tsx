@@ -23,9 +23,14 @@ export default function ErrorBoundary({
         <h1 className="font-display text-h1 text-ink-900 font-medium">
           This page could not be loaded
         </h1>
+        {/* Client component: it cannot read site content, so it points to the contact page
+            rather than repeating the email address here. */}
         <p className="text-lead text-ink-700 mt-6">
-          Try again, or go back to the home page. If it keeps happening, email
-          enquiries@deeptsight.com.
+          Try again, or go back to the home page. If it keeps happening, the email address is on the{" "}
+          <Link href="/contact" variant="inline">
+            contact page
+          </Link>
+          .
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
           <Button variant="primary" onClick={() => reset()}>

@@ -1,6 +1,6 @@
 # Content gaps
 
-The website needs these facts and the sources in `docs/sources/` don't supply them, or supply
+The website needs these facts and the founder sources (kept outside the repo in `../deeptsight-private/sources/`, CLAUDE.md §6) don't supply them, or supply
 them in a form that can't be published yet. Until each one is resolved, its placeholder stays on
 the site and the production build fails on it (`scripts/check-placeholders.ts`).
 

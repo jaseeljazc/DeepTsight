@@ -3,7 +3,8 @@ import { z } from "zod";
 export const seoEntrySchema = z.object({
   title: z.string(),
   description: z.string(),
-  canonical: z.string(),
+  /** Site path ("/about"). The origin is added from NEXT_PUBLIC_SITE_URL. */
+  canonical: z.string().startsWith("/"),
   ogImage: z.string().optional(),
 });
 
@@ -53,7 +54,6 @@ export const serviceSchema = z.object({
   shortTitle: z.string(),
   summary: z.string(),
   outcome: z.string(),
-  icon: z.string(),
   challenge: z.string(),
   whyItMatters: z.string(),
   capability: z.string(),
@@ -143,39 +143,41 @@ export const figureSchema = z.discriminatedUnion("kind", [
   imageSlotSchema.extend({ kind: z.literal("slot") }),
 ]);
 
+/** Closing call to action as rendered. The button label always comes from `site.ctaLabels`. */
 export const finalCtaSchema = z.object({
   title: z.string(),
   supportingText: z.string(),
   ctaLabel: z.string(),
 });
 
+/** Closing call to action copy as stored. The adapter's callers add the label from the site. */
+const finalCtaCopySchema = finalCtaSchema.omit({ ctaLabel: true });
+
 export const homeContentSchema = z.object({
   hero: z.object({
     headline: z.string(),
     supportingText: z.string(),
-    primaryCta: z.string(),
-    secondaryCta: z.string(),
     facts: z.array(
       z.object({ label: z.string(), value: z.string(), mono: z.boolean().optional() }),
     ),
   }),
   trustStrip: z.array(credentialSchema),
   media: z.object({
-    hero: z.string(),
     problems: z.string(),
     why: z.string(),
-    perth: z.string(),
     close: z.string(),
-    portrait: z.string(),
   }),
   coreCapabilitiesTitle: z.string(),
   coreCapabilitiesIntro: z.string(),
+  /**
+   * Home-specific short title and outcome per service, keyed by service slug. Optional: a
+   * service without an entry shows its own title and outcome (FR-19).
+   */
   coreCapabilities: z.array(
     z.object({
       slug: z.string(),
       title: z.string(),
       outcome: z.string(),
-      icon: z.string(),
     }),
   ),
   whyDeepTsight: z.object({
@@ -217,7 +219,7 @@ export const homeContentSchema = z.object({
     officeArea: z.string(),
     sectors: z.array(z.string()),
   }),
-  finalCta: finalCtaSchema,
+  finalCta: finalCtaCopySchema,
   trustStripCopy: z.object({
     title: z.string(),
     registerLinkLabel: z.string(),
@@ -226,7 +228,20 @@ export const homeContentSchema = z.object({
   }),
 });
 
+/**
+ * Home content as stored. The trust strip holds credential ids; the adapter resolves them against
+ * the credentials register, so each credential is recorded once.
+ */
+export const homeSourceSchema = homeContentSchema
+  .omit({ trustStrip: true })
+  .extend({ trustStripIds: z.array(z.string()) });
+
 export const aboutContentSchema = z.object({
+  /** For the Person structured data on About. */
+  founder: z.object({
+    name: z.string(),
+    jobTitle: z.string(),
+  }),
   narrative: z.object({
     title: z.string(),
     paragraphs: z.array(z.string()),
@@ -237,11 +252,6 @@ export const aboutContentSchema = z.object({
       description: z.string(),
     }),
   ),
-  portrait: z.object({
-    src: z.string(),
-    alt: z.string(),
-    caption: z.string(),
-  }),
   /** Figure ids from the media register. */
   media: z.object({
     portrait: z.string(),
@@ -268,9 +278,6 @@ export const legalPageSchema = z.object({
     }),
   ),
 });
-
-/** Closing call to action copy. The button label is resolved from the site CTA labels by the adapter. */
-const finalCtaCopySchema = finalCtaSchema.omit({ ctaLabel: true });
 
 const pageIntroSchema = z.object({
   title: z.string(),

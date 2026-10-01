@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { colorTokens as c } from "@/styles/tokens.generated";
+import { siteHost } from "@/lib/site-url";
 
 export const alt = "DeepTsight Consulting: industrial engineering and OT cybersecurity, Perth";
 export const size = {
@@ -63,7 +64,7 @@ export default async function Image() {
         }}
       >
         <span>Perth, Western Australia</span>
-        <span style={{ color: c.primary }}>deeptsight.com.au</span>
+        <span style={{ color: c.primary }}>{siteHost}</span>
       </div>
     </div>,
     {

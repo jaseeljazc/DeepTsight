@@ -279,7 +279,7 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
           width={GLOBE_SIZE}
           height={GLOBE_SIZE}
           unoptimized
-          priority
+          preload
           className="h-auto w-full select-none"
         />
       )}

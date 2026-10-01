@@ -14,6 +14,8 @@ import {
   imageSlotSchema,
   figureSchema,
   homeContentSchema,
+  homeSourceSchema,
+  finalCtaSchema,
   aboutContentSchema,
   legalPageSchema,
   pagesContentSchema,
@@ -34,6 +36,8 @@ export type MediaAsset = z.infer<typeof mediaAssetSchema>;
 export type ImageSlot = z.infer<typeof imageSlotSchema>;
 export type FigureData = z.infer<typeof figureSchema>;
 export type HomeContent = z.infer<typeof homeContentSchema>;
+export type HomeSource = z.infer<typeof homeSourceSchema>;
+export type FinalCtaData = z.infer<typeof finalCtaSchema>;
 export type AboutContent = z.infer<typeof aboutContentSchema>;
 export type LegalPage = z.infer<typeof legalPageSchema>;
 export type LegalSlug = LegalPage["slug"];

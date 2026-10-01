@@ -4,11 +4,12 @@ import { Link } from "@/components/primitives/link";
 import { SpecBlock } from "@/components/primitives/spec-block";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { AsciiHeroPowerPlant } from "@/components/content/ascii-hero-power-plant";
-import type { FigureData, HomeContent } from "@/content/types";
+import type { CtaLabels, HomeContent } from "@/content/types";
 
 export type HeroSectionProps = {
   hero: HomeContent["hero"];
-  figure?: FigureData | undefined;
+  /** Site-wide CTA labels (site.ts), so each label is stored once. */
+  ctaLabels: CtaLabels;
 };
 
 /**
@@ -17,7 +18,7 @@ export type HeroSectionProps = {
  * - Right: Transparent ASCII telemetry rendering of the power plant cooling towers and ground.
  * - Nothing rendered below the hero viewport.
  */
-export function HeroSection({ hero }: HeroSectionProps) {
+export function HeroSection({ hero, ctaLabels }: HeroSectionProps) {
   return (
     <section
       aria-labelledby="hero-heading"
@@ -49,9 +50,9 @@ export function HeroSection({ hero }: HeroSectionProps) {
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 md:mt-8">
                 <Link href="/contact" variant="buttonPrimary" withArrow>
-                  {hero.primaryCta}
+                  {ctaLabels.primary}
                 </Link>
-                <Link href="/services">{hero.secondaryCta}</Link>
+                <Link href="/services">{ctaLabels.secondary}</Link>
               </div>
             </div>
 

@@ -14,7 +14,7 @@ Ticked items are done.
 - [ ] Credential numbers and IDs, and the founder's sign-off on each credential (all signed off and badged 2026-09-30; numbers for CFS, CRAS, CDS, CMS and CAP® still open)
 - [ ] Website domain (.com or .com.au): the email is enquiries@deeptsight.com
 - [ ] One name each for the mining employer (Hancock or Roy Hill) and ATCO (Power or Australia), and the exact master's title
-- [x] Answers to the 8 questions in the founder review PDF (`docs/review/`)
+- [x] Answers to the 8 questions in the founder review PDF (now in `../deeptsight-private/review/`, outside the repo)
 
 ## Still to build
 

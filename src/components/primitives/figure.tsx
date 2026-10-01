@@ -23,7 +23,8 @@ export type FigureProps = {
   parallax?: boolean;
   /** Wipes the image in from the top as it enters the viewport. Never on above-the-fold images. */
   reveal?: boolean;
-  priority?: boolean;
+  /** Preloads the image. Only the first above-the-fold figure on a page (PERF-10). */
+  preload?: boolean;
   sizes?: string;
   onDark?: boolean;
   /** Keeps the caption aligned to the page container when the frame bleeds edge to edge. */
@@ -40,7 +41,7 @@ export function Figure({
   aspect = "landscape",
   parallax = false,
   reveal = false,
-  priority = false,
+  preload = false,
   sizes = "(max-width: 768px) 100vw, 60vw",
   onDark = false,
   captionClassName,
@@ -68,7 +69,7 @@ export function Figure({
               src={figure.src}
               alt={figure.alt}
               fill
-              priority={priority}
+              preload={preload}
               sizes={sizes}
               className="photo-grade object-cover"
             />

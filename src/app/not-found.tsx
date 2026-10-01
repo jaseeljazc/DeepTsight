@@ -4,6 +4,7 @@ import NextLink from "next/link";
 import { Link } from "@/components/primitives/link";
 import { DrawingRule } from "@/components/primitives/drawing-rule";
 import { Wordmark } from "@/components/layout/wordmark";
+import { siteHost } from "@/lib/site-url";
 
 /**
  * Rendered outside the site layout, so it carries its own landmarks and a way home (FR-08).
@@ -46,7 +47,7 @@ export default function NotFound() {
           </div>
           <dl className="border-ink-900 grid grid-cols-2 border-t lg:col-span-4 lg:grid-cols-1 lg:border-t-0 lg:border-l">
             {[
-              ["Document", "deeptsight.com.au"],
+              ["Document", siteHost],
               ["Sheet", "Not found"],
               ["Status", "404"],
             ].map(([label, value]) => (

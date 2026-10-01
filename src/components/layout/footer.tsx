@@ -6,6 +6,7 @@ import { DrawingRule } from "@/components/primitives/drawing-rule";
 import { MarkedText, isPlaceholder } from "@/components/primitives/placeholder";
 import type { Site } from "@/content/types";
 import { cn } from "@/lib/utils";
+import { siteHost } from "@/lib/site-url";
 
 export type FooterProps = {
   site: Site;
@@ -28,7 +29,7 @@ export function Footer({ site, services, className }: FooterProps) {
     { label: "Entity", value: site.legalName },
     { label: "ABN", value: site.abn ?? "TBD — CLIENT" },
     { label: "Location", value: "Perth, Western Australia" },
-    { label: "Document", value: "deeptsight.com.au" },
+    { label: "Document", value: siteHost },
     { label: "Revision", value: REVISION },
     { label: "Copyright", value: `© ${year} ${site.legalName}` },
   ];

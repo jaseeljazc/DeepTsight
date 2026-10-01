@@ -6,6 +6,10 @@ import type { AboutContent } from "../types";
  * (CLAUDE.md §6).
  */
 export const aboutSource: AboutContent = {
+  founder: {
+    name: "Deepak Pazhoor",
+    jobTitle: "Founder and principal consultant",
+  },
   narrative: {
     title: "Engineering judgement formed on operating industrial assets",
     paragraphs: [
@@ -37,11 +41,6 @@ export const aboutSource: AboutContent = {
         "Operational risk and technical trade-offs are explained in clear commercial and engineering terms.",
     },
   ],
-  portrait: {
-    src: "/images/founder-portrait.jpg",
-    alt: "Portrait placeholder for the founder. Mock image, not a photograph of the founder.",
-    caption: "[PLACEHOLDER] Founder portrait pending an approved photograph",
-  },
   media: {
     portrait: "img-portrait-founder",
     site: "img-about-site",

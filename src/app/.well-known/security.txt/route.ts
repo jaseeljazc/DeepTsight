@@ -1,16 +1,20 @@
+import { getSite } from "@/content";
+import { absoluteUrl } from "@/lib/site-url";
+
 export const dynamic = "force-static";
 
-export function GET() {
+export async function GET() {
+  const site = await getSite();
   const expires = new Date();
   expires.setFullYear(expires.getFullYear() + 1);
 
   const content = [
-    "# DeepTsight Consulting Security Policy",
-    "Contact: mailto:enquiries@deeptsight.com",
+    `# ${site.displayName} security policy`,
+    `Contact: mailto:${site.email}`,
     `Expires: ${expires.toISOString()}`,
     "Preferred-Languages: en",
-    "Canonical: https://deeptsight.com.au/.well-known/security.txt",
-    "Policy: https://deeptsight.com.au/legal/privacy",
+    `Canonical: ${absoluteUrl("/.well-known/security.txt")}`,
+    `Policy: ${absoluteUrl("/legal/privacy")}`,
     "",
   ].join("\n");
 

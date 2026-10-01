@@ -50,3 +50,7 @@ next-env.d.ts
 /.gemini/
 /.impeccable/
 /~/
+
+# Founder source material lives outside the repo (../deeptsight-private/, CLAUDE.md §6)
+/docs/sources/
+/docs/review/

@@ -52,7 +52,7 @@ export default async function AboutPage() {
             <Figure
               figure={figures[about.media.portrait]}
               aspect="portrait"
-              priority
+              preload
               sizes="(max-width: 1024px) 100vw, 40vw"
               className="lg:sticky-below-header lg:sticky"
             />

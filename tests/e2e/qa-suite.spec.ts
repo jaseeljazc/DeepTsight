@@ -72,6 +72,50 @@ test.describe("Phase 7 Quality Assurance Test Suite", () => {
     }
   });
 
+  test("mobile menu traps focus, closes on Escape and returns focus (FR-04)", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.waitForLoadState("load");
+
+    const trigger = page.getByRole("button", { name: "Menu" });
+    await trigger.click();
+
+    const menu = page.getByRole("dialog", { name: "Site menu" });
+    await expect(menu).toBeVisible();
+    // Focus starts on the first menu link.
+    await expect(menu.getByRole("link", { name: "Home" })).toBeFocused();
+
+    // Tabbing many times never leaves the menu.
+    for (let i = 0; i < 15; i++) {
+      await page.keyboard.press("Tab");
+      const insideMenu = await page.evaluate(
+        () =>
+          document.getElementById("mobile-navigation-menu")?.contains(document.activeElement) ??
+          false,
+      );
+      expect(insideMenu, `focus left the menu after ${i + 1} tabs`).toBe(true);
+    }
+
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test("keyboard reaches the primary navigation in reading order", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/");
+    await page.waitForLoadState("load");
+
+    // Skip link, wordmark, then the primary navigation from its first item.
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    const primaryNav = page.getByRole("navigation", { name: "Primary" });
+    await expect(primaryNav.getByRole("link", { name: "Home" })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(primaryNav.getByRole("link", { name: "About" })).toBeFocused();
+  });
+
   test("404 page renders gracefully with return navigation", async ({ page }) => {
     const response = await page.goto("/non-existent-page-for-testing");
     expect(response?.status()).toBe(404);

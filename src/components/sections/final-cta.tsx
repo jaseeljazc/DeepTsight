@@ -6,10 +6,10 @@ import { Link } from "@/components/primitives/link";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { Figure } from "@/components/primitives/figure";
 import { SpecBlock, type SpecItem } from "@/components/primitives/spec-block";
-import type { FigureData, HomeContent } from "@/content/types";
+import type { FigureData, FinalCtaData } from "@/content/types";
 
 export type FinalCtaProps = {
-  finalCta: HomeContent["finalCta"];
+  finalCta: FinalCtaData;
   email?: string;
   phone?: string;
   figure?: FigureData;

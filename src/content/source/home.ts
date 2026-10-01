@@ -1,18 +1,17 @@
-import type { HomeContent } from "../types";
+import type { HomeSource } from "../types";
 
 /*
- * Trust strip entries mirror the verified credentials register (founder-confirmed 2026-09-30).
+ * The trust strip lists ids from the credentials register (credentials.ts), so each credential is
+ * recorded once. CTA labels come from site.ts.
  * Selected proof entries are unverified drafts, gated by disclosureApproved = false until the
  * client confirms wording and permission. In non-production builds they render as marked placeholders.
  */
-export const homeSource: HomeContent = {
+export const homeSource: HomeSource = {
   hero: {
     headline:
       "Deep technical insight for safer, more reliable and more secure industrial operations.",
     supportingText:
       "DeepTsight combines hands-on control systems and E&I engineering experience with practical OT cybersecurity and reliability thinking to solve complex operational challenges without losing sight of plant availability, lifecycle value or implementation reality.",
-    primaryCta: "Discuss your challenge",
-    secondaryCta: "Explore capabilities",
     facts: [
       { label: "Based", value: "Perth, WA. Working Australia-wide" },
       { label: "Disciplines", value: "Control systems, OT security, segregation, reliability" },
@@ -21,46 +20,11 @@ export const homeSource: HomeContent = {
     ],
   },
   media: {
-    hero: "img-hero-control-room",
     problems: "img-ot-industrial-rack",
     why: "img-services-facility",
-    perth: "img-perth-industrial-hub",
     close: "img-home-close",
-    portrait: "img-portrait-founder",
   },
-  trustStrip: [
-    {
-      id: "cred-meng",
-      category: "qualifications",
-      title: "Master's degree, instrumentation, control and automation",
-      issuer: "Edith Cowan University",
-      verified: true,
-    },
-    {
-      id: "cred-peng",
-      category: "registrations",
-      title: "Chartered Professional Engineer (CPEng)",
-      issuer: "Engineers Australia",
-      badge: "/badges/ea-cpeng.png",
-      verified: true,
-    },
-    {
-      id: "cred-isa-62443",
-      category: "certifications",
-      title: "ISA/IEC 62443 Cybersecurity Expert",
-      issuer: "International Society of Automation (ISA)",
-      badge: "/badges/isa-62443-expert.png",
-      verified: true,
-    },
-    {
-      id: "cred-cap",
-      category: "certifications",
-      title: "Certified Automation Professional (CAP®)",
-      issuer: "International Society of Automation (ISA)",
-      badge: "/badges/isa-cap.png",
-      verified: true,
-    },
-  ],
+  trustStripIds: ["qual-meng", "reg-peng", "cert-isa-62443", "cert-cap"],
   trustStripCopy: {
     title: "Credentials on record",
     registerLinkLabel: "View the full register",
@@ -80,28 +44,24 @@ export const homeSource: HomeContent = {
       title: "Control systems and E&I engineering",
       outcome:
         "Reduce delivery risk, improve operability and integrate change within live industrial environments.",
-      icon: "Cpu",
     },
     {
       slug: "ot-cybersecurity",
       title: "OT cybersecurity and network architecture",
       outcome:
         "Improve visibility, segmentation and resilience with controls that respect plant availability.",
-      icon: "ShieldCheck",
     },
     {
       slug: "it-ot-segregation",
       title: "IT/OT segregation",
       outcome:
         "Reduce exposure while preserving the operational data flows and supportability the plant depends on.",
-      icon: "Network",
     },
     {
       slug: "plant-reliability",
       title: "Plant reliability and asset lifecycle",
       outcome:
         "Improve resilience, prioritise expenditure and balance technical risk against lifecycle cost.",
-      icon: "Activity",
     },
   ],
   whyDeepTsight: {
@@ -222,6 +182,5 @@ export const homeSource: HomeContent = {
     title: "Talk through an operational challenge",
     supportingText:
       "Speak directly with Deepak Pazhoor about control systems, OT security architecture or plant reliability.",
-    ctaLabel: "Discuss your challenge",
   },
 };

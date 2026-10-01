@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Turnstile } from "@marsidev/react-turnstile";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { enquirySchema, type EnquiryData } from "@/content";
 import type { EnquiryOptions } from "@/content/types";
 import { submitEnquiry, type EnquiryActionState } from "@/app/actions/enquiry";
@@ -23,8 +23,8 @@ import { Textarea } from "@/components/primitives/textarea";
 import { Checkbox } from "@/components/primitives/checkbox";
 import { Button } from "@/components/primitives/button";
 import { trackEvent } from "@/lib/analytics";
+import { publicEnv } from "@/lib/public-env";
 import { ErrorSummary, type ErrorSummaryItem } from "./error-summary";
-import { EnquirySent } from "./enquiry-sent";
 
 const initialActionState: EnquiryActionState = {
   success: false,
@@ -42,17 +42,16 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
 
   const renderedAtRef = useRef<number>(0);
   const hasStartedRef = useRef<boolean>(false);
+  const turnstileRef = useRef<TurnstileInstance | undefined>(undefined);
   const [turnstileToken, setTurnstileToken] = useState<string>("");
-  const [clientSubmitCount, setClientSubmitCount] = useState<number>(0);
+  /** Set when a submit fails client validation; the summary is focused once it has rendered. */
+  const focusSummaryRef = useRef<boolean>(false);
 
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
     () => false,
   );
-
-  const turnstileSiteKey =
-    process.env["NEXT_PUBLIC_TURNSTILE_SITE_KEY"] || "1x00000000000000000000AA";
 
   const handleInteraction = () => {
     if (renderedAtRef.current === 0) {
@@ -71,6 +70,8 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
   } = useForm<EnquiryData>({
     resolver: zodResolver(enquirySchema),
     mode: "onBlur",
+    // The error summary takes focus on a failed submit (FR-33); its links lead to each field.
+    shouldFocusError: false,
     defaultValues: {
       name: state.values?.name ?? "",
       workEmail: state.values?.workEmail ?? "",
@@ -102,12 +103,23 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
 
   const hasErrors = errorList.length > 0 || Boolean(state.formError);
 
-  // Focus error summary when submission fails (FR-33, A11Y-13)
+  /*
+   * Focus the error summary after a failed submit only (FR-33, A11Y-13). An error that appears on
+   * blur does neither of the two things below, so focus stays where the visitor is typing.
+   * 1. Client validation: React Hook Form renders its errors after calling onInvalid, so the flag
+   *    is checked after every render until the summary exists.
+   * 2. Server response: the summary renders in the same pass as the new state.
+   */
   useEffect(() => {
-    if (hasErrors) {
-      errorSummaryRef.current?.focus();
+    if (focusSummaryRef.current && errorSummaryRef.current) {
+      focusSummaryRef.current = false;
+      errorSummaryRef.current.focus();
     }
-  }, [hasErrors, clientSubmitCount, state]);
+  });
+
+  useEffect(() => {
+    errorSummaryRef.current?.focus();
+  }, [state]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     handleSubmit(
@@ -126,6 +138,9 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
               formData.set("rendered_at", String(renderedAtRef.current));
             }
             formAction(formData);
+            // Turnstile tokens are single-use: request a fresh one in case this attempt fails.
+            setTurnstileToken("");
+            turnstileRef.current?.reset();
           }
         });
       },
@@ -134,15 +149,11 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
         const invalidFields = Object.keys(errors).join(", ");
         trackEvent("form_validation_error", { invalidFields });
 
-        // Client validation failed; trigger error summary focus
-        setClientSubmitCount((prev) => prev + 1);
+        // Client validation failed: focus the summary once the errors have rendered
+        focusSummaryRef.current = true;
       },
     )(e);
   };
-
-  if (state.success) {
-    return <EnquirySent />;
-  }
 
   return (
     <div className="relative">
@@ -327,7 +338,12 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
         {/* Cloudflare Turnstile Widget (FR-35) */}
         {mounted && (
           <div className="py-2">
-            <Turnstile siteKey={turnstileSiteKey} onSuccess={(token) => setTurnstileToken(token)} />
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={publicEnv.turnstileSiteKey}
+              onSuccess={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken("")}
+            />
           </div>
         )}
 
