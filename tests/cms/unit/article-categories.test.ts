@@ -111,3 +111,26 @@ test("articlesInCategory keeps order and returns nothing for an unknown slug", (
   );
   assert.deepEqual(articlesInCategory(articles, "nope"), []);
 });
+
+import { updatedOn } from "../../../src/lib/insights";
+
+test("updatedOn is null when there is no update or it is the same day", () => {
+  assert.equal(updatedOn({ publishedAt: "2026-10-01T01:00:00.000Z" }), null);
+  assert.equal(
+    updatedOn({
+      publishedAt: "2026-10-01T01:00:00.000Z",
+      updatedAt: "2026-10-01T05:00:00.000Z",
+    }),
+    null,
+  );
+});
+
+test("updatedOn returns the update date when it is a later day", () => {
+  assert.equal(
+    updatedOn({
+      publishedAt: "2026-10-01T01:00:00.000Z",
+      updatedAt: "2026-10-09T01:00:00.000Z",
+    }),
+    "2026-10-09T01:00:00.000Z",
+  );
+});

@@ -1,4 +1,5 @@
 import type { ArticleSummary } from "@/content/types";
+import { formatDate } from "@/lib/dates";
 
 /** Addresses under /insights that are routes, not articles. */
 export const RESERVED_ARTICLE_SLUGS: readonly string[] = ["category"];
@@ -22,4 +23,12 @@ export function articlesInCategory(articles: ArticleSummary[], slug: string): Ar
   return articles.filter((article) =>
     article.categories.some((category) => category.slug === slug),
   );
+}
+
+/** The update date to show, or null when there is none or it falls on the publication day. */
+export function updatedOn(article: { publishedAt: string; updatedAt?: string }): string | null {
+  if (!article.updatedAt) return null;
+  return formatDate(article.updatedAt) === formatDate(article.publishedAt)
+    ? null
+    : article.updatedAt;
 }

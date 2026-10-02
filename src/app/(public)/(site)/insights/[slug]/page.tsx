@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getArticle, getArticles, getSite } from "@/content";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/layout/page-header";
+import { Link } from "@/components/primitives/link";
 import { SpecBlock } from "@/components/primitives/spec-block";
 import { RichText } from "@/components/content/rich-text";
 import { JsonLd } from "@/components/seo/json-ld";
 import { articleLd, breadcrumbLd } from "@/lib/jsonld";
+import { updatedOn } from "@/lib/insights";
 import { absoluteUrl } from "@/lib/site-url";
 import { formatDate } from "@/lib/dates";
 
@@ -50,6 +53,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const [site, article] = await Promise.all([getSite(), getArticle(slug)]);
   if (!site.insightsEnabled || !article) notFound();
 
+  const updated = updatedOn(article);
+
   return (
     <>
       <JsonLd data={articleLd(article, site)} />
@@ -78,9 +83,36 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 ),
                 mono: true,
               },
+              ...(updated
+                ? [
+                    {
+                      label: "Updated",
+                      value: <time dateTime={updated}>{formatDate(updated)}</time>,
+                      mono: true,
+                    },
+                  ]
+                : []),
               { label: "Reading time", value: `${article.readingMinutes} min`, mono: true },
-              ...(article.tags.length > 0
-                ? [{ label: "Categories", value: article.tags.join(", ") }]
+              ...(article.categories.length > 0
+                ? [
+                    {
+                      label: "Categories",
+                      value: (
+                        <ul>
+                          {article.categories.map((category) => (
+                            <li key={category.slug}>
+                              <NextLink
+                                href={`/insights/category/${category.slug}`}
+                                className="link-rule"
+                              >
+                                {category.name}
+                              </NextLink>
+                            </li>
+                          ))}
+                        </ul>
+                      ),
+                    },
+                  ]
                 : []),
             ]}
           />
@@ -89,6 +121,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <Container className="section-b grid grid-cols-1 gap-x-8 lg:grid-cols-12">
         <div className="lg:col-span-8 lg:col-start-5">
           <RichText value={article.body} />
+          <div className="border-rule mt-16 flex flex-wrap items-center justify-between gap-4 border-t pt-8">
+            <Link href="/insights">All {site.navLabels.insights.toLowerCase()}</Link>
+            <Link href="/contact" variant="buttonPrimary">
+              {site.ctaLabels.primary}
+            </Link>
+          </div>
         </div>
       </Container>
     </>
