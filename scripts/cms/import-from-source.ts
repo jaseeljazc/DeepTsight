@@ -317,7 +317,7 @@ async function importContent(payload: Payload): Promise<void> {
         title: page.title,
         lastUpdated: page.lastUpdated,
         reference: page.reference,
-        status: page.status,
+        adviserStatus: page.status,
         sections: page.sections,
         ...PUBLISHED,
       },

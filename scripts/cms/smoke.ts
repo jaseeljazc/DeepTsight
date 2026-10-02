@@ -234,7 +234,7 @@ async function smoke(payload: Payload): Promise<void> {
         title: "Test terms",
         lastUpdated: "October 2026",
         reference: "Test reference",
-        status: "pending-adviser",
+        adviserStatus: "pending-adviser",
         sections: [{ title: "1. Test", content: "Test content" }],
         _status: "published",
       },

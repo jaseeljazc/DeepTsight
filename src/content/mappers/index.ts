@@ -336,7 +336,7 @@ export function mapLegalPage(doc: Doc): LegalPage {
     title: str(doc, "title"),
     lastUpdated: str(doc, "lastUpdated"),
     reference: str(doc, "reference"),
-    status: str(doc, "status") === "approved" ? "approved" : "pending-adviser",
+    status: str(doc, "adviserStatus") === "approved" ? "approved" : "pending-adviser",
     sections: rows(doc, "sections").map((row) => ({
       title: str(row, "title"),
       content: str(row, "content"),

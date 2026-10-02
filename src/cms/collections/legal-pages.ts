@@ -20,7 +20,7 @@ export const LegalPages: CollectionConfig = {
     group: GROUPS.website,
     preview: (doc) => previewUrl(`/legal/${String(doc["slug"] ?? "")}`),
     useAsTitle: "title",
-    defaultColumns: ["title", "status", "lastUpdated", "_status"],
+    defaultColumns: ["title", "adviserStatus", "lastUpdated", "_status"],
     description:
       "Privacy notice, terms of use and accessibility statement. Wording must come from the client's adviser; do not edit it yourself.",
   },
@@ -28,7 +28,7 @@ export const LegalPages: CollectionConfig = {
   versions: contentVersions,
   hooks: {
     beforeChange: [collectionBeforeChange("legal-pages", validateLegalPage)],
-    afterChange: [collectionAfterChange("legal-pages", { flags: ["status"], tags })],
+    afterChange: [collectionAfterChange("legal-pages", { flags: ["adviserStatus"], tags })],
     afterDelete: [collectionAfterDelete("legal-pages", tags)],
   },
   fields: [
@@ -61,7 +61,9 @@ export const LegalPages: CollectionConfig = {
       },
     },
     {
-      name: "status",
+      // Not "status": Payload's draft field `_status` would share the same database enum name.
+      name: "adviserStatus",
+      label: "Status",
       type: "select",
       required: true,
       defaultValue: "pending-adviser",

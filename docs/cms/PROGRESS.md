@@ -32,7 +32,7 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
 | CMS E2E (`pnpm test:cms`) | n/a | 14 written, all skipped (B-1) |
 
 ## Dev-database backups
-None (no database access).
+- `.data/backups/deeptsight_cms_dev-20261002-121308.dump` (taken before the first migration; empty database).
 
 ## Phase log
 - **Phase 0** done. Baseline green; parity harness built; DB check blocked (B-1).
@@ -97,3 +97,8 @@ None (no database access).
   parity 0; Playwright 56/56; unit 28/28; CMS E2E 14 tests written, all skipped (B-1).
 - Morning report: docs/cms/MORNING_REPORT.md. No server left running (every server was started and stopped by
   the Node runner).
+- **2026-10-02 first run against real databases** (owner supplied DATABASE_URI*): `pnpm cms:check-db` ok x3.
+  First migrate failed (D-73: enum clash on legal pages `status`); fixed, migrations regenerated (D-74). Now:
+  fresh test DB migrates, `pnpm cms:smoke` passes (12 steps), dev migrated, import into dev run twice with
+  identical counts (4 services, 2 notes, 15 credentials, 4 groups, 3 legal pages, 5 types, 26 media).
+  Still to run: `pnpm cms:test` (E2E, cms parity), admin sign-in, `pnpm cms:prove-backup`.

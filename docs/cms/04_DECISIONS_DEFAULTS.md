@@ -219,3 +219,12 @@ decision, reason, how to reverse.
 - **D-72** Because `NEXT_PUBLIC_ENV=production` now requires `DATABASE_URI`, `PAYLOAD_SECRET` and
   `MFA_ENCRYPTION_KEY` (as the plan specifies), a production build of this branch needs them even with
   `CONTENT_SOURCE=static`. `main` is unaffected.
+- **D-73** (found on the first run against a real database, 2026-10-02) The legal pages' approval field was
+  named `status`, which collides with Payload's draft field `_status`: both produce the Postgres enum
+  `enum_legal_pages_status`, and the migration failed with `invalid input value for enum ... "pending-adviser"`.
+  The field is now `adviserStatus` (label still "Status"); the Zod field stays `status`, the mapper
+  translates. No offline check could catch this. Reverse: not needed.
+- **D-74** The three migrations created after `admin_security` (`collections`, `enquiries`, `insights`) were
+  never applied to any database (dev and test had only the first two recorded), so they were deleted and
+  replaced by one regenerated migration, `20261002_064614_cms_content`. Reverse: n/a (history rewritten only
+  for migrations that never ran anywhere).
