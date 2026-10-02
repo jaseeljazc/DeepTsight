@@ -30,6 +30,21 @@ const dirname = path.dirname(filename);
 /** The only origin allowed to make credentialed requests to the admin and API. */
 const origin = publicEnv.siteUrl;
 
+/**
+ * The CMS connection string. An empty value makes `pg` fall back to defaults and fail with a
+ * confusing SASL password error, so a missing DATABASE_URI is reported by name instead. Builds
+ * (which never open the database) and the offline `payload` commands are not blocked.
+ */
+function databaseUri(): string {
+  const uri = process.env["DATABASE_URI"]?.trim() ?? "";
+  if (uri === "" && process.env["NEXT_PHASE"] !== "phase-production-build") {
+    throw new Error(
+      "DATABASE_URI is not set. Add it to .env.local (see .env.example), then restart the server.",
+    );
+  }
+  return uri;
+}
+
 export default buildConfig({
   secret: process.env["PAYLOAD_SECRET"] ?? "",
   serverURL: origin,
@@ -84,7 +99,7 @@ export default buildConfig({
   email: noEmailAdapter,
   db: postgresAdapter({
     pool: {
-      connectionString: process.env["DATABASE_URI"] ?? "",
+      connectionString: databaseUri(),
       // `next build` runs several workers, each with its own pool.
       max: 5,
     },
