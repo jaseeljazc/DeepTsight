@@ -37,10 +37,18 @@ async function setInsights(request: APIRequestContext, enabled: boolean) {
 test("published article renders, draft stays hidden, feed is valid", async ({ request, page }) => {
   await fullLogin(request, readAccount(INSIGHTS_FILE));
   const created: number[] = [];
+  let categoryId: number | undefined;
   try {
+    const category = await request.post("/api/article-categories", {
+      data: { name: "Test category", slug: "test-category", _status: "published" },
+    });
+    expect(category.status()).toBe(201);
+    categoryId = ((await category.json()) as { doc: { id: number } }).doc.id;
+
     const published = await request.post("/api/articles", {
       data: {
         slug: PUBLISHED,
+        categories: [categoryId],
         title: "Test published note",
         summary: "Test summary for the published note & its <feed> entry.",
         body: body("Test body text for the published note."),
@@ -98,8 +106,38 @@ test("published article renders, draft stays hidden, feed is valid", async ({ re
       xml,
     );
     expect(wellFormed).toBe(true);
+
+    // The menu links to Insights while it is on.
+    await page.goto("/");
+    await expect(page.locator('header a[href="/insights"]')).toHaveCount(1);
+
+    // The category page lists the article; an unknown category answers 404.
+    await page.goto("/insights/category/test-category");
+    await expect(page.getByRole("link", { name: "Test published note" })).toBeVisible();
+    expect((await page.request.get("/insights/category/no-such-category")).status()).toBe(404);
+
+    // Axe on every Insights page type, and no sideways scroll at the four review widths.
+    for (const path of [
+      "/insights",
+      "/insights/category/test-category",
+      `/insights/${PUBLISHED}`,
+    ]) {
+      for (const width of [360, 768, 1280, 1920]) {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(path);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        );
+        expect(overflow, `${path} at ${width}px`).toBe(false);
+      }
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+        .analyze();
+      expect(results.violations, path).toEqual([]);
+    }
   } finally {
     await setInsights(request, false);
     for (const id of created) await request.delete(`/api/articles/${id}`);
+    if (categoryId !== undefined) await request.delete(`/api/article-categories/${categoryId}`);
   }
 });

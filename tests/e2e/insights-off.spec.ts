@@ -6,7 +6,12 @@ import { test, expect } from "@playwright/test";
  */
 test.describe("Insights switched off", () => {
   test("index, article and feed answer 404", async ({ request }) => {
-    for (const path of ["/insights", "/insights/any-article", "/insights/rss.xml"]) {
+    for (const path of [
+      "/insights",
+      "/insights/any-article",
+      "/insights/category/any-category",
+      "/insights/rss.xml",
+    ]) {
       expect((await request.get(path)).status(), path).toBe(404);
     }
   });
