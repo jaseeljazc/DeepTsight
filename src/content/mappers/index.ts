@@ -432,17 +432,19 @@ export function mapSite(doc: Doc): SiteSource {
 /** An article as the site shows it. Categories are given as names, published ones only. */
 export function mapArticle(doc: Doc, draft = false): Article {
   const body = doc["body"];
+  const categories = refs(doc, "categories")
+    .map(asDoc)
+    .filter((category) => draft || category["_status"] === "published")
+    .map((category) => ({ slug: str(category, "slug"), name: str(category, "name") }))
+    .filter((category) => category.slug.length > 0 && category.name.length > 0);
   return {
     slug: str(doc, "slug"),
     title: str(doc, "title"),
     summary: str(doc, "summary"),
     publishedAt: opt(doc, "publishedAt") ?? opt(doc, "updatedAt") ?? "",
     readingMinutes: Math.max(1, num(doc, "readingMinutes", 1)),
-    tags: refs(doc, "categories")
-      .map(asDoc)
-      .filter((category) => draft || category["_status"] === "published")
-      .map((category) => str(category, "name"))
-      .filter((name) => name.length > 0),
+    categories,
+    tags: categories.map((category) => category.name),
     updatedAt: updatedAt(doc),
     status: str(doc, "_status") === "published" ? "published" : "draft",
     body: (body && typeof body === "object" ? body : { root: { children: [] } }) as Article["body"],

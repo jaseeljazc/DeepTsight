@@ -296,13 +296,17 @@ export async function getArticles(): Promise<ArticleSummary[]> {
   return read(["articles"], ["articles"], async (draft) => {
     const docs = await findAll("articles", draft, 1, ["-publishedAt", "title"]);
     return docs.map((doc) => {
-      const { slug, title, summary, publishedAt, readingMinutes, tags } = mapArticle(doc, draft);
+      const { slug, title, summary, publishedAt, readingMinutes, categories, tags } = mapArticle(
+        doc,
+        draft,
+      );
       return articleSummarySchema.parse({
         slug,
         title,
         summary,
         publishedAt,
         readingMinutes,
+        categories,
         tags,
       });
     });

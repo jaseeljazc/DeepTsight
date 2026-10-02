@@ -254,6 +254,8 @@ export const articleSummarySchema = z.object({
   summary: z.string(),
   publishedAt: z.string(),
   readingMinutes: z.number(),
+  /** Published categories, for the filter and the category links. `tags` holds the same names. */
+  categories: z.array(z.object({ slug: z.string(), name: z.string() })),
   tags: z.array(z.string()),
 });
 
