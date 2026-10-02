@@ -39,11 +39,11 @@ export function FinalCta({
   const aside = particulars ? "particulars" : figure ? "figure" : null;
 
   return (
-    <Section ground="ground-deep" id={id} aria-labelledby="final-cta-heading">
+    <Section ground="ground-deep" spacing="tight" id={id} aria-labelledby="final-cta-heading">
       {rail && <RailTag label="Enquiry" />}
       <Container
         rail={rail}
-        className="rail-enter grid grid-cols-1 gap-x-8 gap-y-14 lg:grid-cols-12"
+        className="rail-enter grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-12"
       >
         {band && (
           <div className="lg:col-span-12">

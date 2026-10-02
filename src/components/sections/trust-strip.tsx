@@ -22,7 +22,7 @@ export function TrustStrip({ items, copy }: TrustStripProps) {
   if (items.length === 0) return null;
 
   return (
-    <Section ground="ground-deep" spacing="tight" aria-labelledby="trust-heading">
+    <Section ground="ground-deep" spacing="strip" aria-labelledby="trust-heading">
       <RailTag label={copy.title} />
       <Container rail className="rail-enter">
         <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">

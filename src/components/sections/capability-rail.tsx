@@ -52,7 +52,7 @@ export function CapabilityRail({
           </p>
         </div>
 
-        <ul className="rail-stagger mt-12 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="rail-stagger mt-10 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 md:mt-12 md:gap-y-12 xl:grid-cols-4">
           {services.map((service, index) => {
             const summary = summaryFor(service.slug);
             const title = summary?.title ?? service.title;

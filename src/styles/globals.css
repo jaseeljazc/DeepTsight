@@ -219,6 +219,8 @@
     --section-space: clamp(5rem, 9vw, 9.5rem);
     /* vertical rhythm between sections */
     --section-space-tight: clamp(3.5rem, 6vw, 6rem);
+    --section-space-strip: clamp(2.5rem, 4vw, 3.5rem);
+    /* a single-row band such as the credentials strip */
     --focus-width: 2px;
     --focus-offset: 2px;
     --anchor-gap: 1.5rem;
@@ -356,6 +358,10 @@
 
 @utility section-y-tight {
   padding-block: var(--section-space-tight);
+}
+
+@utility section-y-strip {
+  padding-block: var(--section-space-strip);
 }
 
 @utility tabular {

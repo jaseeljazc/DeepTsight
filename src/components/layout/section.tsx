@@ -5,7 +5,7 @@ export type SectionGround = "ground" | "ground-deep" | "panel" | "ink";
 
 export type SectionProps = React.HTMLAttributes<HTMLElement> & {
   ground?: SectionGround;
-  spacing?: "default" | "tight" | "none";
+  spacing?: "default" | "tight" | "strip" | "none";
   hasBorderTop?: boolean;
 };
 
@@ -31,6 +31,7 @@ export function Section({
         groundClasses[ground],
         spacing === "default" && "section-y",
         spacing === "tight" && "section-y-tight",
+        spacing === "strip" && "section-y-strip",
         hasBorderTop && (ground === "ink" ? "border-rule-dark border-t" : "border-rule border-t"),
         className,
       )}

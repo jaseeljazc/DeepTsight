@@ -17,7 +17,7 @@ export function WhyDeepTsight({ whyDeepTsight, figure }: WhyDeepTsightProps) {
     <Section ground="panel" spacing="tight" aria-labelledby="why-heading">
       <RailTag label={whyDeepTsight.title} />
       <Container rail className="rail-enter grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-12">
-        <div className="lg:col-span-6">
+        <div className="lg:sticky-below-header lg:sticky lg:col-span-6 lg:self-start">
           <SectionHeader
             id="why-heading"
             title={whyDeepTsight.title}

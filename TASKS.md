@@ -447,3 +447,7 @@ Record every judgement call the documents did not cover: what was chosen and why
   content kept as the fallback behind `CONTENT_SOURCE`; MFA built in house rather than with a plugin; every
   further decision is D-16 onwards in `docs/cms/04_DECISIONS_DEFAULTS.md`.
 - 2026-10-01: next upgraded 16.3.5 → 16.3.7 after `pnpm audit` reported a critical next/og advisory (D-69).
+- 2026-10-02: Home white-space pass. Added `--section-space-strip` (and `Section spacing="strip"`) for the
+  single-row credentials strip; the closing enquiry section moved to tight spacing. The problems table stacks
+  below md with explicit table roles so screen readers keep row and column semantics. "Why DeepTsight" left
+  column is sticky from lg. `--section-space-tight` deliberately left unchanged because other pages use it.

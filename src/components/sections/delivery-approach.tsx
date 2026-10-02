@@ -25,9 +25,15 @@ export function DeliveryApproach({ deliveryApproach }: DeliveryApproachProps) {
           size="h1"
           onDark
         />
-        <div className="sequence">
-          <DotRamp onDark className="mt-12 hidden md:mt-16 lg:block" />
-          <ProcessSequence steps={deliveryApproach.steps} onDark className="mt-10" rail timelineRoot={false} />
+        <div className="sequence mt-10">
+          <DotRamp onDark className="hidden lg:block" />
+          <ProcessSequence
+            steps={deliveryApproach.steps}
+            onDark
+            className="lg:mt-6"
+            rail
+            timelineRoot={false}
+          />
         </div>
       </Container>
     </Section>
