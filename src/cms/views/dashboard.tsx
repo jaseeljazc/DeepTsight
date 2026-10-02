@@ -1,174 +1,149 @@
 import * as React from "react";
 import Link from "next/link";
 import {
+  ArrowRight,
+  ArrowUp,
   BadgeCheck,
+  CalendarDays,
   ExternalLink,
+  FileText,
   Image as ImageIcon,
   Inbox,
   Layers,
+  Minus,
+  Newspaper,
   Pencil,
+  Settings,
+  ShieldCheck,
+  Trash2,
   Upload,
+  type LucideIcon,
 } from "lucide-react";
-import type { AdminViewServerProps, Payload } from "payload";
+import type { AdminViewServerProps } from "payload";
 import { isAdmin } from "../access";
+import { EnquiryChart } from "./dashboard-chart";
+import { loadDashboard, type RecentKind } from "./dashboard-data";
+import {
+  ACTION_WORDS,
+  NAMES_TARGET,
+  ago,
+  exact,
+  sentence,
+  today,
+  toneFor,
+  type Tone,
+} from "./dashboard-format";
 
 /*
- * The admin dashboard: counts, the latest enquiries, recent changes and shortcuts. Replaces
- * Payload's default grid of collection cards (the sidebar already lists every collection).
- * A server component reading through the Local API after an isAdmin check (user + verified second
- * factor); without it nothing is queried or shown. Styles: src/app/(payload)/admin-theme.css.
+ * The admin dashboard: counts with recent change, the latest edits, recent activity, enquiries per
+ * month and shortcuts. Replaces Payload's default grid of collection cards (the sidebar lists every
+ * collection). A server component reading through the Local API after an isAdmin check (user +
+ * verified second factor); without it nothing is queried or shown.
+ * Styles: src/app/(payload)/admin-theme.css.
  */
 
 const ADMIN = "/admin/collections";
 
-const ACTION_WORDS: Record<string, string> = {
-  create: "Created",
-  update: "Updated",
-  delete: "Deleted",
-  publish: "Published",
-  unpublish: "Unpublished",
-  login: "Signed in",
-  "login-blocked": "Blocked a sign-in",
-  "mfa-enrolled": "Set up the authenticator",
-  "mfa-verified": "Verified an authenticator code",
-  "mfa-failed": "Entered a wrong authenticator code",
-  "recovery-code-used": "Used a recovery code",
-  "flag-change": "Changed an approval setting",
+const KIND: Record<RecentKind, { label: string; Icon: LucideIcon; tone: Tone }> = {
+  service: { label: "Service", Icon: Layers, tone: "blue" },
+  credential: { label: "Credential", Icon: BadgeCheck, tone: "green" },
+  article: { label: "Article", Icon: Newspaper, tone: "orange" },
+  image: { label: "Image", Icon: ImageIcon, tone: "purple" },
 };
 
-const EMAIL_STATUS: Record<string, { label: string; tone: "ok" | "bad" | "" }> = {
-  sent: { label: "Sent", tone: "ok" },
-  failed: { label: "Failed", tone: "bad" },
-  pending: { label: "Pending", tone: "" },
-  simulated: { label: "Not sent (test)", tone: "" },
-};
-
-/** Only changes to content name what changed; sign-in events do not (their target is just the accounts list). */
-const NAMES_TARGET = new Set(["create", "update", "delete", "publish", "unpublish", "flag-change"]);
-
-const relative = new Intl.RelativeTimeFormat("en-AU", { numeric: "auto" });
-
-/** "2 hours ago", "yesterday". The exact time is kept in the element's title. */
-function ago(value: string | undefined): string {
-  if (!value) return "";
-  const seconds = Math.round((new Date(value).getTime() - Date.now()) / 1000);
-  const steps: [Intl.RelativeTimeFormatUnit, number][] = [
-    ["day", 86400],
-    ["hour", 3600],
-    ["minute", 60],
-  ];
-  for (const [unit, size] of steps) {
-    if (Math.abs(seconds) >= size) return relative.format(Math.round(seconds / size), unit);
-  }
-  return "just now";
+function Tile({ tone, children }: { tone: Tone; children: React.ReactNode }) {
+  return (
+    <span className={`dts-tile dts-tile--${tone}`} aria-hidden="true">
+      {children}
+    </span>
+  );
 }
 
-function exact(value: string | undefined): string {
-  if (!value) return "";
-  return new Date(value).toLocaleString("en-AU", {
-    timeZone: "Australia/Perth",
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
-function sentence(slug: string | null | undefined): string {
-  const text = (slug ?? "").replace(/-/g, " ");
-  return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
-}
-
-async function load(payload: Payload) {
-  const base = { overrideAccess: true } as const;
-  const [
-    services,
-    servicesOn,
-    credentials,
-    credentialsVerified,
-    media,
-    mediaApproved,
-    unread,
-    failed,
-    enquiries,
-    activity,
-  ] = await Promise.all([
-    payload.count({ ...base, collection: "services" }),
-    payload.count({ ...base, collection: "services", where: { enabled: { equals: true } } }),
-    payload.count({ ...base, collection: "credentials" }),
-    payload.count({ ...base, collection: "credentials", where: { verified: { equals: true } } }),
-    payload.count({ ...base, collection: "media" }),
-    payload.count({ ...base, collection: "media", where: { approvedForPublic: { equals: true } } }),
-    payload.count({ ...base, collection: "enquiries", where: { read: { equals: false } } }),
-    payload.count({
-      ...base,
-      collection: "enquiries",
-      where: { emailStatus: { equals: "failed" } },
-    }),
-    payload.find({ ...base, collection: "enquiries", sort: "-submittedAt", limit: 5, depth: 0 }),
-    payload.find({ ...base, collection: "audit-log", sort: "-at", limit: 8, depth: 0 }),
-  ]);
-  return {
-    services: { total: services.totalDocs, on: servicesOn.totalDocs },
-    credentials: { total: credentials.totalDocs, verified: credentialsVerified.totalDocs },
-    media: { total: media.totalDocs, approved: mediaApproved.totalDocs },
-    unread: unread.totalDocs,
-    failed: failed.totalDocs,
-    enquiries: enquiries.docs,
-    activity: activity.docs,
-  };
+function activityIcon(action: string, collection: string | null | undefined): LucideIcon {
+  if (action === "delete") return Trash2;
+  if (!NAMES_TARGET.has(action)) return ShieldCheck;
+  if (collection === "media") return ImageIcon;
+  if (collection === "enquiries") return Inbox;
+  if (collection === "users" || action === "flag-change") return Settings;
+  return FileText;
 }
 
 export async function DashboardView({ initPageResult }: AdminViewServerProps) {
   const { req } = initPageResult;
   if (!isAdmin(req)) return null;
 
-  const data = await load(req.payload);
-  const name = (req.user as { name?: string | null; email?: string } | null)?.name;
+  const data = await loadDashboard(req.payload);
+  const name = (req.user as { name?: string | null } | null)?.name;
+  const { stats } = data;
 
-  const stats = [
+  const cards: {
+    href: string;
+    Icon: LucideIcon;
+    tone: Tone;
+    label: string;
+    value: number;
+    added: number;
+    note: string;
+  }[] = [
     {
       href: `${ADMIN}/services`,
       Icon: Layers,
+      tone: "blue",
       label: "Services",
-      value: data.services.total,
-      note: `${data.services.on} shown on the site`,
+      value: stats.services.total,
+      added: stats.services.added,
+      note: `${stats.services.on} shown on the site`,
     },
     {
       href: `${ADMIN}/credentials`,
       Icon: BadgeCheck,
+      tone: "green",
       label: "Credentials",
-      value: data.credentials.total,
-      note: `${data.credentials.verified} verified`,
+      value: stats.credentials.total,
+      added: stats.credentials.added,
+      note: `${stats.credentials.verified} verified`,
     },
     {
       href: `${ADMIN}/media`,
       Icon: ImageIcon,
+      tone: "purple",
       label: "Images",
-      value: data.media.total,
-      note: `${data.media.approved} approved for public use`,
+      value: stats.media.total,
+      added: stats.media.added,
+      note: `${stats.media.approved} approved for public use`,
     },
     {
       href: `${ADMIN}/enquiries`,
       Icon: Inbox,
-      label: "Unread enquiries",
-      value: data.unread,
-      note:
-        data.failed > 0
-          ? `${data.failed} email notification${data.failed === 1 ? "" : "s"} failed`
-          : "All notifications sent",
+      tone: "orange",
+      label: "Enquiries",
+      value: stats.enquiries.total,
+      added: stats.enquiries.added,
+      note: `${stats.enquiries.unread} unread`,
     },
   ];
 
   return (
     <div className="dts-dashboard">
       <header className="dts-dashboard__head">
-        <h1>Dashboard</h1>
-        <p>{name ? `${name}, here is the state of the site.` : "The state of the site."}</p>
+        <div>
+          <h1>Dashboard</h1>
+          <p>
+            {name
+              ? `Welcome back, ${name}. Here is the state of the site.`
+              : "Here is the state of the site."}
+          </p>
+        </div>
+        <p className="dts-date">
+          <CalendarDays aria-hidden="true" />
+          {today()}
+        </p>
       </header>
 
-      {data.failed > 0 && (
+      {stats.enquiries.failed > 0 && (
         <p className="dts-notice" role="alert">
-          {data.failed} email notification{data.failed === 1 ? "" : "s"} failed. Those enquiries are
-          saved here but did not reach the mailbox.{" "}
+          {stats.enquiries.failed} email notification{stats.enquiries.failed === 1 ? "" : "s"}{" "}
+          failed. Those enquiries are saved here but did not reach the mailbox.{" "}
           <Link className="dts-link" href={`${ADMIN}/enquiries?where[emailStatus][equals]=failed`}>
             Show them
           </Link>
@@ -176,79 +151,89 @@ export async function DashboardView({ initPageResult }: AdminViewServerProps) {
       )}
 
       <ul className="dts-stats">
-        {stats.map(({ href, Icon, label, value, note }) => (
-          <li key={label} className="dts-stat">
-            <Link className="dts-stat__link" href={href}>
-              <span className="dts-stat__icon" aria-hidden="true">
+        {cards.map(({ href, Icon, tone, label, value, added, note }) => (
+          <li key={label}>
+            <Link className="dts-card dts-stat" href={href}>
+              <Tile tone={tone}>
                 <Icon />
+              </Tile>
+              <span className="dts-stat__body">
+                <span className="dts-stat__label">{label}</span>
+                <span className="dts-stat__value">{value}</span>
+                <span className={`dts-stat__trend${added > 0 ? " dts-stat__trend--up" : ""}`}>
+                  {added > 0 ? <ArrowUp aria-hidden="true" /> : <Minus aria-hidden="true" />}
+                  {added > 0 ? `${added} added in 30 days` : "No change in 30 days"}
+                </span>
+                <span className="dts-stat__note">{note}</span>
               </span>
-              <span className="dts-stat__label">{label}</span>
-              <span className="dts-stat__value">{value}</span>
-              <span className="dts-stat__note">{note}</span>
             </Link>
           </li>
         ))}
       </ul>
 
       <div className="dts-grid">
-        <section className="dts-panel" aria-labelledby="dts-enquiries">
-          <div className="dts-panel__head">
-            <h2 id="dts-enquiries">Recent enquiries</h2>
-            <Link className="dts-link" href={`${ADMIN}/enquiries`}>
-              View all
+        <section className="dts-card" aria-labelledby="dts-recent">
+          <div className="dts-card__head">
+            <h2 id="dts-recent">Recent content</h2>
+            <Link className="dts-link" href={`${ADMIN}/services`}>
+              View services <ArrowRight aria-hidden="true" />
             </Link>
           </div>
-          {data.enquiries.length === 0 ? (
-            <p className="dts-panel__empty">
-              No enquiries yet. They appear here as soon as the contact form is used.
-            </p>
+          {data.items.length === 0 ? (
+            <p className="dts-card__empty">Nothing has been edited yet.</p>
           ) : (
             <div className="dts-table-wrap">
               <table className="dts-table">
-                <caption
-                  className="payload-visually-hidden"
-                  style={{
-                    position: "absolute",
-                    width: 1,
-                    height: 1,
-                    overflow: "hidden",
-                    clip: "rect(0 0 0 0)",
-                  }}
-                >
-                  The five most recent enquiries
-                </caption>
+                <caption className="dts-sr-only">The five most recently edited items</caption>
                 <thead>
                   <tr>
-                    <th scope="col">From</th>
-                    <th scope="col">Area</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Received</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Updated</th>
+                    <th scope="col">
+                      <span className="dts-sr-only">Open</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.enquiries.map((enquiry) => {
-                    const status = EMAIL_STATUS[enquiry.emailStatus] ?? {
-                      label: enquiry.emailStatus,
-                      tone: "",
-                    };
+                  {data.items.map((item) => {
+                    const { label, Icon, tone } = KIND[item.kind];
                     return (
-                      <tr key={enquiry.id}>
+                      <tr key={`${item.kind}-${item.id}`}>
                         <th scope="row">
-                          <Link className="dts-link" href={`${ADMIN}/enquiries/${enquiry.id}`}>
-                            {enquiry.name}
-                          </Link>
-                          {!enquiry.read && <span className="dts-pill dts-pill--new"> Unread</span>}
-                          <span className="dts-meta">{enquiry.workEmail}</span>
+                          <span className="dts-row">
+                            <Tile tone={tone}>
+                              <Icon />
+                            </Tile>
+                            <span>
+                              <Link className="dts-row__title" href={item.href}>
+                                {item.title}
+                              </Link>
+                              <span className="dts-meta">{item.detail}</span>
+                            </span>
+                          </span>
                         </th>
-                        <td>{enquiry.enquiryTypeLabel}</td>
+                        <td>
+                          <span className={`dts-pill dts-pill--${tone}`}>{label}</span>
+                        </td>
                         <td>
                           <span
-                            className={`dts-pill${status.tone ? ` dts-pill--${status.tone}` : ""}`}
+                            className={`dts-pill dts-pill--${item.published ? "green" : "orange"}`}
                           >
-                            {status.label}
+                            {item.published ? "Published" : "Draft"}
                           </span>
                         </td>
-                        <td title={exact(enquiry.submittedAt)}>{ago(enquiry.submittedAt)}</td>
+                        <td title={exact(item.updatedAt)}>{ago(item.updatedAt)}</td>
+                        <td>
+                          <Link
+                            className="dts-icon-link"
+                            href={item.href}
+                            aria-label={`Open ${item.title}`}
+                          >
+                            <ArrowRight aria-hidden="true" />
+                          </Link>
+                        </td>
                       </tr>
                     );
                   })}
@@ -258,73 +243,110 @@ export async function DashboardView({ initPageResult }: AdminViewServerProps) {
           )}
         </section>
 
-        <section className="dts-panel" aria-labelledby="dts-activity">
-          <div className="dts-panel__head">
+        <section className="dts-card" aria-labelledby="dts-activity">
+          <div className="dts-card__head">
             <h2 id="dts-activity">Recent activity</h2>
             <Link className="dts-link" href={`${ADMIN}/audit-log`}>
-              View all
+              View all <ArrowRight aria-hidden="true" />
             </Link>
           </div>
           {data.activity.length === 0 ? (
-            <p className="dts-panel__empty">No activity recorded yet.</p>
+            <p className="dts-card__empty">No activity recorded yet.</p>
           ) : (
             <ul className="dts-activity">
-              {data.activity.map((entry) => (
-                <li key={entry.id}>
-                  <span>
-                    {ACTION_WORDS[entry.action] ?? entry.action}
-                    {entry.targetCollection && NAMES_TARGET.has(entry.action)
-                      ? `: ${sentence(entry.targetCollection)}`
-                      : ""}
-                    {entry.field ? ` (${entry.field})` : ""}
-                    <span className="dts-meta">{entry.userEmail ?? "System"}</span>
-                  </span>
-                  <time dateTime={entry.at} title={exact(entry.at)}>
-                    {ago(entry.at)}
-                  </time>
-                </li>
-              ))}
+              {data.activity.map((entry) => {
+                const Icon = activityIcon(entry.action, entry.targetCollection);
+                return (
+                  <li key={entry.id}>
+                    <Tile tone={toneFor(entry.action, entry.targetCollection)}>
+                      <Icon />
+                    </Tile>
+                    <span className="dts-activity__text">
+                      <strong>
+                        {ACTION_WORDS[entry.action] ?? entry.action}
+                        {entry.targetCollection && NAMES_TARGET.has(entry.action)
+                          ? `: ${sentence(entry.targetCollection)}`
+                          : ""}
+                        {entry.field ? ` (${entry.field})` : ""}
+                      </strong>
+                      <span className="dts-meta">{entry.userEmail ?? "System"}</span>
+                    </span>
+                    <time dateTime={entry.at} title={exact(entry.at)}>
+                      {ago(entry.at)}
+                    </time>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
       </div>
 
-      <section className="dts-panel" aria-labelledby="dts-actions">
-        <div className="dts-panel__head">
-          <h2 id="dts-actions">Quick actions</h2>
-        </div>
-        <ul className="dts-actions">
-          <li>
-            <Link className="dts-action" href={`${ADMIN}/services`}>
-              <Pencil aria-hidden="true" />
-              <strong>Edit a service</strong>
-              <span>Text, icon, images and order</span>
-            </Link>
-          </li>
-          <li>
-            <Link className="dts-action" href={`${ADMIN}/media/create`}>
-              <Upload aria-hidden="true" />
-              <strong>Add an image</strong>
-              <span>Upload with its rights record</span>
-            </Link>
-          </li>
-          <li>
-            <Link className="dts-action" href={`${ADMIN}/enquiries`}>
-              <Inbox aria-hidden="true" />
-              <strong>Open the inbox</strong>
-              <span>Read and manage enquiries</span>
-            </Link>
-          </li>
-          <li>
-            {/* The public site is a different document from the admin, so this is a plain link. */}
-            <a className="dts-action" href="/" target="_blank" rel="noopener noreferrer">
-              <ExternalLink aria-hidden="true" />
-              <strong>View the live site</strong>
-              <span>Opens in a new tab</span>
-            </a>
-          </li>
-        </ul>
-      </section>
+      <div className="dts-grid dts-grid--lower">
+        <section className="dts-card" aria-labelledby="dts-chart">
+          <div className="dts-card__head">
+            <h2 id="dts-chart">Enquiries per month</h2>
+          </div>
+          <EnquiryChart months={data.months} />
+        </section>
+
+        <section className="dts-card" aria-labelledby="dts-actions">
+          <div className="dts-card__head">
+            <h2 id="dts-actions">Quick actions</h2>
+          </div>
+          <ul className="dts-actions">
+            <li>
+              <Link className="dts-action" href={`${ADMIN}/services`}>
+                <Tile tone="blue">
+                  <Pencil />
+                </Tile>
+                <span>
+                  <strong>Edit a service</strong>
+                  <span>Text, icon, images and order</span>
+                </span>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </li>
+            <li>
+              <Link className="dts-action" href={`${ADMIN}/media/create`}>
+                <Tile tone="purple">
+                  <Upload />
+                </Tile>
+                <span>
+                  <strong>Add an image</strong>
+                  <span>Upload with its rights record</span>
+                </span>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </li>
+            <li>
+              <Link className="dts-action" href={`${ADMIN}/enquiries`}>
+                <Tile tone="orange">
+                  <Inbox />
+                </Tile>
+                <span>
+                  <strong>Open the inbox</strong>
+                  <span>Read and manage enquiries</span>
+                </span>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </li>
+            <li>
+              {/* The public site is a different document from the admin, so this is a plain link. */}
+              <a className="dts-action" href="/" target="_blank" rel="noopener noreferrer">
+                <Tile tone="green">
+                  <ExternalLink />
+                </Tile>
+                <span>
+                  <strong>View the live site</strong>
+                  <span>Opens in a new tab</span>
+                </span>
+                <ArrowRight aria-hidden="true" />
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
     </div>
   );
 }

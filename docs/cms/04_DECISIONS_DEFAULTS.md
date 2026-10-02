@@ -255,3 +255,14 @@ decision, reason, how to reverse.
   `src/cms/views/dashboard.tsx` (counts, latest enquiries, recent activity, shortcuts), read through the Local API
   after `isAdmin`. The logo is a typeset wordmark until the approved artwork arrives (TODO(CLIENT)).
   Reversal: remove the `graphics`, `views.dashboard` and `theme` entries from `payload.config.ts` and the CSS import.
+- **D-82** The admin is an internal tool and deliberately departs from the public site's design rules (CLAUDE.md §4)
+  after the owner's reference (`ref-images/cms-ref.png`) and a "copy it closely" decision: a dark navy sidebar with
+  a blue active pill, a top bar (jump-to-section search, unread bell, account), coloured icon tiles and pills
+  (blue, green, purple, orange, grey), 8/12/16px radii, no shadows, and an enquiries-per-month chart. It keeps the
+  site's brand blue, Archivo and IBM Plex Sans from `/fonts`, and its own palette in `admin-theme.css`; a unit test
+  keeps the shared tokens equal to `colorTokens` and checks WCAG AA contrast of every text pairing, including the
+  sidebar. This supersedes the styling part of D-81 (white sidebar, 2/4px radii, single accent); the dashboard
+  remains a server component behind `isAdmin`. The sidebar groups the collections (Content, Site, Inbox, Admin)
+  in `src/cms/nav`; the top bar actions are in `src/cms/header`. `scripts/cms/admin-shots.ts` captures review
+  screenshots and reuses a dev server that is already running. Reversal: revert this commit and `43e2ea9`, or
+  remove the `components.Nav`, `components.actions` and `admin.avatar` entries from `payload.config.ts`.

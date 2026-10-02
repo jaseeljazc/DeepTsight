@@ -3,9 +3,9 @@
  *
  *   tsx scripts/cms/admin-shots.ts <outDir>
  *
- * Starts `next dev` on port 3000 in CMS mode against DATABASE_URI, signs in with a throwaway
+ * Starts `next dev` on SHOTS_PORT (default 3000) in CMS mode against DATABASE_URI, signs in with a throwaway
  * account (design-check@example.com, created and deleted by this script), and captures the main
- * screens at desktop and phone width into <outDir> (git-ignored under .data/). Port 3000 must be free.
+ * screens at desktop and phone width into <outDir> (git-ignored under .data/). The port (SHOTS_PORT, default 3000) must be free.
  */
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import fs from "node:fs";
@@ -15,7 +15,7 @@ import { connectionString } from "./lib/db";
 import { OFFLINE_ENV } from "./lib/server";
 import { totpCode, timeStep } from "../../src/cms/mfa/totp";
 
-const PORT = 3000;
+const PORT = Number(process.env.SHOTS_PORT ?? 3000);
 const BASE = `http://localhost:${PORT}`;
 const EMAIL = "design-check@example.com";
 const outDir = path.resolve(process.argv[2] ?? path.join(".data", "shots"));
@@ -87,19 +87,34 @@ async function main() {
     totpSecret: string;
   };
 
-  const server = spawn(
-    process.execPath,
-    [path.join("node_modules", "next", "dist", "bin", "next"), "dev", "-p", String(PORT)],
-    {
-      env: {
-        ...process.env,
-        ...OFFLINE_ENV,
-        CONTENT_SOURCE: "cms",
-        DATABASE_URI: connectionString("DATABASE_URI"),
-      },
-      stdio: "ignore",
-    },
+  const seed = runTsx(path.join("scripts", "cms", "demo-enquiries.ts"), [
+    "--db",
+    "DATABASE_URI",
+    "add",
+  ]);
+  console.log(seed.stdout.trim() || seed.stderr.trim());
+
+  // Next allows one dev server per project folder: reuse one that is already running (and leave it
+  // running) rather than start a second that would refuse to boot.
+  const running = await fetch(`${BASE}/api/graphql`, { redirect: "manual" }).then(
+    () => true,
+    () => false,
   );
+  const server = running
+    ? null
+    : spawn(
+        process.execPath,
+        [path.join("node_modules", "next", "dist", "bin", "next"), "dev", "-p", String(PORT)],
+        {
+          env: {
+            ...process.env,
+            ...OFFLINE_ENV,
+            CONTENT_SOURCE: "cms",
+            DATABASE_URI: connectionString("DATABASE_URI"),
+          },
+          stdio: "ignore",
+        },
+      );
   const browser = await chromium.launch();
   try {
     await waitFor(`${BASE}/api/graphql`, 120_000);
@@ -144,7 +159,13 @@ async function main() {
     console.log(`Screenshots written to ${path.relative(process.cwd(), outDir)}`);
   } finally {
     await browser.close();
-    kill(server);
+    if (server) kill(server);
+    const unseed = runTsx(path.join("scripts", "cms", "demo-enquiries.ts"), [
+      "--db",
+      "DATABASE_URI",
+      "remove",
+    ]);
+    console.log(unseed.stdout.trim() || unseed.stderr.trim());
     const cleanup = runTsx(path.join("scripts", "cms", "remove-user.ts"), [
       "--db",
       "DATABASE_URI",

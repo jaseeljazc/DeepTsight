@@ -58,8 +58,8 @@ export default buildConfig({
     user: Users.slug,
     // Light only: Payload otherwise follows the visitor's system setting (and showed dark).
     theme: "light",
-    // No Gravatar: the admin makes no external requests.
-    avatar: "default",
+    // No Gravatar: the admin makes no external requests. Initials, name and role instead.
+    avatar: { Component: "/cms/header/account-avatar#AccountAvatar" },
     importMap: {
       baseDir: dirname,
     },
@@ -72,6 +72,9 @@ export default buildConfig({
       unauthorized: "/mfa",
     },
     components: {
+      // Sidebar and top bar (src/cms/nav, src/cms/header); styled in admin-theme.css.
+      Nav: "/cms/nav/admin-nav#AdminNav",
+      actions: ["/cms/header/header-actions#SearchAction", "/cms/header/header-actions#InboxBell"],
       // Typeset wordmark until the approved logo arrives (src/cms/graphics/logo.tsx).
       graphics: {
         Logo: "/cms/graphics/logo#Logo",
