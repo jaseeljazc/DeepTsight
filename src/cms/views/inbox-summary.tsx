@@ -19,11 +19,11 @@ export async function InboxSummary({ payload }: BeforeListServerProps) {
     }),
   ]);
   return (
-    <div role="status" style={{ display: "flex", gap: "2rem", margin: "0 0 1.5rem" }}>
+    <div role="status" className="dts-inbox-summary">
       <p>
         <strong>{unread.totalDocs}</strong> unread
       </p>
-      <p>
+      <p className={failed.totalDocs > 0 ? "dts-inbox-summary--alert" : undefined}>
         <strong>{failed.totalDocs}</strong> email notification{failed.totalDocs === 1 ? "" : "s"}{" "}
         failed
         {failed.totalDocs > 0 ? ": these enquiries are only here, not in the mailbox." : ""}

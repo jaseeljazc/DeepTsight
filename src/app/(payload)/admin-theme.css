@@ -1,0 +1,511 @@
+/*
+ * CMS admin theme: a light theme in the website's design language (docs/cms/04_DECISIONS_DEFAULTS.md D-81).
+ *
+ * The admin is its own document (the (payload) root layout) and does not load the site's
+ * globals.css, which carries Tailwind's reset. So the site's colour tokens are repeated here as
+ * values. tests/cms/unit/admin-theme.test.ts fails if any of them drifts from
+ * src/styles/globals.css (via src/styles/tokens.generated.ts) or if a text colour stops meeting
+ * WCAG AA contrast. Change a colour in globals.css first, rebuild, then update this file.
+ *
+ * Unlayered rules here win over Payload's own layered styles, so no !important is needed.
+ * No shadows, radii of 2px and 4px, and #0E50ED as the only accent (CLAUDE.md §4).
+ */
+
+/* Fonts: the site's five self-hosted files (public/fonts). The admin policy allows same-origin fonts only. */
+@font-face {
+  font-family: "Archivo";
+  src: url("/fonts/archivo-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Archivo";
+  src: url("/fonts/archivo-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/fonts/ibm-plex-sans-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/fonts/ibm-plex-sans-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/ibm-plex-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root,
+html[data-theme="light"] {
+  /* Site tokens (mirrors src/styles/globals.css) */
+  --dts-primary: #0e50ed;
+  --dts-primary-deep: #0a3fc2;
+  --dts-primary-tint: #dce5ff;
+  --dts-error: #a4271b;
+  --dts-status: #2f6b3a;
+  --dts-panel: #f6f7f6;
+  --dts-rule: #c9cecb;
+  --dts-ink: #1b2124;
+  --dts-steel: #555f63;
+
+  /* Payload's neutral scale, anchored on the site's neutrals; steps between anchors are interpolated. */
+  --color-base-0: #ffffff;
+  --color-base-50: #f6f7f6;
+  --color-base-100: #f2f2f2;
+  --color-base-150: #dfe2df;
+  --color-base-200: #c9cecb;
+  --color-base-250: #b8bebc;
+  --color-base-300: #a3aaac;
+  --color-base-350: #737c80;
+  --color-base-400: #5f696d;
+  --color-base-450: #5a6469;
+  --color-base-500: #555f63;
+  --color-base-550: #4d575c;
+  --color-base-600: #444e52;
+  --color-base-650: #3e484c;
+  --color-base-700: #3a4448;
+  --color-base-750: #323b3f;
+  --color-base-800: #262e32;
+  --color-base-850: #20282b;
+  --color-base-900: #1b2124;
+  --color-base-950: #161b1d;
+  --color-base-1000: #101416;
+
+  --theme-bg: var(--dts-panel);
+  --theme-text: var(--dts-ink);
+  --theme-border-color: var(--dts-rule);
+
+  /* Corners: 2px on controls, 4px on panels (DESIGN.md §5). */
+  --style-radius-s: 2px;
+  --style-radius-m: 4px;
+  --style-radius-l: 4px;
+
+  --font-body: "IBM Plex Sans", Arial, sans-serif;
+  --font-serif: "Archivo", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, Menlo, monospace;
+}
+
+html[data-theme="light"] body {
+  font-family: var(--font-body);
+  color: var(--dts-ink);
+}
+
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3 {
+  font-family: "Archivo", Arial, sans-serif;
+  font-weight: 600;
+  color: var(--dts-ink);
+  letter-spacing: -0.01em;
+}
+
+/* Focus: 2px primary ring with a 2px offset on everything focusable (DESIGN.md §6.2). */
+html[data-theme="light"]
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--dts-primary);
+  outline-offset: 2px;
+}
+
+/* Primary buttons are the site's primary blue. */
+html[data-theme="light"] .btn--style-primary {
+  --bg-color: var(--dts-primary);
+  --color: #ffffff;
+  --hover-bg: var(--dts-primary-deep);
+  --hover-color: #ffffff;
+  border-radius: 2px;
+}
+html[data-theme="light"] .btn--style-primary.btn--disabled,
+html[data-theme="light"] .btn--style-primary:disabled {
+  --bg-color: var(--color-base-150);
+  --color: var(--dts-steel);
+  --hover-bg: var(--color-base-150);
+  --hover-color: var(--dts-steel);
+}
+
+/* Text links inside content */
+html[data-theme="light"] .template-default a:not([class]),
+html[data-theme="light"] .login a:not([class]) {
+  color: var(--dts-primary-deep);
+}
+
+/* Header: white with a hairline, like the site's header. */
+html[data-theme="light"] .app-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--dts-rule);
+}
+
+/* Sidebar: white, hairline edge, blue active item. */
+html[data-theme="light"] .nav {
+  background: #ffffff;
+  border-right: 1px solid var(--dts-rule);
+}
+html[data-theme="light"] .nav__label,
+html[data-theme="light"] .nav-group__toggle {
+  color: var(--dts-steel);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+html[data-theme="light"] .nav__link {
+  min-height: 44px;
+  padding: 8px 12px;
+  margin-inline: -12px;
+  border-radius: 2px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--dts-ink);
+}
+html[data-theme="light"] .nav__link:hover {
+  background: var(--dts-panel);
+}
+html[data-theme="light"] .nav__link-indicator {
+  display: none;
+}
+html[data-theme="light"] .nav__link:has(.nav__link-indicator) {
+  background: var(--dts-primary-tint);
+  color: var(--dts-primary-deep);
+  font-weight: 500;
+}
+
+/* Air between the header hairline and page titles (Payload puts them flush). */
+html[data-theme="light"] .list-header,
+html[data-theme="light"] .doc-header {
+  padding-top: 24px;
+}
+
+/* Panels and fields: white with a hairline, no shadows. */
+html[data-theme="light"] .card {
+  background: #ffffff;
+  border: 1px solid var(--dts-rule);
+  box-shadow: none;
+}
+html[data-theme="light"] .card:hover {
+  border-color: var(--dts-primary);
+  box-shadow: none;
+}
+html[data-theme="light"] .table table {
+  background: #ffffff;
+}
+
+/* Login: password reset by email is not offered (D-27), so its link is hidden. */
+html[data-theme="light"] .login a[href$="/forgot"],
+html[data-theme="light"] .login a[href*="/admin/forgot"] {
+  display: none;
+}
+
+/* Wordmark (src/cms/graphics/logo.tsx) */
+.dts-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: "Archivo", Arial, sans-serif;
+  color: var(--dts-ink);
+}
+.dts-wordmark__marker {
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--dts-primary);
+}
+.dts-wordmark__name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.dts-wordmark__sub {
+  font-family: "IBM Plex Sans", Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--dts-steel);
+}
+.dts-icon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--dts-primary);
+  color: #ffffff;
+  font-family: "Archivo", Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Inbox counters above the enquiry list (src/cms/views/inbox-summary.tsx) */
+.dts-inbox-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 0;
+  padding: 20px var(--gutter-h) 0;
+  font-size: 0.875rem;
+  color: var(--dts-steel);
+}
+.dts-inbox-summary strong {
+  color: var(--dts-ink);
+  font-weight: 600;
+}
+.dts-inbox-summary--alert {
+  color: var(--dts-error);
+}
+.dts-inbox-summary--alert strong {
+  color: var(--dts-error);
+}
+
+/* Dashboard (src/cms/views/dashboard.tsx) */
+.dts-dashboard {
+  display: grid;
+  gap: 24px;
+  padding: 24px var(--gutter-h) 64px;
+  max-width: 1400px;
+}
+.dts-dashboard__head h1 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+.dts-dashboard__head p {
+  margin: 4px 0 0;
+  color: var(--dts-steel);
+}
+.dts-notice {
+  padding: 12px 16px;
+  border: 1px solid var(--dts-error);
+  border-radius: 4px;
+  background: #ffffff;
+  color: var(--dts-error);
+}
+.dts-notice .dts-link {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+}
+.dts-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dts-stat,
+.dts-panel {
+  border: 1px solid var(--dts-rule);
+  border-radius: 4px;
+  background: #ffffff;
+}
+.dts-stat__link {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  align-items: center;
+  height: 100%;
+  min-height: 44px;
+  padding: 20px;
+  color: inherit;
+  text-decoration: none;
+}
+.dts-stat__link:hover {
+  background: var(--dts-panel);
+}
+.dts-stat__icon {
+  grid-row: span 3;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 2px;
+  background: var(--dts-primary-tint);
+  color: var(--dts-primary-deep);
+}
+.dts-stat__icon svg,
+.dts-action svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.5;
+}
+.dts-stat__label {
+  font-size: 0.875rem;
+  color: var(--dts-steel);
+}
+.dts-stat__value {
+  color: var(--dts-ink);
+  font-family: "Archivo", Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.dts-stat__note {
+  font-size: 0.8125rem;
+  color: var(--dts-steel);
+}
+.dts-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 16px;
+  align-items: start;
+}
+.dts-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--dts-rule);
+}
+.dts-panel__head h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+.dts-panel__head .dts-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--dts-primary-deep);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.dts-panel__empty {
+  margin: 0;
+  padding: 20px;
+  color: var(--dts-steel);
+}
+.dts-table-wrap {
+  overflow-x: auto;
+}
+.dts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.dts-table th,
+.dts-table td {
+  padding: 12px 20px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--dts-rule);
+}
+.dts-table thead th {
+  font-weight: 500;
+  color: var(--dts-steel);
+}
+.dts-table tbody tr:last-child th,
+.dts-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.dts-table tbody th {
+  font-weight: 500;
+}
+.dts-table .dts-link {
+  color: var(--dts-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--dts-steel);
+}
+.dts-meta {
+  display: block;
+  color: var(--dts-steel);
+  font-size: 0.8125rem;
+}
+.dts-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--dts-steel);
+}
+.dts-pill--ok {
+  color: var(--dts-status);
+}
+.dts-pill--bad {
+  color: var(--dts-error);
+}
+.dts-pill--new {
+  color: var(--dts-primary-deep);
+}
+.dts-activity {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dts-activity li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--dts-rule);
+  font-size: 0.875rem;
+}
+.dts-activity li:last-child {
+  border-bottom: 0;
+}
+.dts-activity time {
+  color: var(--dts-steel);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+.dts-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+  list-style: none;
+}
+.dts-action {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  align-items: center;
+  min-height: 44px;
+  padding: 14px 16px;
+  border: 1px solid var(--dts-rule);
+  border-radius: 4px;
+  color: var(--dts-ink);
+  text-decoration: none;
+}
+.dts-action:hover {
+  border-color: var(--dts-primary);
+  background: var(--dts-panel);
+}
+.dts-action svg {
+  grid-row: span 2;
+  color: var(--dts-primary-deep);
+}
+.dts-action strong {
+  font-weight: 500;
+}
+.dts-action span {
+  color: var(--dts-steel);
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 1100px) {
+  .dts-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dts-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .dts-stats,
+  .dts-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dts-dashboard__head h1 {
+    font-size: 1.5rem;
+  }
+}

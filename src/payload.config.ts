@@ -56,6 +56,8 @@ export default buildConfig({
   graphQL: { disable: true },
   admin: {
     user: Users.slug,
+    // Light only: Payload otherwise follows the visitor's system setting (and showed dark).
+    theme: "light",
     // No Gravatar: the admin makes no external requests.
     avatar: "default",
     importMap: {
@@ -70,7 +72,15 @@ export default buildConfig({
       unauthorized: "/mfa",
     },
     components: {
+      // Typeset wordmark until the approved logo arrives (src/cms/graphics/logo.tsx).
+      graphics: {
+        Logo: "/cms/graphics/logo#Logo",
+        Icon: "/cms/graphics/logo#Icon",
+      },
       views: {
+        dashboard: {
+          Component: "/cms/views/dashboard#DashboardView",
+        },
         unauthorized: {
           Component: "/cms/views/mfa-view#MfaView",
           path: "/mfa",

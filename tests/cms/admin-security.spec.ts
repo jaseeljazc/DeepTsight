@@ -117,7 +117,7 @@ test("the browser flow reaches the dashboard after the code", async ({ page }) =
   await page.getByLabel("Authenticator code").fill(await freshCode(admin.totpSecret));
   await page.getByRole("button", { name: "Verify" }).click();
   await expect(page).toHaveURL(/\/admin\/?$/);
-  await expect(page.getByText(/audit log/i).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dashboard", level: 1 })).toBeVisible();
 });
 
 test("an editor without the approver role cannot change roles", async ({ request }) => {

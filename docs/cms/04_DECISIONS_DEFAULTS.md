@@ -4,27 +4,29 @@ The agent uses these defaults and never stops to ask. New decisions are appended
 decision, reason, how to reverse.
 
 ## Open questions from the context document
-| # | Question | Default tonight | Needs owner? |
-|---|---|---|---|
-| U-1 | Payload or Sanity | Payload 3, in-app | Confirm |
-| U-2 | Hosting and data residency | Local PostgreSQL 17 only; production database host undecided | Yes |
-| U-3 | Domain | Unchanged; origin from `NEXT_PUBLIC_SITE_URL` | Yes |
-| U-4 | Insights launch | Built, `insightsEnabled = false` | Yes |
-| U-5 | Separate reviewer | No review step; roles editor and approver (founder holds both) | Later |
-| U-6 | Who sets approval flags | Approver role only, audit-logged | Confirm |
-| U-7 | Removed enquiry types on old enquiries | Label copied into each enquiry | No |
-| U-8 | Legal pages in CMS | Yes; wording untouched; status field approver-only | Confirm |
-| U-9 | Admin network restriction | Open, MFA-protected | Yes |
-| U-10 | Payload compatibility | Checked in Phase 1; fallback track if not compatible | Info |
-| U-11 | Start CMS before launch | Owner chose to start; work stays on a branch | No |
-| U-12 | `crm-lead-import-template.xlsx` | Left untouched | Yes |
-| U-13 | No-JS enquiries | Unchanged | Yes (Q-11) |
-| U-14 | Maps link | Field built; empty until the URL is supplied | Supply URL |
-| U-15 | Scope change | Approved | No |
-| U-16 | Service icons | Icon field built; current values kept | Yes |
-| U-17 | Retention and privacy wording | Purge built but off; no wording changed | Yes, before inbox goes live |
+
+| #    | Question                               | Default tonight                                                | Needs owner?                |
+| ---- | -------------------------------------- | -------------------------------------------------------------- | --------------------------- |
+| U-1  | Payload or Sanity                      | Payload 3, in-app                                              | Confirm                     |
+| U-2  | Hosting and data residency             | Local PostgreSQL 17 only; production database host undecided   | Yes                         |
+| U-3  | Domain                                 | Unchanged; origin from `NEXT_PUBLIC_SITE_URL`                  | Yes                         |
+| U-4  | Insights launch                        | Built, `insightsEnabled = false`                               | Yes                         |
+| U-5  | Separate reviewer                      | No review step; roles editor and approver (founder holds both) | Later                       |
+| U-6  | Who sets approval flags                | Approver role only, audit-logged                               | Confirm                     |
+| U-7  | Removed enquiry types on old enquiries | Label copied into each enquiry                                 | No                          |
+| U-8  | Legal pages in CMS                     | Yes; wording untouched; status field approver-only             | Confirm                     |
+| U-9  | Admin network restriction              | Open, MFA-protected                                            | Yes                         |
+| U-10 | Payload compatibility                  | Checked in Phase 1; fallback track if not compatible           | Info                        |
+| U-11 | Start CMS before launch                | Owner chose to start; work stays on a branch                   | No                          |
+| U-12 | `crm-lead-import-template.xlsx`        | Left untouched                                                 | Yes                         |
+| U-13 | No-JS enquiries                        | Unchanged                                                      | Yes (Q-11)                  |
+| U-14 | Maps link                              | Field built; empty until the URL is supplied                   | Supply URL                  |
+| U-15 | Scope change                           | Approved                                                       | No                          |
+| U-16 | Service icons                          | Icon field built; current values kept                          | Yes                         |
+| U-17 | Retention and privacy wording          | Purge built but off; no wording changed                        | Yes, before inbox goes live |
 
 ## Decisions in the plan
+
 - **D-01** Local PostgreSQL 17 (owner's existing install) with three databases (`deeptsight_cms_dev`,
   `_test`, `_restore`) owned by the non-superuser role `deeptsight_cms`. The same adapter as
   production, so no switch is needed later.
@@ -60,7 +62,9 @@ decision, reason, how to reverse.
   `_test` or `_restore`.
 
 ## Decisions made during the run
+
 (The agent appends D-16 onwards here.)
+
 - **D-16** `withPayload` adds `Accept-CH`, `Vary` and `Critical-CH` (colour-scheme client hints) to
   every route. `next.config.ts` re-scopes that rule to `/admin/:path*`, so public responses keep
   exactly their previous headers. Reverse: remove `scopePayloadHeaders` in `next.config.ts`.
@@ -206,7 +210,7 @@ decision, reason, how to reverse.
 - **D-68** Article categories use drafts like other content; only published categories are shown on an
   article. The sitemap lists `/insights` and each article only while Insights is on and has articles.
 - **D-69** `next` and `eslint-config-next` upgraded from 16.3.5 to **16.3.7** (exact pins). `pnpm audit
-  --prod` reported a **critical** advisory for 16.3.5 (remote code execution in `next/og` ImageResponse,
+--prod` reported a **critical** advisory for 16.3.5 (remote code execution in `next/og` ImageResponse,
   fixed in 16.3.6), and the site uses `next/og` for its share image. 16.3.7 is the version the plan names;
   16.3.8 is also available. Verified after the upgrade: typecheck, lint, build, parity 0, Playwright 56/56,
   unit 28/28. Reverse: revert the commit and run `pnpm install`.
@@ -244,3 +248,10 @@ decision, reason, how to reverse.
   5 minutes per user and the replay rule (one use per 30-second step) would otherwise make specs fail or wait.
 - **D-80** `docs/cms/parity-allowlist.json` allows only the footer Revision date to differ (D-11): the build
   date in static mode, the last settings change in CMS mode. Nothing else, and never a header.
+- **D-81** The admin is restyled to the site's rules: light theme only (`admin.theme: "light"`), site colour tokens
+  repeated in `src/app/(payload)/admin-theme.css` (admin does not load globals.css; a unit test keeps them equal to
+  `colorTokens` and checks contrast), white sidebar, hairlines, 2/4px radius, no shadows, Archivo and IBM Plex Sans
+  from `/fonts`. Primary blue marks actions and the active item only. The default dashboard is replaced by
+  `src/cms/views/dashboard.tsx` (counts, latest enquiries, recent activity, shortcuts), read through the Local API
+  after `isAdmin`. The logo is a typeset wordmark until the approved artwork arrives (TODO(CLIENT)).
+  Reversal: remove the `graphics`, `views.dashboard` and `theme` entries from `payload.config.ts` and the CSS import.

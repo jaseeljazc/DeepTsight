@@ -17,6 +17,9 @@ The CMS is built and tested on the `cms/phase-2` branch. It is not live yet: the
 
 You stay signed in for up to two hours. After that you sign in again, with a new code.
 
+After signing in you land on the **Dashboard**: counts of services, credentials and images, the latest
+enquiries, recent changes, and shortcuts to the common jobs. The menu on the left lists everything you can edit.
+
 **Setting up the authenticator (once).** Your developer gives you a sign-in sheet with your password, an
 authenticator key and ten recovery codes. In your authenticator app, choose "add account", then "enter a
 setup key", and type the key (it is time-based, six digits). If your account has no authenticator yet, the
