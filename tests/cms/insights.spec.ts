@@ -38,12 +38,20 @@ test("published article renders, draft stays hidden, feed is valid", async ({ re
   await fullLogin(request, readAccount(INSIGHTS_FILE));
   const created: number[] = [];
   let categoryId: number | undefined;
+  let emptyCategoryId: number | undefined;
   try {
     const category = await request.post("/api/article-categories", {
       data: { name: "Test category", slug: "test-category", _status: "published" },
     });
     expect(category.status()).toBe(201);
     categoryId = ((await category.json()) as { doc: { id: number } }).doc.id;
+
+    // A published category that no article uses: it must not appear anywhere.
+    const emptyCategory = await request.post("/api/article-categories", {
+      data: { name: "Test empty category", slug: "test-empty-category", _status: "published" },
+    });
+    expect(emptyCategory.status()).toBe(201);
+    emptyCategoryId = ((await emptyCategory.json()) as { doc: { id: number } }).doc.id;
 
     const published = await request.post("/api/articles", {
       data: {
@@ -116,6 +124,13 @@ test("published article renders, draft stays hidden, feed is valid", async ({ re
     await expect(page.getByRole("link", { name: "Test published note" })).toBeVisible();
     expect((await page.request.get("/insights/category/no-such-category")).status()).toBe(404);
 
+    // An empty category is neither a filter link nor a page.
+    await page.goto("/insights");
+    const filter = page.getByRole("navigation", { name: "Filter articles by category" });
+    await expect(filter.getByRole("link", { name: "Test category" })).toBeVisible();
+    await expect(filter.getByRole("link", { name: "Test empty category" })).toHaveCount(0);
+    expect((await page.request.get("/insights/category/test-empty-category")).status()).toBe(404);
+
     // Axe on every Insights page type, and no sideways scroll at the four review widths.
     for (const path of [
       "/insights",
@@ -139,5 +154,7 @@ test("published article renders, draft stays hidden, feed is valid", async ({ re
     await setInsights(request, false);
     for (const id of created) await request.delete(`/api/articles/${id}`);
     if (categoryId !== undefined) await request.delete(`/api/article-categories/${categoryId}`);
+    if (emptyCategoryId !== undefined)
+      await request.delete(`/api/article-categories/${emptyCategoryId}`);
   }
 });
