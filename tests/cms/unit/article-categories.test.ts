@@ -71,3 +71,43 @@ test("validateArticle accepts an ordinary slug", async () => {
   );
   assert.ok(!issues.some((issue) => issue.path === "slug"), JSON.stringify(issues));
 });
+
+import { articlesInCategory, usedCategories } from "../../../src/lib/insights";
+
+const summary = (slug: string, categories: { slug: string; name: string }[]) => ({
+  slug,
+  title: `Test ${slug}`,
+  summary: "Test summary",
+  publishedAt: "2026-10-01T00:00:00.000Z",
+  readingMinutes: 1,
+  categories,
+  tags: categories.map((category) => category.name),
+});
+
+const articles = [
+  summary("a", [{ slug: "b-cat", name: "Test B" }]),
+  summary("b", [
+    { slug: "b-cat", name: "Test B" },
+    { slug: "a-cat", name: "Test A" },
+  ]),
+  summary("c", []),
+];
+
+test("usedCategories counts articles per category and sorts by name", () => {
+  assert.deepEqual(usedCategories(articles), [
+    { slug: "a-cat", name: "Test A", count: 1 },
+    { slug: "b-cat", name: "Test B", count: 2 },
+  ]);
+});
+
+test("usedCategories is empty when no article has a category", () => {
+  assert.deepEqual(usedCategories([summary("c", [])]), []);
+});
+
+test("articlesInCategory keeps order and returns nothing for an unknown slug", () => {
+  assert.deepEqual(
+    articlesInCategory(articles, "b-cat").map((article) => article.slug),
+    ["a", "b"],
+  );
+  assert.deepEqual(articlesInCategory(articles, "nope"), []);
+});

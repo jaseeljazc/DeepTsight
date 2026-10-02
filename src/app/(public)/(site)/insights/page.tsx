@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getArticles, getSeo, getSite } from "@/content";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/layout/page-header";
-import { MarkedText } from "@/components/primitives/placeholder";
-import { formatDate } from "@/lib/dates";
+import { ArticleList } from "@/components/content/article-list";
+import { CategoryFilter } from "@/components/content/category-filter";
+import { usedCategories } from "@/lib/insights";
 
 export const dynamic = "force-static";
 
@@ -43,33 +43,8 @@ export default async function InsightsPage() {
         lead={seo.description}
       />
       <Container className="section-b">
-        <ol className="border-ink-900 border-t">
-          {articles.map((article) => (
-            <li
-              key={article.slug}
-              className="border-rule grid grid-cols-1 gap-x-8 gap-y-3 border-b py-8 lg:grid-cols-12"
-            >
-              <p className="text-steel-600 text-caption font-mono lg:col-span-3">
-                <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
-                <br />
-                {article.readingMinutes} min
-              </p>
-              <div className="lg:col-span-8 lg:col-start-5">
-                <h2 className="font-display text-h3 text-ink-900 font-medium">
-                  <NextLink href={`/insights/${article.slug}`} className="link-rule">
-                    <MarkedText text={article.title} />
-                  </NextLink>
-                </h2>
-                <p className="text-ink-700 measure mt-3">
-                  <MarkedText text={article.summary} />
-                </p>
-                {article.tags.length > 0 && (
-                  <p className="text-steel-600 text-small mt-3">{article.tags.join(", ")}</p>
-                )}
-              </div>
-            </li>
-          ))}
-        </ol>
+        <CategoryFilter categories={usedCategories(articles)} />
+        <ArticleList articles={articles} />
       </Container>
     </>
   );
