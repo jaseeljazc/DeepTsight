@@ -22,6 +22,9 @@ export default defineConfig({
   globalSetup: path.join(process.cwd(), "tests", "cms", "global-setup.ts"),
   use: {
     baseURL: `http://localhost:${PORT}`,
+    // A browser always sends Origin (or Sec-Fetch-Site) on same-site requests; Payload ignores the
+    // session cookie on requests that send neither (its CSRF rule), so the test client sends one.
+    extraHTTPHeaders: { Origin: `http://localhost:${PORT}` },
     trace: "off",
   },
   projects: [{ name: "desktop-chrome", use: { ...devices["Desktop Chrome"] } }],

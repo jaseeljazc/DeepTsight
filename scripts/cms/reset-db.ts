@@ -5,7 +5,10 @@
  *
  * Refuses unless the database name ends in _test or _restore (D-15). Never touches the dev database.
  */
-import { assertDisposable, parseDbEnvName, redact, runPg } from "./lib/db";
+import fs from "node:fs";
+import path from "node:path";
+import { assertDisposable, connectionString, parseDbEnvName, redact, runPg } from "./lib/db";
+import { mediaDirFor } from "../../src/cms/collections/media";
 
 export function resetDatabase(envName: string): void {
   const db = parseDbEnvName(envName);
@@ -23,7 +26,14 @@ export function resetDatabase(envName: string): void {
   if (result.status !== 0) {
     throw new Error(`Reset of ${dbName} failed: ${redact(result.stderr ?? "").trim()}`);
   }
-  console.log(`Reset schema public in ${dbName}.`);
+  // Uploaded files belong to the database: leftovers would make new uploads get a "-1" suffix.
+  // Only ever inside this project's .data/media, even if MEDIA_DIR points somewhere else.
+  const mediaDir = mediaDirFor(connectionString(db));
+  const allowedRoot = path.resolve(process.cwd(), ".data", "media") + path.sep;
+  if (mediaDir.startsWith(allowedRoot)) fs.rmSync(mediaDir, { recursive: true, force: true });
+  console.log(
+    `Reset schema public${mediaDir.startsWith(allowedRoot) ? " and media files" : ""} of ${dbName}.`,
+  );
 }
 
 if (process.argv[1]?.endsWith("reset-db.ts")) {

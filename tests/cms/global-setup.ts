@@ -7,7 +7,11 @@ import { prepareTestDb } from "../../scripts/cms/prepare-test-db";
 export {
   ADMIN_FILE,
   EDITOR_FILE,
+  ENQUIRY_TYPES_FILE,
+  INBOX_FILE,
+  INSIGHTS_FILE,
   LOCKOUT_FILE,
+  PREVIEW_FILE,
   TEST_DATA_DIR,
 } from "../../scripts/cms/prepare-test-db";
 

@@ -13,6 +13,12 @@ export const TEST_DATA_DIR = path.join(process.cwd(), ".data", "test");
 export const ADMIN_FILE = path.join(TEST_DATA_DIR, "cms-admin.json");
 export const EDITOR_FILE = path.join(TEST_DATA_DIR, "cms-editor.json");
 export const LOCKOUT_FILE = path.join(TEST_DATA_DIR, "cms-lockout.json");
+// One approver account per spec: each has its own authenticator secret, so specs neither share the
+// MFA attempt limit (5 per 5 minutes per user) nor wait for a fresh code step.
+export const ENQUIRY_TYPES_FILE = path.join(TEST_DATA_DIR, "cms-enquiry-types.json");
+export const INBOX_FILE = path.join(TEST_DATA_DIR, "cms-inbox.json");
+export const INSIGHTS_FILE = path.join(TEST_DATA_DIR, "cms-insights.json");
+export const PREVIEW_FILE = path.join(TEST_DATA_DIR, "cms-preview.json");
 
 function run(script: string, args: string[]): void {
   const result = spawnSync(
@@ -31,6 +37,10 @@ export function prepareTestDb(): void {
     [ADMIN_FILE, "editor@example.com", "Test Editor", "editor,approver"],
     [EDITOR_FILE, "editor-only@example.com", "Test Editor Only", "editor"],
     [LOCKOUT_FILE, "lockout@example.com", "Test Lockout", "editor"],
+    [ENQUIRY_TYPES_FILE, "enquiry-types@example.com", "Test Enquiry Types", "editor,approver"],
+    [INBOX_FILE, "inbox@example.com", "Test Inbox", "editor,approver"],
+    [INSIGHTS_FILE, "insights@example.com", "Test Insights", "editor,approver"],
+    [PREVIEW_FILE, "preview@example.com", "Test Preview", "editor,approver"],
   ];
   for (const [file, email, name, roles] of accounts) {
     run(path.join("scripts", "cms", "create-admin.ts"), [

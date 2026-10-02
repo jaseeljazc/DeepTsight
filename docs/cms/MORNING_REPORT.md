@@ -1,5 +1,14 @@
 # Morning report: CMS overnight build
 
+> **Update 2026-10-02 (after real databases were available): the CMS is now verified.** `pnpm cms:test` passes end
+> to end (CMS build matches the static site with 0 unexplained differences; public E2E and axe 56/56 against the CMS
+> build; all 14 CMS tests pass, including sign-in with the authenticator code, lockout, the IP limit, draft → preview
+> → publish, the enquiry inbox, enquiry types and Insights). `pnpm cms:smoke` passes 12/12 and the backup →
+> restore → verify proof matches on all 80 tables. Sections 2, 3, 7 and 8 below describe the state *overnight*; where
+> they say "unverified", it is now verified. The real run found and fixed six bugs (D-73 and D-75 to D-79 in
+> `docs/cms/04_DECISIONS_DEFAULTS.md`), the most important being that my tests had been running anonymously.
+> Still open: the owner decisions in section 4.
+
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Final commit: see `git log -1` (after this report's commit;
 last code commit `d1d3a73`) · Started 2026-10-01 20:25 · finished 2026-10-01 22:15 (local time)
 

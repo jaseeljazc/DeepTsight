@@ -95,7 +95,10 @@ async function verifyAllContent() {
   console.log("\nAll content adapter getters successfully validated against Zod schemas!");
 }
 
-verifyAllContent().catch((err) => {
-  console.error("\nContent validation failed:", err);
-  process.exit(1);
-});
+verifyAllContent()
+  // Exit explicitly: in CMS mode Payload's database pool would keep the process alive forever.
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error("\nContent validation failed:", err);
+    process.exit(1);
+  });

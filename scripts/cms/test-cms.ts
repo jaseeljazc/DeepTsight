@@ -12,6 +12,7 @@
  * Only DATABASE_URI_TEST is used. Exits non-zero if any step fails; later steps still run.
  */
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { connectionString, redact } from "./lib/db";
 import { OFFLINE_ENV } from "./lib/server";
@@ -41,7 +42,15 @@ function main(): number {
   };
   const steps: [string, () => number][] = [
     ["prepare test database", () => tsx(path.join("scripts", "cms", "prepare-test-db.ts"), [])],
-    ["build (cms)", () => run("pnpm", ["build"], cmsEnv)],
+    [
+      "build (cms)",
+      () => {
+        // Next's data cache lives in .next/cache and is only invalidated by tags, so a stale one
+        // would serve the previous run's content. Start from nothing.
+        fs.rmSync(path.join(".next"), { recursive: true, force: true });
+        return run("pnpm", ["build"], cmsEnv);
+      },
+    ],
     [
       "parity (cms vs static-before)",
       () =>

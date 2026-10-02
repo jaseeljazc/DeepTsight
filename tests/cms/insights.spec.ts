@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type APIRequestContext } from "@playwright/test";
-import { ADMIN_FILE } from "./global-setup";
+import { INSIGHTS_FILE } from "./global-setup";
 import { fullLogin, readAccount, requireTestDatabase } from "./helpers";
 
 /*
@@ -35,7 +35,7 @@ async function setInsights(request: APIRequestContext, enabled: boolean) {
 }
 
 test("published article renders, draft stays hidden, feed is valid", async ({ request, page }) => {
-  await fullLogin(request, readAccount(ADMIN_FILE));
+  await fullLogin(request, readAccount(INSIGHTS_FILE));
   const created: number[] = [];
   try {
     const published = await request.post("/api/articles", {

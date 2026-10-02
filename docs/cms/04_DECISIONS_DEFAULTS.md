@@ -228,3 +228,19 @@ decision, reason, how to reverse.
   never applied to any database (dev and test had only the first two recorded), so they were deleted and
   replaced by one regenerated migration, `20261002_064614_cms_content`. Reverse: n/a (history rewritten only
   for migrations that never ran anywhere).
+- **D-75** (first full run against PostgreSQL, 2026-10-02) Payload ignores the session cookie on a request
+  that sends neither an `Origin` header nor `Sec-Fetch-Site` (its CSRF rule, `csrf: [origin]`). Browsers always
+  send one, so sign-in is unaffected and cross-site requests are correctly refused. The Playwright API client
+  sends neither, so `playwright.cms.config.ts` now sends `Origin` like a browser. Before this, the "password
+  alone reads no data" test passed because the client was anonymous; it is now a real check.
+- **D-76** `verify-content.ts` exits explicitly: in CMS mode Payload's connection pool kept it alive forever
+  and hung the build.
+- **D-77** Next's data cache (`.next/cache`) persists between builds and is only invalidated by tags, so the
+  test pipeline deletes `.next` before the CMS build; otherwise it serves the previous run's content.
+  (In production this is the intended behaviour; a publish invalidates by tag.)
+- **D-78** Resetting a `_test` or `_restore` database also deletes its media folder, but only inside this
+  project's `.data/media` (never a `MEDIA_DIR` override). Leftover files made new uploads get a `-1` suffix.
+- **D-79** Each CMS spec has its own test account (own authenticator secret): the MFA limit of 5 attempts per
+  5 minutes per user and the replay rule (one use per 30-second step) would otherwise make specs fail or wait.
+- **D-80** `docs/cms/parity-allowlist.json` allows only the footer Revision date to differ (D-11): the build
+  date in static mode, the last settings change in CMS mode. Nothing else, and never a header.

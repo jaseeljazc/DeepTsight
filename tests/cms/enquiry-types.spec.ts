@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { ADMIN_FILE } from "./global-setup";
+import { ENQUIRY_TYPES_FILE } from "./global-setup";
 import { fullLogin, readAccount, requireTestDatabase } from "./helpers";
 
 /*
@@ -22,7 +22,7 @@ test("a disabled enquiry type leaves the form and is refused by the server", asy
   page,
   request,
 }) => {
-  await fullLogin(request, readAccount(ADMIN_FILE));
+  await fullLogin(request, readAccount(ENQUIRY_TYPES_FILE));
   const found = await request.get(
     `/api/enquiry-types?where[value][equals]=${encodeURIComponent(TYPE)}`,
   );

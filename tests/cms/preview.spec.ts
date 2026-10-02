@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext } from "@playwright/test";
-import { ADMIN_FILE } from "./global-setup";
+import { PREVIEW_FILE } from "./global-setup";
 import { fullLogin, readAccount, requireTestDatabase } from "./helpers";
 
 /*
@@ -34,7 +34,7 @@ async function findService(request: APIRequestContext): Promise<ServiceDoc> {
 }
 
 test("draft, preview and publish", async ({ request, browser }) => {
-  const admin = readAccount(ADMIN_FILE);
+  const admin = readAccount(PREVIEW_FILE);
   await fullLogin(request, admin);
   const service = await findService(request);
   const original = service.summary;

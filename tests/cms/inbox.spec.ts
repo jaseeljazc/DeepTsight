@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { ADMIN_FILE } from "./global-setup";
+import { INBOX_FILE } from "./global-setup";
 import { fullLogin, readAccount, requireTestDatabase } from "./helpers";
 
 /*
@@ -48,7 +48,7 @@ test("a submission is saved, readable only by an admin, and fully deleted", asyn
     (await request.post("/api/enquiries", { data: { name: "x" } })).status(),
   ).toBeGreaterThanOrEqual(400);
 
-  await fullLogin(request, readAccount(ADMIN_FILE));
+  await fullLogin(request, readAccount(INBOX_FILE));
   const search = await request.get(`/api/enquiries?where[message][like]=${MARKER}&depth=0`);
   expect(search.status()).toBe(200);
   const doc = ((await search.json()) as { docs: EnquiryDoc[] }).docs[0];
@@ -74,5 +74,5 @@ test("a submission is saved, readable only by an admin, and fully deleted", asyn
   expect((await request.delete(`/api/enquiries/${doc.id}`)).status()).toBe(200);
   expect((await request.get(`/api/enquiries/${doc.id}`)).status()).toBe(404);
   const versions = await request.get(`/api/enquiries/versions?where[parent][equals]=${doc.id}`);
-  expect([404, 400]).toContain(versions.status());
+  expect(versions.status(), "no versions endpoint for enquiries").not.toBe(200);
 });

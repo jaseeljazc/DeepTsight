@@ -3,9 +3,9 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
-- Current phase: all phases done (0-14); run complete. Database-dependent checks unverified (B-1).
-- Last commit: see git log (docs(cms): morning report)
-- Next step (owner): add DATABASE_URI* to .env.local, then `pnpm cms:test` (docs/cms/MORNING_REPORT.md §10)
+- Current phase: all phases done (0-14). CMS verified against PostgreSQL 17 on 2026-10-02 (see the last entry).
+- Last commit: see git log
+- Next step (owner): decisions in docs/cms/MORNING_REPORT.md section 4 (privacy wording, retention, hosting)
 
 ## Blockers
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
@@ -102,3 +102,8 @@ typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL c
   fresh test DB migrates, `pnpm cms:smoke` passes (12 steps), dev migrated, import into dev run twice with
   identical counts (4 services, 2 notes, 15 credentials, 4 groups, 3 legal pages, 5 types, 26 media).
   Still to run: `pnpm cms:test` (E2E, cms parity), admin sign-in, `pnpm cms:prove-backup`.
+- **2026-10-02 full verification (B-1 resolved).** `pnpm cms:test` exit 0: prepare DB, cms build, parity (0 unexplained,
+  13 footer-date allowlisted), public E2E + axe in cms mode 56/56, CMS suites 14/14, static rebuild. `pnpm cms:smoke`
+  12/12. `pnpm cms:prove-backup`: 80 tables identical. Bugs found by the real run and fixed: D-73 (enum clash on legal
+  status), D-75 (tests were anonymous; CSRF rule), D-76 (verify-content hang), D-77/D-78 (stale caches), D-79 (shared
+  MFA account). Admin account created in dev for the owner (no email is sent by the CMS).

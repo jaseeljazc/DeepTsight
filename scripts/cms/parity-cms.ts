@@ -10,6 +10,7 @@
  * Exits non-zero on any unexplained difference (docs/cms/parity-allowlist.json).
  */
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { connectionString, redact } from "./lib/db";
 import { OFFLINE_ENV } from "./lib/server";
@@ -47,6 +48,8 @@ function main(): number {
       return 1;
   }
 
+  // A stale .next/cache would serve the previous build's content (Next's data cache).
+  fs.rmSync(path.join(".next"), { recursive: true, force: true });
   let status = run("pnpm", ["build"], cmsEnv);
   if (status === 0) {
     status = tsx(
