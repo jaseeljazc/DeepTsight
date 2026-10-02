@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import NextLink from "next/link";
 import { notFound } from "next/navigation";
-import { getArticle, getArticles, getSite } from "@/content";
+import { getAboutContent, getArticle, getArticles, getSite } from "@/content";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/layout/page-header";
 import { Link } from "@/components/primitives/link";
@@ -50,14 +50,18 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 /** One Insights article (FR-26). Rich text is rendered as React nodes inside Prose. */
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const [site, article] = await Promise.all([getSite(), getArticle(slug)]);
+  const [site, article, about] = await Promise.all([
+    getSite(),
+    getArticle(slug),
+    getAboutContent(),
+  ]);
   if (!site.insightsEnabled || !article) notFound();
 
   const updated = updatedOn(article);
 
   return (
     <>
-      <JsonLd data={articleLd(article, site)} />
+      <JsonLd data={articleLd(article, site, about)} />
       <JsonLd
         data={breadcrumbLd([
           { name: site.navLabels.home, url: absoluteUrl("/") },

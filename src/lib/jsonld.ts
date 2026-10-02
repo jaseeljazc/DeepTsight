@@ -113,10 +113,13 @@ export function serviceLd(service: Service, site: Site) {
 /**
  * Article JSON-LD schema (SEO-04)
  */
-export function articleLd(article: Article, site: Site) {
+export function articleLd(article: Article, site: Site, about?: AboutContent) {
   if (hasPlaceholder(article.title) || hasPlaceholder(article.summary)) {
     return null;
   }
+
+  const url = absoluteUrl(`/insights/${article.slug}`);
+  const founder = about?.founder;
 
   return {
     "@context": "https://schema.org",
@@ -125,12 +128,17 @@ export function articleLd(article: Article, site: Site) {
     description: article.summary,
     datePublished: article.publishedAt,
     dateModified: article.updatedAt ?? article.publishedAt,
+    // Only a verified name: a placeholder is never published as an author.
+    ...(founder && !hasPlaceholder(founder.name)
+      ? { author: { "@type": "Person" as const, name: founder.name } }
+      : {}),
     publisher: {
       "@type": "Organization",
       name: site.displayName,
       url: siteUrl,
     },
-    url: absoluteUrl(`/insights/${article.slug}`),
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
   };
 }
 
