@@ -40,3 +40,34 @@ test("mapArticle drops a category with no slug or no name", () => {
   });
   assert.deepEqual(article.categories, []);
 });
+
+import { validateArticle } from "../../../src/cms/hooks/validators";
+
+// validateArticle reads only the document; the request is not used.
+const noRequest = {} as never;
+
+test("validateArticle refuses the reserved slug 'category'", async () => {
+  const issues = await validateArticle(
+    {
+      ...base,
+      slug: "category",
+      body: { root: { children: [{ type: "paragraph" }] } },
+    },
+    noRequest,
+  );
+  assert.ok(
+    issues.some((issue) => issue.path === "slug" && /reserved/i.test(issue.message)),
+    JSON.stringify(issues),
+  );
+});
+
+test("validateArticle accepts an ordinary slug", async () => {
+  const issues = await validateArticle(
+    {
+      ...base,
+      body: { root: { children: [{ type: "paragraph" }] } },
+    },
+    noRequest,
+  );
+  assert.ok(!issues.some((issue) => issue.path === "slug"), JSON.stringify(issues));
+});

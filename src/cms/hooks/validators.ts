@@ -1,4 +1,5 @@
 import type { ZodType } from "zod";
+import { RESERVED_ARTICLE_SLUGS } from "../../lib/insights";
 import {
   aboutContentSchema,
   articleSchema,
@@ -129,6 +130,12 @@ export const validateSeo: PublishValidator = (doc) =>
 export const validateArticle: PublishValidator = (doc) => {
   // publishedAt is stamped by the articles hook just before this check on the first publish.
   const issues = zodIssues(articleSchema, { ...mapArticle(doc, true), status: "published" });
+  const slug = typeof doc["slug"] === "string" ? doc["slug"] : "";
+  if (RESERVED_ARTICLE_SLUGS.includes(slug))
+    issues.push({
+      path: "slug",
+      message: `"${slug}" is reserved for the site. Choose a different web address.`,
+    });
   const body = doc["body"] as { root?: { children?: unknown[] } } | undefined;
   if (!body?.root?.children?.length)
     issues.push({ path: "body", message: "Write the article before publishing." });
