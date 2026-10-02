@@ -3,7 +3,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Resend } from "resend";
-import { enquirySchema, getSite } from "@/content";
+import { buildEnquirySchema, getEnquiryOptionsNow, getSite } from "@/content";
+import { recordEnquiryEmail, saveEnquiry, type SavedEnquiry } from "@/content/enquiries";
 import { env } from "@/lib/env";
 import { siteHost } from "@/lib/site-url";
 import { checkEnquiryRateLimit, clientIp } from "@/lib/rate-limit";
@@ -38,7 +39,8 @@ function escapeHtml(str: string): string {
 }
 
 /*
- * Order (ARCHITECTURE.md §4.4, §6): honeypot, validation, rate limit, CAPTCHA and timing, send.
+ * Order (ARCHITECTURE.md §4.4, §6): honeypot, validation, rate limit, CAPTCHA and timing, save to
+ * the CMS inbox (CMS mode only, FR-44), send the email, record how the email went, redirect.
  * Validation runs before the rate limit so that correcting a mistake does not use up the
  * visitor's allowance (FR-36). Nothing from the form is ever logged (PRIV-08).
  */
@@ -69,6 +71,9 @@ export async function submitEnquiry(
     consent: formData.get("consent") === "on" || formData.get("consent") === "true",
   };
 
+  // Validated against the enquiry types enabled now, not those the page was built with.
+  const { types } = await getEnquiryOptionsNow();
+  const enquirySchema = buildEnquirySchema(types.map((type) => type.value));
   const parsed = enquirySchema.safeParse(rawValues);
   if (!parsed.success) {
     return {
@@ -127,7 +132,21 @@ export async function submitEnquiry(
     };
   }
 
-  // 5. Delivery by email (FR-37). The live site always has a key (src/lib/env.ts); the simulated
+  // 5. Save the enquiry before emailing it, so a failed email never loses it (03 §7). Static mode
+  //    has no database and stores nothing. A failed save is logged by error type only (PRIV-08).
+  const typeLabel =
+    types.find((type) => type.value === validData.enquiryType)?.label ?? validData.enquiryType;
+  let saved: SavedEnquiry | null = null;
+  try {
+    saved = await saveEnquiry(validData, typeLabel);
+  } catch (error) {
+    console.error(
+      "[Enquiry Action] Saving the enquiry failed:",
+      error instanceof Error ? error.name : "UnknownError",
+    );
+  }
+
+  // 6. Delivery by email (FR-37). The live site always has a key (src/lib/env.ts); the simulated
   //    path exists only for development and preview.
   const { RESEND_API_KEY, ENQUIRY_TO_EMAIL, ENQUIRY_FROM_EMAIL } = env.server;
   const deliveryFailed: EnquiryActionState = {
@@ -136,36 +155,38 @@ export async function submitEnquiry(
     formError: `Your enquiry could not be delivered because of an email service fault. ${emailFallback}`,
   };
 
-  if (!RESEND_API_KEY || !ENQUIRY_TO_EMAIL || !ENQUIRY_FROM_EMAIL) {
-    if (env.isProductionSite) {
-      console.error("[Enquiry Action] Email delivery is not configured.");
-      return deliveryFailed;
+  type Delivery = { status: "sent" | "simulated" | "failed"; reason?: string };
+  const deliver = async (): Promise<Delivery> => {
+    if (!RESEND_API_KEY || !ENQUIRY_TO_EMAIL || !ENQUIRY_FROM_EMAIL) {
+      if (env.isProductionSite) {
+        console.error("[Enquiry Action] Email delivery is not configured.");
+        return { status: "failed", reason: "email-not-configured" };
+      }
+      console.info("[Enquiry Action] Simulated email dispatch (email delivery not configured).");
+      return { status: "simulated" };
     }
-    console.info("[Enquiry Action] Simulated email dispatch (email delivery not configured).");
-    redirect("/contact/thank-you");
-  }
 
-  try {
-    const resend = new Resend(RESEND_API_KEY);
+    try {
+      const resend = new Resend(RESEND_API_KEY);
 
-    const plainText = [
-      `New enquiry via ${siteHost}`,
-      "----------------------------------------",
-      `Name: ${validData.name}`,
-      `Work email: ${validData.workEmail}`,
-      `Organisation: ${validData.organisation ?? "Not provided"}`,
-      `Phone: ${validData.phone ?? "Not provided"}`,
-      `Enquiry type: ${validData.enquiryType}`,
-      "",
-      "Message:",
-      validData.message,
-      "",
-      "Consent: Agreed to privacy policy",
-    ].join("\n");
+      const plainText = [
+        `New enquiry via ${siteHost}`,
+        "----------------------------------------",
+        `Name: ${validData.name}`,
+        `Work email: ${validData.workEmail}`,
+        `Organisation: ${validData.organisation ?? "Not provided"}`,
+        `Phone: ${validData.phone ?? "Not provided"}`,
+        `Enquiry type: ${validData.enquiryType}`,
+        "",
+        "Message:",
+        validData.message,
+        "",
+        "Consent: Agreed to privacy policy",
+      ].join("\n");
 
-    // Mail clients ignore CSS variables, so colours come from the tokens generated from globals.css.
-    const c = colorTokens;
-    const htmlContent = `
+      // Mail clients ignore CSS variables, so colours come from the tokens generated from globals.css.
+      const c = colorTokens;
+      const htmlContent = `
         <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; color: ${c.ink700};">
           <h2 style="color: ${c.ink900}; border-bottom: 2px solid ${c.primary}; padding-bottom: 8px;">
             New enquiry, ${escapeHtml(site.displayName)}
@@ -200,27 +221,47 @@ export async function submitEnquiry(
         </div>
       `;
 
-    const response = await resend.emails.send({
-      from: `${site.displayName} Enquiries <${ENQUIRY_FROM_EMAIL}>`,
-      to: [ENQUIRY_TO_EMAIL],
-      replyTo: validData.workEmail,
-      subject: `[${site.displayName} Enquiry] ${validData.enquiryType} from ${validData.name}`,
-      text: plainText,
-      html: htmlContent,
-    });
+      const response = await resend.emails.send({
+        from: `${site.displayName} Enquiries <${ENQUIRY_FROM_EMAIL}>`,
+        to: [ENQUIRY_TO_EMAIL],
+        replyTo: validData.workEmail,
+        subject: `[${site.displayName} Enquiry] ${validData.enquiryType} from ${validData.name}`,
+        text: plainText,
+        html: htmlContent,
+      });
 
-    if (response.error) {
-      console.error("[Enquiry Action] Resend returned error:", response.error.name);
-      return deliveryFailed;
+      if (response.error) {
+        console.error("[Enquiry Action] Resend returned error:", response.error.name);
+        return { status: "failed", reason: `email-service:${response.error.name}` };
+      }
+      return { status: "sent" };
+    } catch (error) {
+      console.error(
+        "[Enquiry Action] Failed to deliver email:",
+        error instanceof Error ? error.name : "UnknownError",
+      );
+      return {
+        status: "failed",
+        reason: `email-error:${error instanceof Error ? error.name : "UnknownError"}`,
+      };
     }
+  };
+
+  const delivery = await deliver();
+
+  // 7. Record how the email went, so failed notifications show in the admin (D-14).
+  try {
+    await recordEnquiryEmail(saved, delivery.status, delivery.reason);
   } catch (error) {
     console.error(
-      "[Enquiry Action] Failed to deliver email:",
+      "[Enquiry Action] Recording the email status failed:",
       error instanceof Error ? error.name : "UnknownError",
     );
-    return deliveryFailed;
   }
 
-  // 6. Success (FR-34)
+  // Neither saved nor emailed: the enquiry would be lost, so the visitor is told to email instead.
+  if (delivery.status === "failed" && !saved) return deliveryFailed;
+
+  // 8. Success (FR-34). A saved enquiry whose email failed is still received (D-14).
   redirect("/contact/thank-you");
 }

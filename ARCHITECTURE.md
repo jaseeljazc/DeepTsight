@@ -24,121 +24,111 @@ that adding a CMS later changes one file.**
 
 ## 2. Folder structure
 
+Updated 1 October 2026 for the Phase 2 CMS (branch `cms/phase-2`). Payload 3 runs inside this Next.js app.
+
 ```
 claude-designed/
 ├── AGENTS.md  CLAUDE.md  AGENT_ROLES.md  PROJECT.md  PRODUCT.md  REQUIREMENTS.md
 ├── DESIGN.md  ARCHITECTURE.md  TECH_STACK.md  TASKS.md  pending_work.md
 ├── .env.example                    every variable, with what is required in production
-├── next.config.ts                  security headers and CSP
-├── eslint.config.mjs               design-system and content-seam rules (§7)
-├── playwright.config.ts
-├── public/
-│   ├── images/                     photographs (+ illu/)
-│   ├── badges/                     issuer badge artwork for credentials
-│   ├── dither/                     globe-perth.svg
-│   └── fonts/                      self-hosted WOFF2 subsets
-├── scripts/                        run before every build by `check:content`
-│   ├── check-env.ts                fails a production build on missing or test env vars
-│   ├── generate-tokens.ts          globals.css → src/styles/tokens.generated.ts
-│   ├── check-placeholders.ts       fails a production build on unapproved content
-│   ├── check-contrast.ts           recomputes DESIGN.md §3.5 from tokens
-│   ├── verify-content.ts           calls the adapter so Zod parses every source file
-│   └── generate-dither.ts  generate-globe-data.ts  download-fonts.mjs  lib/
+├── next.config.ts                  public headers and CSP; separate admin/API policy; withPayload
+├── eslint.config.mjs               design-system, content-seam and Payload-boundary rules (§7)
+├── playwright.config.ts            public E2E and axe suites (tests/e2e, tests/a11y)
+├── playwright.cms.config.ts        CMS suites (tests/cms) against the test database, port 3000
+├── public/                         images/, badges/, dither/, fonts/ (static mode reads these)
+├── scripts/                        build checks (`check:content`) and generators
+│   ├── check-env.ts                production and CMS environment rules (names only)
+│   ├── check-placeholders.ts       markers in code
+│   ├── check-content-output.ts     markers in what the adapter returns (static or CMS)
+│   ├── verify-content.ts           calls every getter so Zod parses all content
+│   └── cms/                        CMS operations: migrate, reset-db (test/restore only), import,
+│                                   create-admin, reset-admin-password, backup, restore, verify-backup,
+│                                   purge-enquiries, smoke, parity-snapshot/compare, test-cms
 ├── src/
+│   ├── payload.config.ts           Payload: Postgres (push off), collections, globals, no GraphQL,
+│   │                               no telemetry, refusing email adapter, MFA screen
+│   ├── proxy.ts                    production gate: /admin, /api, /preview answer 404 until
+│   │                               CMS_ADMIN_ENABLED=true
 │   ├── app/
-│   │   ├── layout.tsx              html lang="en-AU", fonts, skip link, metadata base, noindex outside production
-│   │   ├── global-error.tsx  not-found.tsx
-│   │   ├── sitemap.ts  robots.ts  opengraph-image.tsx  twitter-image.tsx
+│   │   ├── global-not-found.tsx    404 for unmatched URLs (two root layouts)
+│   │   ├── global-error.tsx  sitemap.ts  robots.ts  opengraph-image.tsx  twitter-image.tsx
 │   │   ├── .well-known/security.txt/route.ts
-│   │   ├── actions/enquiry.ts      the only Server Action
-│   │   ├── design-system/page.tsx  internal specimen; 404 in production
-│   │   └── (site)/
-│   │       ├── layout.tsx          Header + main + Footer
-│   │       ├── error.tsx
-│   │       ├── page.tsx                            /
-│   │       ├── about/page.tsx                      /about
-│   │       ├── services/page.tsx                   /services
-│   │       ├── services/[slug]/page.tsx            /services/:slug
-│   │       ├── credentials/page.tsx                /credentials
-│   │       ├── insights/page.tsx                   /insights (404 until articles exist)
-│   │       ├── contact/page.tsx  contact/thank-you/page.tsx
-│   │       └── legal/{privacy,terms,accessibility}/page.tsx
-│   ├── components/
-│   │   ├── primitives/             hand-written, design-system-locked: button, link, field, input,
-│   │   │                           textarea, select, checkbox, radio, badge, alert, table, figure,
-│   │   │                           spec-block, section-header, drawing-rule, rail-tag, prose,
-│   │   │                           placeholder (Placeholder, MarkedText)
-│   │   ├── layout/                 header, mobile-nav, footer, breadcrumbs, page-header,
-│   │   │                           anchor-nav, container, section, grid, wordmark
-│   │   ├── sections/               the nine Home sections, one file each
-│   │   ├── content/                templates and composed parts: service-template, service-body,
-│   │   │                           service-icon, credential-group, legal-document, part, index-list,
-│   │   │                           process-sequence, project-note, rail-wiring, dot-*, ascii-hero-power-plant
-│   │   ├── forms/                  enquiry-form (client), error-summary
-│   │   └── seo/                    json-ld, track-event-on-mount
-│   ├── content/
-│   │   ├── index.ts                ★ THE ADAPTER — the only public surface
-│   │   ├── schema.ts               Zod schemas = the content model
-│   │   ├── types.ts                inferred types, exported for components
-│   │   ├── enquiry-schema.ts       enquiry form schema and enquiry types
-│   │   └── source/                 Phase 1 storage. Deleted or migrated in Phase 2.
-│   │       ├── site.ts  home.ts  about.ts  services.ts  credentials.ts
-│   │       ├── pages.ts            copy that belongs to one page or template
-│   │       ├── media.ts            image rights register and reserved image slots
-│   │       ├── seo.ts              per-route titles and descriptions (canonicals are paths)
-│   │       └── legal/{privacy,terms,accessibility}.ts
-│   ├── lib/
-│   │   ├── env.ts                  server environment (server code only)
-│   │   ├── env-rules.ts            what production requires; shared with scripts/check-env.ts
-│   │   ├── public-env.ts           NEXT_PUBLIC_* values; safe in client components
-│   │   ├── site-url.ts             the one origin; absoluteUrl() for every absolute URL
-│   │   ├── placeholder.ts          the unverified-content marker strings
-│   │   ├── jsonld.ts               structured data builders
-│   │   ├── rate-limit.ts  turnstile.ts  analytics.ts  utils.ts
-│   └── styles/
-│       ├── globals.css             @theme tokens, base layer, component classes — single source of truth
-│       ├── fonts.ts                next/font/local
-│       └── tokens.generated.ts     generated; never edit
+│   │   ├── actions/enquiry.ts      the only Server Action (saves to the inbox in CMS mode, then emails)
+│   │   ├── preview/route.ts  preview/exit/route.ts    draft preview for MFA-verified admins
+│   │   ├── (public)/               root layout of the public site (html, fonts, skip link)
+│   │   │   ├── layout.tsx  not-found.tsx
+│   │   │   ├── design-system/page.tsx              internal specimen; 404 in production
+│   │   │   └── (site)/                             Header + main + Footer, every public page
+│   │   │       ├── page.tsx  about/  services/  services/[slug]/  credentials/  contact/
+│   │   │       ├── insights/page.tsx  insights/[slug]/page.tsx  insights/rss.xml/route.ts
+│   │   │       └── legal/{privacy,terms,accessibility}/page.tsx
+│   │   └── (payload)/              root layout of the CMS admin (Payload's own <html>)
+│   │       ├── admin/[[...segments]]/  admin/importMap.js (generated)
+│   │       └── api/[...slug]/route.ts  api/graphql/route.ts (always 404)
+│   ├── cms/                        everything Payload-specific
+│   │   ├── access/                 isAdmin (user + MFA cookie), approver-only fields
+│   │   ├── collections/            services, proof-items, credentials, credential-groups, media,
+│   │   │                           articles, article-categories, legal-pages, enquiry-types,
+│   │   │                           enquiries, users, audit-log
+│   │   ├── globals/                site-settings, home, about, pages, seo
+│   │   ├── fields/  hooks/         shared field builders; publish guard, audit, revalidation
+│   │   ├── mfa/                    TOTP (RFC 6238), AES-256-GCM, recovery codes, MFA cookie, endpoints
+│   │   ├── media/                  upload sanitiser (decode, re-encode, strip metadata)
+│   │   ├── views/                  MFA screen, inbox summary, QR code
+│   │   ├── migrations/             one committed migration per schema change
+│   │   └── payload-types.ts        generated
+│   ├── components/                 primitives/, layout/, sections/, content/ (incl. rich-text),
+│   │                               forms/, seo/ (unchanged layers, §5)
+│   ├── content/                    ★ THE CONTENT SEAM
+│   │   ├── index.ts                the adapter: dispatches on CONTENT_SOURCE
+│   │   ├── static-source.ts        reads ./source (CONTENT_SOURCE=static, default)
+│   │   ├── cms-source.ts           reads Payload's Local API (CONTENT_SOURCE=cms)
+│   │   ├── rules.ts                filtering, ordering and integrity rules both sources apply
+│   │   ├── mappers/                Payload documents → the Zod shapes
+│   │   ├── enquiries.ts            saves enquiries (CMS mode only)
+│   │   ├── schema.ts  types.ts  enquiry-schema.ts
+│   │   └── source/                 static content, kept as the fallback (D-02)
+│   ├── lib/                        env, env-rules, public-env, site-url, placeholder, jsonld,
+│   │                               rate-limit, turnstile, analytics, dates, public-metadata, utils
+│   └── styles/                     globals.css (single source of truth), fonts.ts, tokens.generated.ts
 └── tests/
-    ├── a11y/routes.spec.ts         axe-core across every route
-    ├── e2e/enquiry-form.spec.ts    happy path, validation, blur focus, no-JS, rate limit
-    └── e2e/qa-suite.spec.ts        skip link, 320px reflow, external links, mobile menu, keyboard, 404
+    ├── a11y/  e2e/                 public suites (run in both content modes)
+    └── cms/                        admin security, preview, enquiry types, inbox, insights;
+                                    unit/ (MFA, media, rich text, content rules; no database needed)
 ```
 
-Not built yet: `ui/` (Radix-backed widgets, §5.1), MDX legal and article pipeline, `/insights/[slug]`,
-`/insights/rss.xml`, `lib/seo.ts` metadata builder, favicon (waits for the logo), `proxy.ts`.
+Not built: `ui/` (Radix-backed widgets, §5.1), `lib/seo.ts`, favicon (waits for the logo), a redirect
+manager for changed slugs (slugs lock after the first publish instead, D-09).
 
 ## 3. Routes and rendering
 
-| Route                         | Rendering                      | Generated from                                         |
-| ----------------------------- | ------------------------------ | ------------------------------------------------------ |
-| `/`                           | Static                         | `getHomeContent()`, `getServices()`, `getFigures()`    |
-| `/about`                      | Static                         | `getAboutContent()`, `getPageContent()`                |
-| `/services`                   | Static                         | `getServices()`, `getPageContent()`                    |
-| `/services/[slug]`            | Static, `generateStaticParams` | `getServices()` → `getService(slug)`                   |
-| `/credentials`                | Static                         | `getCredentials()`, `getPageContent()`                 |
-| `/insights`                   | Static (404 for now)           | `getArticles()` — returns nothing yet                  |
-| `/insights/[slug]`            | **(planned)**                  | `getArticle(slug)`                                     |
-| `/contact`                    | Static shell + Server Action   | `getSite()`, `getPageContent()`, `getEnquiryOptions()` |
-| `/contact/thank-you`          | Static                         | `getPageContent()`                                     |
-| `/legal/*`                    | Static                         | `getLegalPage(slug)` (TypeScript objects, not MDX)     |
-| `/sitemap.xml`, `/robots.txt` | Build-time                     | content and `NEXT_PUBLIC_SITE_URL`                     |
-| `/insights/rss.xml`           | **(planned)**                  | articles                                               |
+| Route                                  | Rendering                                           | Content                                                |
+| -------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| `/`, `/about`, `/services`, `/contact` | Static; regenerated on demand by content tags (CMS) | adapter getters                                        |
+| `/services/[slug]`                     | Static, `generateStaticParams` (enabled services)   | `getServices()` → `getService(slug)`                   |
+| `/credentials`                         | Static, also re-rendered daily (expiry)             | `getCredentials()`, `getPageContent()`                 |
+| `/insights`, `/insights/[slug]`        | Static; 404 while `insightsEnabled` is false        | `getArticles()`, `getArticle(slug)`                    |
+| `/insights/rss.xml`                    | Static route handler; 404 while off                 | `getArticles()`                                        |
+| `/contact/thank-you`, `/legal/*`       | Static                                              | `getPageContent()`, `getLegalPage(slug)`               |
+| `/sitemap.xml`, `/robots.txt`          | Build time                                          | content, stored `updatedAt`, `NEXT_PUBLIC_SITE_URL`    |
+| `/admin/**`                            | Dynamic (Payload admin)                             | Payload; strict CSP, noindex, no-store                 |
+| `/api/**`                              | Dynamic (Payload REST)                              | access-controlled; GraphQL always 404                  |
+| `/preview`, `/preview/exit`            | Dynamic                                             | turns Next draft mode on (MFA admin) / off             |
 
-`dynamic = "force-static"` is asserted on every page so an accidental dynamic API call fails the build
-rather than silently switching a route to SSR. No route group has a `loading.tsx`: a loading boundary
-would hide prerendered content until JavaScript runs (removed 1 October 2026).
+Public pages assert `dynamic = "force-static"`. In CMS mode their reads are cached with content tags and
+regenerated when a publish invalidates a tag (§4.4). In draft mode (preview) they render dynamically with
+the latest drafts. No route group has a `loading.tsx`.
 
 ## 4. The content layer — the most important part of this document
 
 ### 4.1 Why
 
-Phase 1 ships without a CMS. Phase 2 adds one. If components read data files directly, Phase 2 becomes
-a rewrite of every page. With an adapter, Phase 2 is a rewrite of `src/content/index.ts` and nothing else.
+Components never know where content comes from. The adapter is the only public content API, so the CMS
+was added by giving the adapter a second source, not by rewriting pages (§4.5 lists the exceptions).
 
 ### 4.2 The contract
 
-`src/content/index.ts` exports only functions, never data objects:
+`src/content/index.ts` exports only functions:
 
 ```ts
 export async function getSite(): Promise<Site>;
@@ -146,116 +136,99 @@ export async function getHomeContent(): Promise<HomeContent>;
 export async function getAboutContent(): Promise<AboutContent>;
 export async function getPageContent(): Promise<PagesContent>;
 export async function getFigures(): Promise<Record<string, FigureData>>;
-export async function getEnquiryOptions(): Promise<EnquiryOptions>;
-export async function getServices(): Promise<Service[]>;
+export async function getEnquiryOptions(): Promise<EnquiryOptions>; // cached (pages)
+export async function getEnquiryOptionsNow(): Promise<EnquiryOptions>; // uncached (Server Action)
+export async function getServices(): Promise<Service[]>; // enabled only, in sortOrder
 export async function getService(slug: string): Promise<Service | null>;
 export async function getCredentials(): Promise<CredentialGroup[]>;
-export async function getArticles(): Promise<ArticleSummary[]>; // returns [] until Insights is built
-export async function getArticle(slug: string): Promise<Article | null>; // returns null until then
+export async function getArticles(): Promise<ArticleSummary[]>;
+export async function getArticle(slug: string): Promise<Article | null>;
 export async function getLegalPage(slug: LegalSlug): Promise<LegalPage | null>;
 export async function getSeo(route: string): Promise<SeoEntry>;
 ```
 
-It also re-exports `enquirySchema` and `EnquiryData` for the form and the Server Action.
+It re-exports `buildEnquirySchema`, `enquirySchema` and `EnquiryData`. Client components import the schema
+from `@/content/enquiry-schema` directly, never the adapter (the adapter can load Payload).
 
-Rules:
+Rules (`src/content/rules.ts` applies them to both sources):
 
-- Every function is `async` even though Phase 1 is synchronous, so Phase 2 needs no call-site changes.
-- Every return value is parsed through its Zod schema before being returned. Invalid content throws at
-  build time (CR-01).
-- Nothing outside `src/content/` imports from `src/content/source/`. Enforced by an ESLint
-  `no-restricted-imports` rule.
-- The adapter filters on approval flags when `NEXT_PUBLIC_ENV=production`: unverified credentials and
-  unapproved proof entries never reach a component there. Outside production they are passed through so the
-  design shows them as marked placeholders.
-- The adapter resolves and checks references it owns: the Home trust strip is stored as credential ids and
-  resolved against the register; Home capability summaries must name an existing service. An unknown id fails
-  the build. (Media ids and `relatedSlugs` are not yet checked.)
-- Content stores site paths, never absolute URLs. Absolute URLs come from `src/lib/site-url.ts`.
+- `CONTENT_SOURCE=static` (default) reads `./source`; `CONTENT_SOURCE=cms` reads Payload. The CMS source is
+  imported only when selected, so static mode never starts Payload.
+- Every return value is parsed with its Zod schema. In CMS mode the same schemas also run when an editor
+  publishes (the publish guard), so invalid content is refused at save time, not at render time.
+- Public reads see **published** documents only, even though the Local API bypasses access control.
+- Approval flags filter only when `NEXT_PUBLIC_ENV=production` (unverified credentials, undisclosed project
+  notes); outside production, and in draft mode, they render as marked placeholders.
+- Disabled services disappear everywhere, including other services' related lists and the sitemap.
+- References are checked: unknown related services, credential ids and figure ids fail the render.
+- Navigation routes and their order are fixed in code (`navRoutes`); only labels are content.
+- Canonicals are derived from routes and slugs, never stored as absolute URLs.
+- Nothing outside `src/content/` imports `src/content/source/`; Payload is importable only from
+  `src/content`, `src/cms`, `src/app/(payload)`, `src/payload.config.ts`, `scripts/cms` and `tests`.
 
 ### 4.3 Content model (Zod, `schema.ts`)
 
-`src/content/schema.ts` is the authority; this is a summary.
+`src/content/schema.ts` is the authority and `docs/cms/02_CONTENT_MODEL.md` maps it to Payload.
 
 ```ts
-Site            { legalName, displayName, tagline, abn?, address?, phone, email, linkedIn?,
-                  responseTime, serviceArea, nav[], ctaLabels, insightsEnabled: boolean }
-Service         { slug, title, shortTitle, summary, outcome, icon (fixed set),
-                  challenge, whyItMatters, capability, scopeAndOutputs[],
-                  deliveryApproach[], standards[], evidence?, relatedSlugs[],
-                  media: { hero, detail }, seo: SeoEntry }
-Credential      { id, category, title, issuer, identifier?, year?, expiry?, url?,
-                  badge?, verified: boolean }
-CredentialGroup { category, title, items: Credential[] }
-ProofItem       { id, sector, challenge, outcome, metric?, disclosureApproved: boolean }
-Article         { slug, title, summary, publishedAt, updatedAt?, readingMinutes,
-                  tags[], status: "draft" | "published", body }
-MediaAsset      { id, src, alt, caption, width, height, source, licence,
-                  usageRights, attribution?, approvedForPublic: boolean }
-ImageSlot       { id, subject, caption, promptRef }       // a reserved image position
-HomeSource      what home.ts stores: Home copy + trustStripIds[] (resolved to Credential[])
-AboutContent    { founder: { name, jobTitle }, narrative, principles[], media, timeline[] }
-PagesContent    page intros and closing copy for about, services, service template,
-                credentials, contact, thank-you
-LegalPage       { slug, title, lastUpdated, sections: { title, content }[] }
+Site            stored as SiteSource { legalName, displayName, tagline, abn?, address?, phone, email,
+                  linkedIn?, responseTime, serviceArea, locationLabel, socialLinks[], mapsUrl?,
+                  officeAddress? + showOfficeAddress, businessHours? + showBusinessHours,
+                  navLabels, ctaLabels, uiLabels, insightsEnabled, updatedAt? }
+                returned with a derived nav[] (fixed routes, stored labels)
+Service         { slug, title, shortTitle, summary, outcome, icon (fixed set), challenge, whyItMatters,
+                  capability, scopeAndOutputs[], deliveryApproach[4], standards[], evidence?,
+                  relatedSlugs[], media: { hero, detail }, seo, enabled, sortOrder, updatedAt? }
+Credential      { id, category, title, issuer, identifier?, year?, expiry?, url?, badge?, verified }
+ProofItem       { id, sector, challenge, outcome, metric?, disclosureApproved }
+Article         { slug, title, summary, publishedAt, updatedAt?, readingMinutes, tags[],
+                  status, body (Lexical JSON), seo? }
+MediaAsset      { id, src, alt, caption, width, height, source, licence, usageRights,
+                  attribution?, approvedForPublic }    ImageSlot { id, subject, caption, promptRef }
+HomeContent, AboutContent  as before, plus updatedAt?
+PagesContent    page intros and closing copy, plus figure ids for services, credentials, contact
+LegalPage       { slug, title, lastUpdated, reference, status (pending-adviser | approved),
+                  sections[], updatedAt? }
+EnquiryType     { value (fixed once created), label, enabled, sortOrder }
 SeoEntry        { title, description, canonical (a site path), ogImage? }
 ```
-
-Every user-facing string field also accepts the `[PLACEHOLDER] ` prefix, which the
-`check-placeholders` script rejects in production builds. Call-to-action button labels live only in
-`Site.ctaLabels`.
 
 ### 4.4 Data flow
 
 ```
-build time
-  content/source/*.ts|mdx
-        │  parsed + validated (Zod)
+CMS mode
+  Editor ──HTTPS + password + TOTP──▶ /admin (Payload)
+        │  publish: mapper + Zod guard, approval flags (approver only), audit entry
         ▼
-  content/index.ts  ← the seam
-        │  typed, approval-filtered
+  PostgreSQL 17 (+ .data/media/<database>)
+        │  afterChange hook → revalidateTag(tag, { expire: 0 })
         ▼
-  Server Components (app/**/page.tsx)
-        │  props
+  src/content/cms-source.ts  (Local API, published only, unstable_cache with content tags)
+        │  same mappers → Zod → rules
         ▼
-  section + primitive components
-        │
-        ▼
-  static HTML + minimal JS to the CDN
+  unchanged pages and components ──▶ static HTML, regenerated on the next visit after a publish
+
+Static mode: src/content/source/*.ts → static-source.ts → the same rules → pages (as before the CMS).
 ```
 
 ```
-runtime (the only dynamic path)
-  EnquiryForm (client)
-        │  FormData via Server Action
-        ▼
-  app/actions/enquiry.ts
-        ├─ honeypot
-        ├─ Zod parse (same schema as the client)
-        ├─ rate limit by IP and globally (valid submissions only)
-        ├─ Turnstile verification (a missing token fails in production)
-        ├─ elapsed-time check against Cloudflare's challenge time (3 s)
-        ├─ send transactional email (an error, never a silent success, if delivery is not configured)
-        └─ redirect → /contact/thank-you
+runtime: the enquiry Server Action
+  honeypot → Zod (types enabled now) → rate limit → Turnstile → timing
+  → save to the inbox (CMS mode; emailStatus "pending") → email → record emailStatus → thank-you
+  A saved enquiry whose email failed still shows thank-you and is flagged in the admin (D-14).
+  Neither saved nor emailed: the existing error with the email address.
 ```
 
-No database in Phase 1. No enquiry persistence; email is the system of record. From Phase 2 enquiries
-are also saved to the CMS and shown in an admin inbox (FR-38 changed, FR-44).
+### 4.5 Phase 2 as built, and what still differs from the original plan
 
-### 4.5 Phase 2 migration path
-
-1. Install the CMS into the same Next.js app (`TECH_STACK.md` §4).
-2. Generate collections from the existing Zod schemas — the model already exists.
-3. Run a one-off import script: `content/source/*` → CMS collections.
-4. Rewrite the bodies of the functions in `content/index.ts` to query the CMS. Signatures unchanged.
-5. Switch the affected routes from fully static to on-demand revalidation triggered by a publish webhook.
-6. Delete `content/source/`.
-
-No page component, section component or primitive is touched in steps 1–6. That is the whole point.
-
-Known exceptions, to plan for (`docs/PROJECT_CONTEXT_FOR_CMS.md` §18.3): copy still hardcoded in components,
-the source-scanning placeholder gate, build-time dates (credential expiry, sitemap), the Insights renderer,
-and the enquiry inbox, which changes the Server Action as well as the adapter.
+- The adapter kept every signature; pages and components only changed where copy or figure ids were
+  hard-coded (now content: `uiLabels`, `locationLabel`, page figure ids, legal reference) and where the
+  inbox changed the Server Action.
+- `src/content/source/` is **kept** as the static fallback (D-02); it is not deleted.
+- Revalidation is tag-based from Payload hooks, not a publish webhook.
+- The placeholder gate now also scans adapter output (`check-content-output.ts`), and publishing a marked
+  document is refused on the live site.
+- Details, decisions and their reversal steps: `docs/cms/04_DECISIONS_DEFAULTS.md` (D-01 onwards).
 
 ---
 

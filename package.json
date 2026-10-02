@@ -14,27 +14,48 @@
     "test:e2e": "playwright test tests/e2e",
     "test:a11y": "playwright test tests/a11y",
     "test:perf": "lhci autorun",
-    "check:content": "tsx scripts/check-env.ts && tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts",
+    "check:content": "tsx scripts/check-env.ts && tsx scripts/generate-tokens.ts && tsx scripts/check-placeholders.ts && tsx scripts/check-contrast.ts && tsx scripts/verify-content.ts && tsx scripts/check-content-output.ts",
     "analyze": "ANALYZE=true next build",
     "tokens": "tsx scripts/generate-tokens.ts",
-    "dither": "tsx scripts/generate-dither.ts"
+    "dither": "tsx scripts/generate-dither.ts",
+    "test:cms": "playwright test -c playwright.cms.config.ts",
+    "test:cms-unit": "tsx --test tests/cms/unit/*.test.ts tests/cms/unit/*.test.tsx",
+    "cms:migrate": "tsx scripts/cms/migrate.ts --db DATABASE_URI",
+    "cms:backup": "tsx scripts/cms/backup.ts --db DATABASE_URI",
+    "cms:check-db": "tsx scripts/cms/check-db.ts",
+    "cms:smoke": "tsx scripts/cms/smoke.ts",
+    "cms:import": "tsx scripts/cms/import-from-source.ts --db DATABASE_URI --report",
+    "cms:parity": "tsx scripts/cms/parity-cms.ts",
+    "cms:test": "tsx scripts/cms/test-cms.ts",
+    "cms:purge-enquiries": "tsx scripts/cms/purge-enquiries.ts --db DATABASE_URI",
+    "cms:restore": "tsx scripts/cms/restore.ts",
+    "cms:verify-backup": "tsx scripts/cms/verify-backup.ts",
+    "cms:prove-backup": "tsx scripts/cms/prove-backup.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "~5.9.1",
     "@marsidev/react-turnstile": "~1.6.1",
+    "@payloadcms/db-postgres": "3.90.2",
+    "@payloadcms/next": "3.90.2",
+    "@payloadcms/richtext-lexical": "3.90.2",
+    "@payloadcms/ui": "3.90.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@upstash/ratelimit": "^2.1.0",
     "@upstash/redis": "^1.38.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "graphql": "16.14.2",
     "lucide-react": "^1.16.0",
-    "next": "^16.3.5",
+    "next": "16.3.7",
+    "payload": "3.90.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-hook-form": "~7.88.0",
     "resend": "~4.8.0",
+    "sharp": "0.35.5",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.3.3",
+    "uqr": "0.1.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -44,7 +65,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "eslint": "^9.20.0",
-    "eslint-config-next": "^16.3.5",
+    "eslint-config-next": "16.3.7",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "postcss": "^8.5.1",
     "prettier": "^3.5.0",
@@ -60,5 +81,10 @@
     "*.{css,md,mjs}": [
       "prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "undici@7.29.0": "7.29.1"
+    }
   }
 }

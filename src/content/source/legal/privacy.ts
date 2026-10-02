@@ -5,6 +5,9 @@ export const privacySource: LegalPage = {
   slug: "privacy",
   title: "Privacy notice",
   lastUpdated: "September 2026",
+  reference: "Privacy Act 1988 (Cth), APPs",
+  // Becomes "approved" only when the client's adviser has approved the wording.
+  status: "pending-adviser",
   sections: [
     {
       title: "1. Overview",

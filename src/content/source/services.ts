@@ -85,6 +85,8 @@ export const servicesSource: Service[] = [
         "PLC, DCS and E&I engineering for critical infrastructure, with cutover delivery in live industrial environments.",
       canonical: "/services/control-systems-ei-engineering",
     },
+    enabled: true,
+    sortOrder: 10,
   },
   {
     slug: "ot-cybersecurity",
@@ -174,6 +176,8 @@ export const servicesSource: Service[] = [
         "ISA/IEC 62443-aligned OT cybersecurity and industrial network segmentation engineered for critical plant availability.",
       canonical: "/services/ot-cybersecurity",
     },
+    enabled: true,
+    sortOrder: 20,
   },
   {
     slug: "it-ot-segregation",
@@ -255,6 +259,8 @@ export const servicesSource: Service[] = [
         "Defensible boundary separation between corporate IT and plant OT using Purdue Level 3.5 architectures.",
       canonical: "/services/it-ot-segregation",
     },
+    enabled: true,
+    sortOrder: 30,
   },
   {
     slug: "plant-reliability",
@@ -336,5 +342,7 @@ export const servicesSource: Service[] = [
         "Reliability modelling, obsolescence audits and lifecycle engineering for critical plant automation and electrical systems.",
       canonical: "/services/plant-reliability",
     },
+    enabled: true,
+    sortOrder: 40,
   },
 ];

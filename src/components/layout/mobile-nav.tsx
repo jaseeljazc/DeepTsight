@@ -18,6 +18,7 @@ export type NavItem = {
 export type MobileNavProps = {
   items: NavItem[];
   ctaLabel: string;
+  locationLabel: string;
 };
 
 const FOCUSABLE =
@@ -29,7 +30,7 @@ const FOCUSABLE =
  * open, everything else on the page can be made inert: screen readers then cannot reach the page
  * behind it either (`aria-modal` alone is not honoured everywhere).
  */
-export function MobileNav({ items, ctaLabel }: MobileNavProps) {
+export function MobileNav({ items, ctaLabel, locationLabel }: MobileNavProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const pathname = usePathname();
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -161,7 +162,7 @@ export function MobileNav({ items, ctaLabel }: MobileNavProps) {
               <Link href="/contact" variant="buttonPrimary" withArrow className="w-full">
                 {ctaLabel}
               </Link>
-              <p className="text-steel-600 text-small mt-4">Perth, Western Australia</p>
+              <p className="text-steel-600 text-small mt-4">{locationLabel}</p>
             </div>
           </div>,
           document.body,

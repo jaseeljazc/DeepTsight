@@ -30,6 +30,12 @@ below, the installed version is what the code is written against.
 | `@playwright/test`, `@axe-core/playwright`           | 1.63.0, 4.13.0      | 1.5x, 4.x       |                                                                                |
 | `tsx`                                                | 4.23.15             | —               | Runs the build scripts                                                         |
 | Node / pnpm                                          | 22 / 10.28.2        | 22 / 10.x       | A `package-lock.json` is also committed; pnpm's lockfile is the one used       |
+| `payload`, `@payloadcms/{next,ui,db-postgres,richtext-lexical}` | 3.90.2 (exact) | 3.x | Phase 2 CMS (branch `cms/phase-2`); peer range accepts next >=16.3.3 and react ^19 |
+| `graphql`                                            | 16.14.2 (exact)     | —               | Required peer of `payload`; GraphQL itself is disabled and has no route        |
+| `sharp`                                              | 0.35.5 (exact)      | —               | Payload image processing and the upload sanitiser                               |
+| `uqr`                                                | 0.1.3 (exact)       | —               | QR code for authenticator enrolment, rendered locally (no network)              |
+| `undici` (override)                                  | 7.29.1              | —               | `pnpm.overrides`: payload pins 7.29.0, which has two high advisories           |
+| PostgreSQL                                           | 17                  | —               | Local install for development; production host undecided (U-2)                  |
 
 **Planned but not installed:** `@tailwindcss/typography`, the Radix packages for shadcn
 `dialog`/`accordion`/`tabs`, `@next/mdx` or `next-mdx-remote`, `gray-matter`, `reading-time`,
@@ -145,7 +151,8 @@ service, GROQ to learn, content living in a vendor's cloud, per-seat pricing abo
 
 **Do not** propose WordPress. It contradicts the security positioning and the performance budgets.
 
-**Phase 1 decision: no CMS.** Content is typed TypeScript and MDX behind the adapter.
+**Phase 1 decision: no CMS.** Content is typed TypeScript behind the adapter. Phase 2 (above) keeps that
+source as the fallback.
 
 ---
 

@@ -174,3 +174,37 @@ A task is not complete until all of these pass:
 - When you make a judgement call the docs did not cover, add one line to the "Decisions log" at the
   bottom of `TASKS.md` saying what you chose and why.
 - Do not mark a checklist item complete because the code exists. Mark it when it meets §8.
+
+---
+
+## 10. CMS rules (Phase 2, Payload)
+
+The CMS is the site's first authenticated surface. It is held to the same standard as the public site.
+
+- **Default deny.** Every collection and global uses `adminOnly` / `isAdmin()` from `src/cms/access`
+  (a signed-in user **and** a valid MFA cookie bound to the session). Never add an access function that
+  returns `true` for anonymous users, except media file reads as documented (D-47). Never use `isAdmin`
+  alternatives that skip the MFA check.
+- **Approval flags** (`verified`, `disclosureApproved`, `approvedForPublic`, legal `status`,
+  `insightsEnabled`, user `roles`) are approver-only and audited. Agents never set them to `true` in
+  fixtures, imports or migrations unless the static source already says so; never on their own judgement.
+- **Content seam.** Pages and components still read only through `@/content`. Payload is imported only from
+  `src/content`, `src/cms`, `src/app/(payload)`, `src/payload.config.ts`, `scripts/cms` and `tests`
+  (ESLint enforces it). Client components never import `@/content` (it can load Payload).
+- **Zod is the contract.** Add a field to `src/content/schema.ts` first, then the Payload field, the mapper
+  in `src/content/mappers`, the import, and a migration. The publish guard must keep passing the mapped
+  document through the same schema.
+- **Schema changes are migrations.** `push` stays off. `payload migrate:create <name>`, commit it, prove the
+  chain on a reset test database (`pnpm cms:test`). Back up dev first (`pnpm cms:backup`).
+- **Databases.** Tests and parity use `DATABASE_URI_TEST` only. Destructive scripts refuse any database
+  whose name does not end in `_test` or `_restore`. Never connect as `postgres`, never create databases or
+  roles, never print or commit a connection string.
+- **No real data in fixtures.** `example.com` addresses and "Test" names only. Nothing that identifies a
+  client, site, plant or network, in content, tests, comments or commit messages (§6).
+- **Parity.** Static and CMS output must match (`scripts/cms/parity-*.ts`). Public security headers are
+  never allowlisted.
+- **Production gate.** On the live site `/admin`, `/api` and `/preview` answer 404 until
+  `CMS_ADMIN_ENABLED=true` (src/proxy.ts). Do not remove the gate or set the flag; that is the owner's call
+  after `pnpm cms:test` passes.
+- Decisions and their reversal steps are in `docs/cms/04_DECISIONS_DEFAULTS.md`; how it fits together is in
+  `ARCHITECTURE.md` §2–§4.

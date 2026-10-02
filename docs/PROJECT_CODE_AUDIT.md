@@ -113,6 +113,22 @@ only. Lighthouse, `pnpm audit` and manual screen-reader checks were not run.
 
 ---
 
+## Status after the CMS build (branch `cms/phase-2`, 2026-10-01)
+
+Findings the CMS work changed. Headings below keep their earlier status; this list is the update. "Built"
+means the code exists and passes static-mode checks; anything that needs the database is marked unverified.
+
+| Finding | Status now | What changed |
+| --- | --- | --- |
+| H-02 placeholder gate cannot see CMS content | **Partly fixed** | `scripts/check-content-output.ts` scans adapter output (static or CMS) on every build; publishing a marked document is refused on the live site. The code scan still finds markers in `src/`, so a production build still fails until the content is finished. |
+| M-03 copy, ids and brand strings hardcoded | **Partly fixed** | Button/link wording (`uiLabels`), "Perth, Western Australia" (`locationLabel`), page figure ids and the legal reference line moved into content; the OG image reads the tagline and location from `site`. Section headings, form text, error copy and the title template stay in code (D-08, D-35). |
+| M-04 duplicate sources of truth | Fixed (unchanged) | Navigation is now labels per fixed route (D-07). |
+| M-05 sitemap `lastModified` always build time | **Partly fixed** | Uses the stored `updatedAt` when the CMS provides one; static mode still uses the build time. |
+| M-11 credential status and expiry | **Partly fixed** | `/credentials` re-renders daily so expired items drop off without a rebuild (D-57). The verified-but-TBD identifiers (H-07) are unchanged. |
+| C-01 CSP | Unchanged for the public site | The admin and API get their own stricter policy with no third-party origins; the public policy is byte-identical (parity). |
+| H-05 no CI, dependency automation | Open | `pnpm audit --prod` found a critical next 16.3.5 advisory; fixed by upgrading to 16.3.7 (D-69). Automation still missing. |
+| New: dependency advisories | 1 moderate, 1 low open | esbuild (inside drizzle-kit, a development tool) and dompurify (inside the admin's code editor). |
+
 ## 1. Code errors and bugs
 
 ### C-05 Every page hid its content without JavaScript — Critical — **Fixed** (found during the fixes)

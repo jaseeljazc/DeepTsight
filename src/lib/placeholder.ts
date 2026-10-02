@@ -9,3 +9,17 @@ export function isPlaceholder(text: string | undefined | null): boolean {
   if (!text) return false;
   return PLACEHOLDER_MARKERS.some((marker) => text.includes(marker));
 }
+
+/** Paths (never values) of every string inside `value` that carries a marker. */
+export function placeholderPaths(value: unknown, path = ""): string[] {
+  if (typeof value === "string") return isPlaceholder(value) ? [path || "value"] : [];
+  if (Array.isArray(value)) {
+    return value.flatMap((item, index) => placeholderPaths(item, `${path}[${index}]`));
+  }
+  if (value && typeof value === "object") {
+    return Object.entries(value).flatMap(([key, item]) =>
+      placeholderPaths(item, path ? `${path}.${key}` : key),
+    );
+  }
+  return [];
+}

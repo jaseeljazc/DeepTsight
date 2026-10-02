@@ -54,3 +54,7 @@ next-env.d.ts
 # Founder source material lives outside the repo (../deeptsight-private/, CLAUDE.md §6)
 /docs/sources/
 /docs/review/
+
+# CMS overnight build: local data, media, backups and parity snapshots
+/.data/
+/.cms-baseline/

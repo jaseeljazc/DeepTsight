@@ -12,7 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { enquirySchema, type EnquiryData } from "@/content";
+import { buildEnquirySchema, type EnquiryData } from "@/content/enquiry-schema";
 import type { EnquiryOptions } from "@/content/types";
 import { submitEnquiry, type EnquiryActionState } from "@/app/actions/enquiry";
 import { Field, FieldError } from "@/components/primitives/field";
@@ -36,6 +36,12 @@ export type EnquiryFormProps = {
 
 export function EnquiryForm({ options }: EnquiryFormProps) {
   const [state, formAction, isPending] = useActionState(submitEnquiry, initialActionState);
+  // A stable key for the list, so the schema is rebuilt only when the types change.
+  const typeValuesKey = JSON.stringify(options.types.map((type) => type.value));
+  const enquirySchema = React.useMemo(
+    () => buildEnquirySchema(JSON.parse(typeValuesKey) as string[]),
+    [typeValuesKey],
+  );
   const formRef = useRef<HTMLFormElement>(null);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const [, startTransition] = useTransition();
@@ -68,6 +74,7 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
     handleSubmit,
     formState: { errors: clientErrors },
   } = useForm<EnquiryData>({
+    // Built from the types this page was rendered with, as the Server Action does.
     resolver: zodResolver(enquirySchema),
     mode: "onBlur",
     // The error summary takes focus on a failed submit (FR-33); its links lead to each field.
@@ -77,7 +84,7 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
       workEmail: state.values?.workEmail ?? "",
       organisation: state.values?.organisation ?? "",
       phone: state.values?.phone ?? "",
-      enquiryType: (state.values?.enquiryType as EnquiryData["enquiryType"]) ?? undefined,
+      enquiryType: state.values?.enquiryType ?? undefined,
       message: state.values?.message ?? "",
       consent: state.values?.consent ?? false,
     },
@@ -275,8 +282,8 @@ export function EnquiryForm({ options }: EnquiryFormProps) {
               >
                 <option value="">{options.placeholder}</option>
                 {options.types.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
+                  <option key={type.value} value={type.value}>
+                    {type.label}
                   </option>
                 ))}
               </Select>

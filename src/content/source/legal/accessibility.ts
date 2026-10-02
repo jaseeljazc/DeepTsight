@@ -5,6 +5,9 @@ export const accessibilitySource: LegalPage = {
   slug: "accessibility",
   title: "Accessibility statement",
   lastUpdated: "September 2026",
+  reference: "WCAG 2.2 Level AA",
+  // Becomes "approved" only when the client's adviser has approved the wording.
+  status: "pending-adviser",
   sections: [
     {
       title: "1. Conformance target",

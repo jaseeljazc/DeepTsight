@@ -11,6 +11,8 @@ import { cn, isActivePath } from "@/lib/utils";
 
 export type HeaderProps = {
   navItems: NavItem[];
+  /** Shown at the foot of the mobile menu. */
+  locationLabel: string;
   ctaLabel: string;
   className?: string;
 };
@@ -19,7 +21,7 @@ export type HeaderProps = {
  * Sticky header on the page ground. The hairline beneath it fades in once the page scrolls,
  * driven by a CSS scroll timeline rather than a scroll listener.
  */
-export function Header({ navItems, ctaLabel, className }: HeaderProps) {
+export function Header({ navItems, ctaLabel, locationLabel, className }: HeaderProps) {
   const pathname = usePathname();
 
   return (
@@ -63,7 +65,7 @@ export function Header({ navItems, ctaLabel, className }: HeaderProps) {
           >
             {ctaLabel}
           </Link>
-          <MobileNav items={navItems} ctaLabel={ctaLabel} />
+          <MobileNav items={navItems} ctaLabel={ctaLabel} locationLabel={locationLabel} />
         </div>
       </Container>
 

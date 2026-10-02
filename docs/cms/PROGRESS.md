@@ -1,0 +1,109 @@
+# CMS overnight build: progress
+
+Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
+
+## Current state
+- Current phase: all phases done (0-14). CMS verified against PostgreSQL 17 on 2026-10-02 (see the last entry).
+- Last commit: see git log
+- Next step (owner): decisions in docs/cms/MORNING_REPORT.md section 4 (privacy wording, retention, hosting)
+
+## Blockers
+- **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
+  `DATABASE_URI`, `DATABASE_URI_TEST` and `DATABASE_URI_RESTORE` are not set (preflight step F not done).
+  The Postgres 17 server answers on localhost:5432, but role `deeptsight_cms` needs a password.
+  The Postgres tools are installed at `C:\Program Files\PostgreSQL\17\bin` but are not on PATH
+  (preflight step B). Per the prompt (rule 4) this is a blocker: no database work tonight. DB-dependent
+  code and tests are written but not run.
+
+## Versions (installed, Phase 0)
+next 16.3.5 (the plan names 16.3.7; `package.json` allows ^16.3.5 and the lockfile pins 16.3.5) · react / react-dom 19.3.0 ·
+typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL client 17.4 (not on PATH)
+
+## Test counts
+| Check | Baseline | Current |
+|---|---|---|
+| typecheck | pass | pass |
+| lint | pass | pass |
+| build (static) | pass (22 static pages) | pass |
+| Playwright E2E (prod build) | 24/24 | 28/28 (4 new: Insights off) |
+| axe (prod build) | 28/28 | 28/28 |
+| parity baseline vs itself | 0 differences (17 routes) | 0 |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a | 28/28 |
+| CMS E2E (`pnpm test:cms`) | n/a | 14 written, all skipped (B-1) |
+
+## Dev-database backups
+- `.data/backups/deeptsight_cms_dev-20261002-121308.dump` (taken before the first migration; empty database).
+
+## Phase log
+- **Phase 0** done. Baseline green; parity harness built; DB check blocked (B-1).
+- **Phase 1** partial. Payload 3.90.2 installed (all @payloadcms/* 3.90.2, sharp 0.35.5, graphql 16.14.2
+  as a required peer). Public site moved under `(public)`; `global-not-found.tsx` for unmatched URLs.
+  `withPayload`, admin and REST routes (no GraphQL routes), env rules, ESLint Payload boundary,
+  `.env.local` secrets generated (key names only), initial migration created offline.
+  Parity 0 differences; 52/52 Playwright. **Not done (B-1):** `payload migrate` on dev and test,
+  `/admin` loading in `pnpm dev` (answers 500 without a database).
+- **Phase 2** partial (code complete, DB tests not run). Users (roles, lockout 5/15 min, 2 h tokens, no API
+  keys, Strict cookies), in-house TOTP MFA (D-23), MFA screen at /admin/mfa (D-25), audit log, login IP limit,
+  admin/API CSP + noindex + no-store, GraphQL 404 route, create-admin and reset-admin-password scripts,
+  production fail-closed gate (D-29). Migration `admin_security` created offline. Unit tests 11/11.
+  `tests/cms/admin-security.spec.ts` (9 tests) written; skipped (B-1). Parity 0; Playwright 52/52.
+- **Phase 3** done. Site (navLabels → derived nav, uiLabels, locationLabel, socialLinks, mapsUrl,
+  office address/hours + show flags), services (enabled, sortOrder, related pruning), page figure ids,
+  legal status, Lexical article body, updatedAt, enquiry types {value,label,enabled,sortOrder} with
+  buildEnquirySchema, D-08 strings moved, integrity checks, verify-content calls every getter.
+  Parity 0; Playwright 52/52; unit 16/16.
+- **Phase 4** partial (code complete, smoke not run). Collections: services, proof-items, credentials,
+  credential-groups, media, legal-pages, enquiry-types; globals: site-settings, home, about, pages, seo.
+  Drafts (25 versions), publish guard (mappers + Zod), approver-only flags with audit, slug lock (D-09),
+  revalidation hooks, admin groups and descriptions. Mappers in src/content/mappers. Types generated
+  (src/cms/payload-types.ts); migration `collections` created offline. scripts/cms/smoke.ts written, not run (B-1).
+  Parity 0; unit 16/16.
+- **Phase 5** partial. scripts/cms/import-from-source.ts (idempotent upsert by natural key, --reset content only,
+  --report, --dry-run). Dry-run report written: 4 services, 2 project notes, 15 credentials, 4 groups, 3 legal pages,
+  5 enquiry types, 26 media; 18 placeholder field paths. Import not run (B-1); added to the CMS test setup.
+- **Phase 6** partial. index.ts is a dispatcher (same signatures); static-source.ts (unchanged behaviour),
+  cms-source.ts (Local API, published only, draft mode uncached, unstable_cache with tags), shared rules.ts.
+  Media per database (D-52). Static parity 0; Playwright 52/52; unit 17/17. scripts/cms/parity-cms.ts
+  (cms build + parity) written, not run (B-1). Full suite run (Phase 6 checkpoint): static green.
+- **Phase 7** partial. Revalidation hooks active (D-45); /preview and /preview/exit (MFA admin, internal
+  paths only, D-56); admin Preview buttons on services, legal pages and globals; footer revision from
+  site.updatedAt (done in Phase 3); /credentials daily revalidation (D-57). tests/cms/preview.spec.ts and
+  scripts/cms/test-cms.ts (full CMS run) written; not run (B-1). Parity 0; unit 19/19.
+- **Phase 8** partial. Contact page passes enabled types (cached, tag enquiry-types); the client schema is built
+  from them; the Server Action validates with getEnquiryOptionsNow() (uncached, D-55); messages unchanged.
+  tests/cms/enquiry-types.spec.ts written; not run (B-1).
+- **Phase 9** partial. Enquiries collection (no versions, hard delete, read flag only editable, admin-only),
+  inbox summary, save → email → status in the Server Action via src/content/enquiries.ts, purge script
+  (no-op while ENQUIRY_RETENTION_DAYS is unset), migration `enquiries` (offline), tests/cms/inbox.spec.ts.
+  Phase 9 checkpoint: typecheck, lint, build green; parity 0; Playwright 52/52; unit 19/19; CMS E2E 13 skipped (B-1).
+- **Phase 10** done (unit-verified; Local API check in smoke not run). Upload sanitiser (D-62): type by
+  decoding, JPEG/PNG/WebP/AVIF only, re-encode without metadata; 10 MB limit; images.localPatterns (D-63).
+  Unit: EXIF/GPS removed, orientation applied, SVG/GIF/text refused. Parity 0; Playwright 52/52; unit 23/23.
+- **Phase 11** done (static verified). scripts/check-content-output.ts in check:content: 19 markers in static
+  output (development); 13 in production mode, which fails as intended. Production publish block for
+  marked documents. Parity 0; unit 24/24.
+- **Phase 12** partial. backup.ts (custom format, no owner, media copy), restore.ts (refuses non _test/_restore,
+  reset + pg_restore --exit-on-error, media), verify-backup.ts (row counts per table), prove-backup.ts (all three).
+  docs/MAINTENANCE_PLAN.md §5–§6. Refusal paths checked; the proof itself needs the databases (B-1).
+- **Phase 13** partial. articles + article-categories (restricted Lexical: H2/H3, bold, italic, links, lists,
+  quote), reading time at 220 wpm, publishedAt on first publish; RichText renderer (React nodes only);
+  /insights, /insights/[slug], /insights/rss.xml (XML-escaped), Article + Breadcrumb JSON-LD, sitemap entries,
+  all gated by insightsEnabled. Migration `insights` (offline). tests/e2e/insights-off.spec.ts (runs now:
+  404s, no menu link); tests/cms/insights.spec.ts (not run, B-1). Parity 0; Playwright 56/56; unit 28/28.
+- **Phase 14** done. pnpm audit: critical next 16.3.5 advisory fixed by upgrading to 16.3.7 (D-69); undici
+  override (D-70); remaining 1 moderate, 1 low. Docs updated (ARCHITECTURE §2-4, TECH_STACK, CONTENT_EDITING_GUIDE,
+  DATA_FLOW_PRIVACY, ACCESS_REGISTER, LICENCES_SERVICES, MAINTENANCE_PLAN, CLAUDE/AGENTS CMS rules, audit status,
+  TASKS Phase 10 status). Account update access tightened (D-71). Final static run: typecheck, lint, build green;
+  parity 0; Playwright 56/56; unit 28/28; CMS E2E 14 tests written, all skipped (B-1).
+- Morning report: docs/cms/MORNING_REPORT.md. No server left running (every server was started and stopped by
+  the Node runner).
+- **2026-10-02 first run against real databases** (owner supplied DATABASE_URI*): `pnpm cms:check-db` ok x3.
+  First migrate failed (D-73: enum clash on legal pages `status`); fixed, migrations regenerated (D-74). Now:
+  fresh test DB migrates, `pnpm cms:smoke` passes (12 steps), dev migrated, import into dev run twice with
+  identical counts (4 services, 2 notes, 15 credentials, 4 groups, 3 legal pages, 5 types, 26 media).
+  Still to run: `pnpm cms:test` (E2E, cms parity), admin sign-in, `pnpm cms:prove-backup`.
+- **2026-10-02 full verification (B-1 resolved).** `pnpm cms:test` exit 0: prepare DB, cms build, parity (0 unexplained,
+  13 footer-date allowlisted), public E2E + axe in cms mode 56/56, CMS suites 14/14, static rebuild. `pnpm cms:smoke`
+  12/12. `pnpm cms:prove-backup`: 80 tables identical. Bugs found by the real run and fixed: D-73 (enum clash on legal
+  status), D-75 (tests were anonymous; CSRF rule), D-76 (verify-content hang), D-77/D-78 (stale caches), D-79 (shared
+  MFA account). Admin account created in dev for the owner (no email is sent by the CMS).

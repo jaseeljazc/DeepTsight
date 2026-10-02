@@ -228,16 +228,27 @@ Build in isolation and review against `DESIGN.md` §11 before composing any page
 Do not start until the site is live and stable.
 
 - [ ] Confirm CMS choice with the client — Payload vs Sanity [TECH_STACK §4]
+      _Status 2026-10-01: the owner chose Payload 3 for the build; client confirmation still open (U-1)._
 - [ ] Provision Postgres; configure automated backups and test a restore
+      _Status: local PostgreSQL 17 databases exist; backup/restore/verify scripts built (`pnpm cms:prove-backup`), not yet run. Production host undecided (U-2)._
 - [ ] Install Payload into the existing app; admin at `/admin` with MFA
+      _Status: built on `cms/phase-2` (Payload 3.90.2, in-house TOTP MFA, unit-tested); end-to-end tests written, not run (no database access overnight)._
 - [ ] Generate collections from the existing Zod schemas
+      _Status: built, with migrations; `pnpm cms:smoke` not yet run._
 - [ ] One-off import script: `content/source/*` → CMS
+      _Status: built (`scripts/cms/import-from-source.ts`); dry-run report only._
 - [ ] Rewrite the bodies of the `content/index.ts` functions; **signatures unchanged**
+      _Status: done as a dispatcher (static + CMS sources), signatures unchanged; static parity 0 differences; CMS parity not yet run._
 - [ ] Publish webhook → on-demand revalidation of affected routes
+      _Status: built as Payload hooks calling `revalidateTag` (no webhook needed in-app); E2E not yet run._
 - [ ] Draft / review / publish workflow configured
+      _Status: drafts, preview and publish built; a separate review step waits on U-5._
 - [ ] Delete `content/source/`
+      _Status: deliberately kept as the static fallback (D-02)._
 - [ ] Verify no page, section or primitive component was modified during the migration
+      _Status: not true by design: hard-coded copy and figure ids moved into content (D-08), the inbox changed the Server Action. Rendered output is unchanged (parity 0)._
 - [ ] Re-run the full Phase 7 QA suite
+      _Status: static mode green (Playwright 56/56 incl. axe); CMS mode not yet run (`pnpm cms:test`)._
 - [ ] Founder training on the admin panel
 
 ---
@@ -432,3 +443,7 @@ Record every judgement call the documents did not cover: what was chosen and why
 | 2026-10-01 | CMS will store enquiries in an admin inbox (FR-44); FR-38 changed for Phase 2. Office address and map location editable (FR-41, FR-42); business hours later (FR-43)                                                                                                                                                                | Owner decision. The privacy notice, data-flow document and retention period must change before the inbox ships (PRIV-09). The address stays unpublished until the founder approves it                                                             |
 | 2026-10-01 | Agreed CMS content list recorded in `PROJECT.md` §9: everything in the site's content model becomes editable except structure, design, form fields and security settings                                                                                                                                                            | Owner decision after comparing the quotation with the content model. Scope change needed against the quotation (Q-13)                                                                                                                             |
 | 2026-10-01 | CMS scope change against quotation CDG-Q-0008 approved: the full list in `PROJECT.md` §9 is in scope. Map is a link (URL to follow). Office address is not part of the first CMS release; it will be set up later                                                                                                                   | Owner decision                                                                                                                                                                                                                                    |
+- 2026-10-01 (CMS overnight build, branch `cms/phase-2`): Payload 3.90.2 in-app with PostgreSQL 17; static
+  content kept as the fallback behind `CONTENT_SOURCE`; MFA built in house rather than with a plugin; every
+  further decision is D-16 onwards in `docs/cms/04_DECISIONS_DEFAULTS.md`.
+- 2026-10-01: next upgraded 16.3.5 → 16.3.7 after `pnpm audit` reported a critical next/og advisory (D-69).

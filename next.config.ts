@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 // The dev server needs eval for React Refresh. Production builds never get it.
 const isDev = process.env.NODE_ENV === "development";
@@ -60,21 +61,81 @@ const securityHeaders = [
   },
 ];
 
+/*
+ * CMS admin (/admin) and its API (/api): a stricter policy with no third-party origins, never
+ * cached, never indexed (docs/cms/03_SECURITY_AND_OPS.md §1, §6). The rule sources do not overlap
+ * with the public rule above.
+ */
+const adminCsp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+].join("; ");
+
+const adminHeaders = [
+  ...securityHeaders.filter((header) => header.key !== "Content-Security-Policy"),
+  { key: "Content-Security-Policy", value: adminCsp },
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
+  { key: "Cache-Control", value: "no-store" },
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
+  experimental: {
+    // Two root layouts (public site and CMS admin): unmatched URLs render app/global-not-found.tsx.
+    globalNotFound: true,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Local images only: the static site's files and, in CMS mode, Payload's media route.
+    localPatterns: [
+      { pathname: "/images/**" },
+      { pathname: "/badges/**" },
+      { pathname: "/dither/**" },
+      { pathname: "/api/media/file/**" },
+    ],
   },
   async headers() {
     return [
       {
-        source: "/(.*)",
+        // Public pages only. The CMS admin (/admin) and its API (/api) get their own policy.
+        source: "/((?!admin(?:/|$)|api(?:/|$)).*)",
         headers: securityHeaders,
       },
+      { source: "/admin/:path*", headers: adminHeaders },
+      { source: "/api/:path*", headers: adminHeaders },
     ];
   },
 };
 
-export default nextConfig;
+/**
+ * withPayload adds colour-scheme client hint headers (Accept-CH, Vary, Critical-CH) to every route.
+ * They are only useful to the admin UI, so they are scoped to /admin and public responses keep
+ * exactly the headers above (D-16).
+ */
+function scopePayloadHeaders(config: NextConfig): NextConfig {
+  const headers = config.headers;
+  if (!headers) return config;
+  return {
+    ...config,
+    async headers() {
+      const rules = await headers();
+      return rules.map((rule) =>
+        rule.source === "/:path*" && rule.headers.some((header) => header.key === "Accept-CH")
+          ? { ...rule, source: "/admin/:path*" }
+          : rule,
+      );
+    },
+  };
+}
+
+export default scopePayloadHeaders(withPayload(nextConfig, { devBundleServerPackages: false }));

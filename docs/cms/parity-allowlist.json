@@ -1,0 +1,8 @@
+[
+  {
+    "route": "*",
+    "field": "footer",
+    "normalise": "\\d{4}-\\d{2}-\\d{2}",
+    "reason": "The footer Revision date is the build date in static mode and the last change to site settings in CMS mode (D-11); only the date may differ."
+  }
+]

@@ -4,6 +4,12 @@ import {
   navItemSchema,
   ctaLabelsSchema,
   siteSchema,
+  siteSourceSchema,
+  navLabelsSchema,
+  uiLabelsSchema,
+  socialLinkSchema,
+  enquiryTypeSchema,
+  richTextSchema,
   serviceSchema,
   credentialSchema,
   credentialGroupSchema,
@@ -26,6 +32,12 @@ export type SeoEntry = z.infer<typeof seoEntrySchema>;
 export type NavItem = z.infer<typeof navItemSchema>;
 export type CtaLabels = z.infer<typeof ctaLabelsSchema>;
 export type Site = z.infer<typeof siteSchema>;
+export type SiteSource = z.infer<typeof siteSourceSchema>;
+export type NavLabels = z.infer<typeof navLabelsSchema>;
+export type UiLabels = z.infer<typeof uiLabelsSchema>;
+export type SocialLink = z.infer<typeof socialLinkSchema>;
+export type EnquiryType = z.infer<typeof enquiryTypeSchema>;
+export type RichText = z.infer<typeof richTextSchema>;
 export type Service = z.infer<typeof serviceSchema>;
 export type Credential = z.infer<typeof credentialSchema>;
 export type CredentialGroup = z.infer<typeof credentialGroupSchema>;

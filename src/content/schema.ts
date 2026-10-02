@@ -20,7 +20,116 @@ export const ctaLabelsSchema = z.object({
   header: z.string(),
 });
 
-export const siteSchema = z.object({
+/** Routes in the main navigation. Routes and order are fixed in code; editors change labels (D-07). */
+export const navRoutes = [
+  { key: "home", href: "/" },
+  { key: "about", href: "/about" },
+  { key: "services", href: "/services" },
+  { key: "credentials", href: "/credentials" },
+  { key: "insights", href: "/insights" },
+  { key: "contact", href: "/contact" },
+] as const;
+
+export const navLabelsSchema = z.object({
+  home: z.string(),
+  about: z.string(),
+  services: z.string(),
+  credentials: z.string(),
+  insights: z.string(),
+  contact: z.string(),
+});
+
+/** Button and link wording that components used to hard-code (D-08). Destinations stay in code. */
+export const uiLabelsSchema = z.object({
+  allServices: z.string(),
+  viewService: z.string(),
+  /** Followed by the service's short title: "View control systems ...". */
+  viewPrefix: z.string(),
+  returnHome: z.string(),
+  connectOnLinkedIn: z.string(),
+  /** Follows the founder's name: "<name> on LinkedIn". */
+  onLinkedInSuffix: z.string(),
+  orEmail: z.string(),
+  orCall: z.string(),
+  openInMaps: z.string(),
+});
+
+export const socialPlatforms = [
+  "linkedin",
+  "x",
+  "youtube",
+  "github",
+  "facebook",
+  "instagram",
+] as const;
+
+export const socialLinkSchema = z.object({
+  platform: z.enum(socialPlatforms),
+  url: z.string().url().startsWith("https://"),
+});
+
+/** Hosts a Google Maps link may point to (FR-42). A plain link, never an embed. */
+export const mapsHosts = [
+  "www.google.com",
+  "google.com",
+  "maps.google.com",
+  "maps.app.goo.gl",
+  "goo.gl",
+];
+
+export function isMapsUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || !mapsHosts.includes(url.hostname)) return false;
+    if (
+      url.hostname === "www.google.com" ||
+      url.hostname === "google.com" ||
+      url.hostname === "goo.gl"
+    ) {
+      return url.pathname.startsWith("/maps");
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const mapsUrlSchema = z
+  .string()
+  .refine(
+    isMapsUrl,
+    "Use an https Google Maps link (google.com/maps, maps.google.com, maps.app.goo.gl or goo.gl/maps).",
+  );
+
+export const weekdays = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
+
+/** Later release (FR-41, FR-43): stored now, shown only when the matching flag is on. */
+export const officeAddressSchema = z.object({
+  street: z.string(),
+  locality: z.string(),
+  region: z.string(),
+  postcode: z.string(),
+});
+
+export const businessHoursSchema = z.array(
+  z.object({
+    day: z.enum(weekdays),
+    opens: z.string().optional(),
+    closes: z.string().optional(),
+    closed: z.boolean(),
+  }),
+);
+
+/** Site settings as stored. The adapter adds `nav`, built from `navRoutes` and `navLabels`. */
+export const siteSourceSchema = z.object({
   legalName: z.string(),
   displayName: z.string(),
   tagline: z.string(),
@@ -32,9 +141,24 @@ export const siteSchema = z.object({
   /** Stated reply time for enquiries. */
   responseTime: z.string(),
   serviceArea: z.string(),
-  nav: z.array(navItemSchema),
+  /** Shown wherever the site gives its location ("Perth, Western Australia"). */
+  locationLabel: z.string(),
+  socialLinks: z.array(socialLinkSchema),
+  mapsUrl: mapsUrlSchema.optional(),
+  officeAddress: officeAddressSchema.optional(),
+  showOfficeAddress: z.boolean(),
+  businessHours: businessHoursSchema.optional(),
+  showBusinessHours: z.boolean(),
+  navLabels: navLabelsSchema,
   ctaLabels: ctaLabelsSchema,
+  uiLabels: uiLabelsSchema,
   insightsEnabled: z.boolean(),
+  /** Last change (CMS only). The footer's revision date when present (D-11). */
+  updatedAt: z.string().optional(),
+});
+
+export const siteSchema = siteSourceSchema.extend({
+  nav: z.array(navItemSchema),
 });
 
 /**
@@ -88,6 +212,11 @@ export const serviceSchema = z.object({
     detail: z.string(),
   }),
   seo: seoEntrySchema,
+  /** Off: the service disappears from every list, link and the sitemap (FR-19). */
+  enabled: z.boolean(),
+  /** Ascending; ties are broken by title. */
+  sortOrder: z.number(),
+  updatedAt: z.string().optional(),
 });
 
 export const credentialSchema = z.object({
@@ -128,10 +257,19 @@ export const articleSummarySchema = z.object({
   tags: z.array(z.string()),
 });
 
+/** Rich text as stored by the CMS editor (Lexical JSON). Rendered to React nodes, never HTML strings. */
+export const richTextSchema = z
+  .object({
+    root: z.object({ children: z.array(z.unknown()) }).passthrough(),
+  })
+  .passthrough();
+
 export const articleSchema = articleSummarySchema.extend({
   updatedAt: z.string().optional(),
   status: z.enum(["draft", "published"]),
-  body: z.string(),
+  body: richTextSchema,
+  /** Search result title and description; the canonical is derived from the slug. */
+  seo: seoEntrySchema.optional(),
 });
 
 export const mediaAssetSchema = z.object({
@@ -240,6 +378,7 @@ export const homeContentSchema = z.object({
     sectors: z.array(z.string()),
   }),
   finalCta: finalCtaCopySchema,
+  updatedAt: z.string().optional(),
   trustStripCopy: z.object({
     title: z.string(),
     registerLinkLabel: z.string(),
@@ -285,12 +424,20 @@ export const aboutContentSchema = z.object({
       context: z.string(),
     }),
   ),
+  updatedAt: z.string().optional(),
 });
+
+export const legalStatuses = ["pending-adviser", "approved"] as const;
 
 export const legalPageSchema = z.object({
   slug: z.enum(["privacy", "terms", "accessibility"]),
   title: z.string(),
   lastUpdated: z.string(),
+  /** Shown in the document details ("Privacy Act 1988 (Cth), APPs"). */
+  reference: z.string(),
+  /** Set by an approver only once the client's adviser has approved the wording. */
+  status: z.enum(legalStatuses),
+  updatedAt: z.string().optional(),
   sections: z.array(
     z.object({
       title: z.string(),
@@ -311,6 +458,8 @@ export const pagesContentSchema = z.object({
   }),
   services: pageIntroSchema.extend({
     finalCta: finalCtaCopySchema,
+    /** Figure id from the media register, shown under the page header. */
+    figure: z.string(),
   }),
   serviceTemplate: z.object({
     /** Value of the "Engagement" row in the service particulars block. */
@@ -321,9 +470,11 @@ export const pagesContentSchema = z.object({
   }),
   credentials: pageIntroSchema.extend({
     finalCta: finalCtaCopySchema,
+    figure: z.string(),
   }),
   contact: z.object({
     lead: z.string(),
+    figure: z.string(),
     beforeYouWrite: z.object({
       title: z.string(),
       body: z.string(),
@@ -340,8 +491,19 @@ export const pagesContentSchema = z.object({
   }),
 });
 
+/**
+ * An area of enquiry as stored. `value` is what the form posts and the email records, so it never
+ * changes once created; `label` is what the visitor sees.
+ */
+export const enquiryTypeSchema = z.object({
+  value: z.string().min(1),
+  label: z.string().min(1),
+  enabled: z.boolean(),
+  sortOrder: z.number(),
+});
+
 export const enquiryOptionsSchema = z.object({
   /** Empty-value option shown before a selection is made. */
   placeholder: z.string(),
-  types: z.array(z.string()),
+  types: z.array(z.object({ value: z.string(), label: z.string() })),
 });
