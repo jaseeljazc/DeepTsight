@@ -28,8 +28,10 @@ export function CategoryFilter({
               href={item.href}
               aria-current={item.active ? "page" : undefined}
               className={cn(
-                "link-rule min-h-target inline-flex items-center",
-                item.active ? "text-ink-900 font-medium" : "text-steel-600 hover:text-ink-900",
+                "min-h-target min-w-target inline-flex items-center",
+                item.active
+                  ? "underline-active text-ink-900 font-medium"
+                  : "link-rule text-steel-600 hover:text-ink-900",
               )}
             >
               {item.label}

@@ -1,4 +1,5 @@
 import NextLink from "next/link";
+import { Link } from "@/components/primitives/link";
 import { MarkedText } from "@/components/primitives/placeholder";
 import { formatDate } from "@/lib/dates";
 import type { ArticleSummary } from "@/content/types";
@@ -26,8 +27,20 @@ export function ArticleList({ articles }: { articles: ArticleSummary[] }) {
             <p className="text-ink-700 measure mt-3">
               <MarkedText text={article.summary} />
             </p>
-            {article.tags.length > 0 && (
-              <p className="text-steel-600 text-small mt-3">{article.tags.join(", ")}</p>
+            {article.categories.length > 0 && (
+              <ul className="mt-3 flex flex-wrap gap-x-4">
+                {article.categories.map((category) => (
+                  <li key={category.slug}>
+                    <Link
+                      href={`/insights/category/${category.slug}`}
+                      variant="subtle"
+                      className="text-small"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </li>

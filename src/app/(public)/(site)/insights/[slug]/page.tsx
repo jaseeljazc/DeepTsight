@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getAboutContent, getArticle, getArticles, getSite } from "@/content";
 import { Container } from "@/components/layout/container";
@@ -76,9 +75,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         ]}
         title={article.title}
         lead={article.summary}
-        aside={
+      />
+      <Container className="section-b grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-12">
+        <aside className="lg:sticky-below-header lg:sticky lg:col-span-3 lg:self-start">
           <SpecBlock
             label="Article details"
+            density="compact"
             items={[
               {
                 label: "Published",
@@ -105,12 +107,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         <ul>
                           {article.categories.map((category) => (
                             <li key={category.slug}>
-                              <NextLink
+                              <Link
                                 href={`/insights/category/${category.slug}`}
-                                className="link-rule"
+                                variant="subtle"
+                                className="text-small"
                               >
                                 {category.name}
-                              </NextLink>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -120,14 +123,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 : []),
             ]}
           />
-        }
-      />
-      <Container className="section-b grid grid-cols-1 gap-x-8 lg:grid-cols-12">
+        </aside>
         <div className="lg:col-span-8 lg:col-start-5">
           <RichText value={article.body} />
           <div className="border-rule mt-16 flex flex-wrap items-center justify-between gap-4 border-t pt-8">
             <Link href="/insights">All {site.navLabels.insights.toLowerCase()}</Link>
-            <Link href="/contact" variant="buttonPrimary">
+            <Link href="/contact" variant="buttonPrimary" withArrow>
               {site.ctaLabels.primary}
             </Link>
           </div>
