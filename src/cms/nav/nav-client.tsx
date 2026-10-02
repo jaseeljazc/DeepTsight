@@ -94,8 +94,11 @@ export function NavLinks({ groups, adminRoute }: { groups: NavGroup[]; adminRout
 
   const isCurrent = (href: string) =>
     pathname === href || (pathname.startsWith(href) && pathname[href.length] === "/");
-  // On a phone the drawer sits over the page, so choosing a destination should close it.
-  const close = () => setNavOpen(false);
+  // Only where the drawer sits over the page (phones, tablets) does choosing a destination close
+  // it. On a wide screen the sidebar stays as the editor left it; they collapse it themselves.
+  const close = () => {
+    if (window.matchMedia("(max-width: 1024px)").matches) setNavOpen(false);
+  };
 
   return (
     <nav className="dts-nav" aria-label="Main">

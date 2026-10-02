@@ -55,6 +55,9 @@ html[data-theme="light"] {
   --dts-error: #a4271b;
   --dts-status: #2f6b3a;
   --dts-alert: #d92d20;
+  /* Secondary actions (Save draft, Cancel, Preview ...): a deep green beside the blue primary */
+  --dts-secondary: #17703a;
+  --dts-secondary-deep: #11592e;
 
   /* Surfaces and text */
   --dts-page: #f4f6fa;
@@ -164,11 +167,20 @@ html[data-theme="light"] .btn--style-primary:disabled {
   --hover-color: var(--dts-muted);
 }
 html[data-theme="light"] .btn--style-secondary {
-  --bg-color: var(--dts-surface);
-  --color: var(--dts-ink);
-  --hover-bg: var(--dts-page);
-  --hover-color: var(--dts-ink);
+  --bg-color: var(--dts-secondary);
+  --color: #ffffff;
+  --hover-bg: var(--dts-secondary-deep);
+  --hover-color: #ffffff;
+  --btn-border: 1px solid transparent;
+  --hover-btn-border: 1px solid transparent;
   border-radius: 8px;
+}
+html[data-theme="light"] .btn--style-secondary.btn--disabled,
+html[data-theme="light"] .btn--style-secondary:disabled {
+  --bg-color: var(--color-base-150);
+  --color: var(--dts-muted);
+  --hover-bg: var(--color-base-150);
+  --hover-color: var(--dts-muted);
 }
 
 /* Text links inside content */
@@ -211,8 +223,11 @@ html[data-theme="light"] .app-header__actions,
 html[data-theme="light"] .app-header__actions > div {
   display: contents;
 }
-html[data-theme="light"] .dts-search {
+html[data-theme="light"] .dts-back {
   order: 0;
+}
+html[data-theme="light"] .dts-search {
+  order: 2;
 }
 html[data-theme="light"] .app-header__step-nav-wrapper {
   order: 1;
@@ -223,23 +238,84 @@ html[data-theme="light"] .app-header__step-nav-wrapper {
   color: var(--dts-muted);
 }
 html[data-theme="light"] .dts-bell {
-  order: 2;
+  order: 3;
 }
 html[data-theme="light"] .app-header__account {
-  order: 3;
+  order: 4;
 }
 html[data-theme="light"] .step-nav__home,
 html[data-theme="light"] .step-nav__home + span {
   display: none;
 }
 
-/* The collapse button floats over the sidebar's top-left corner on desktop: give it its own space. */
+/*
+ * The collapse button floats over the top-left corner. On desktop that corner is always navy: the
+ * sidebar when it is open, a navy block at the left of the top bar when it is collapsed. Either
+ * way the button is transparent with a white icon. Below 1025px Payload hides this one and shows
+ * its own in the top bar, which gets a navy chip so the white icon reads on the white bar.
+ */
+html[data-theme="light"] .hamburger {
+  color: #ffffff;
+  box-shadow: none;
+}
+html[data-theme="light"] .hamburger svg .stroke {
+  stroke: #ffffff;
+}
+html[data-theme="light"] .hamburger svg .fill {
+  fill: #ffffff;
+}
+html[data-theme="light"] .app-header__mobile-nav-toggler .hamburger {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--dts-nav-bg);
+}
 @media (min-width: 1025px) {
-  html[data-theme="light"] .nav .dts-nav__top {
-    padding-inline-start: 36px;
+  html[data-theme="light"] .template-default__nav-toggler-container {
+    justify-content: center;
+    width: 52px;
+    background: var(--dts-nav-bg);
   }
-  html[data-theme="light"] .template-default__nav-toggler-wrapper .nav-toggler {
-    border-radius: 6px;
+  html[data-theme="light"] .template-default__nav-toggler-container :focus-visible {
+    outline-color: #ffffff;
+  }
+  html[data-theme="light"] .template-default__nav-toggler .hamburger {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: transparent;
+  }
+  html[data-theme="light"] .template-default__nav-toggler .hamburger:hover {
+    background: var(--dts-nav-hover);
+  }
+  html[data-theme="light"] .nav .dts-nav__top {
+    padding-inline-start: 44px;
+  }
+  /* Collapsed: the navy block takes the left of the bar, so the content starts after it. */
+  html[data-theme="light"] .template-default:not(.template-default--nav-open) .app-header__content {
+    padding-inline-start: 76px;
+  }
+  /*
+   * The sidebar stays on screen while the page scrolls. Payload's own sticky sidebar let go of the
+   * viewport on long pages and left a blank band under it, so it is fixed here and the page
+   * column is pinned to the second grid track.
+   */
+  html[data-theme="light"] .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+  }
+  html[data-theme="light"] .nav:not(.nav--nav-open) {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  html[data-theme="light"] .template-default__wrap {
+    grid-column: 2;
   }
 }
 
@@ -1228,6 +1304,263 @@ html[data-theme="light"] .nav a.dts-nav__signout:hover {
   * {
     scroll-behavior: auto;
     transition-duration: 0.01ms;
+  }
+}
+
+/* ---------- Back button, list header, selection bar, document controls, pagination ---------- */
+
+.dts-back {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--dts-line);
+  border-radius: 10px;
+  background: var(--dts-surface);
+  color: var(--dts-ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.dts-back svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.5;
+}
+html[data-theme="light"] .app-header a.dts-back:hover {
+  border-color: var(--dts-primary);
+  background: var(--dts-primary-tint);
+  color: var(--dts-primary-deep);
+  text-decoration: none;
+}
+
+/* Title on the left; selection actions and "Create new" on the right. */
+html[data-theme="light"] .list-header__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+html[data-theme="light"] .list-header__title-and-actions {
+  display: contents;
+}
+html[data-theme="light"] .list-header__title {
+  order: 0;
+  margin-inline-end: auto;
+}
+html[data-theme="light"] .list-header__actions {
+  order: 1;
+  margin: 0;
+}
+html[data-theme="light"] .list-header__title-actions {
+  order: 2;
+  margin: 0;
+}
+html[data-theme="light"] .list-header .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 18px;
+  font-weight: 500;
+}
+
+/* Bulk actions after ticking rows: real buttons, not underlined text. */
+html[data-theme="light"] .list-selection {
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--dts-muted);
+  font-size: 0.875rem;
+}
+html[data-theme="light"] .list-selection__actions {
+  gap: 8px;
+}
+html[data-theme="light"] .list-selection__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-base-250);
+  border-radius: 8px;
+  background: var(--dts-surface);
+  color: var(--dts-ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  overflow: visible;
+}
+html[data-theme="light"] .list-selection__button:hover {
+  border-color: var(--dts-primary);
+  background: var(--dts-primary-tint);
+  color: var(--dts-primary-deep);
+}
+html[data-theme="light"] .list-selection__button[aria-label="Publish"] {
+  border-color: var(--dts-primary);
+  background: var(--dts-primary);
+  color: #ffffff;
+}
+html[data-theme="light"] .list-selection__button[aria-label="Publish"]:hover {
+  border-color: var(--dts-primary-deep);
+  background: var(--dts-primary-deep);
+  color: #ffffff;
+}
+html[data-theme="light"] .list-selection__button.delete-documents__toggle {
+  border-color: var(--dts-error);
+  color: var(--dts-error);
+}
+html[data-theme="light"] .list-selection__button.delete-documents__toggle:hover {
+  background: var(--dts-error);
+  color: #ffffff;
+}
+
+/* The list's search box: 2px lower than Payload's and no longer the width of the page. */
+html[data-theme="light"] .search-bar {
+  min-height: 44px;
+  max-width: 560px;
+}
+@media (max-width: 768px) {
+  html[data-theme="light"] .search-bar {
+    min-height: 38px;
+  }
+}
+
+/* Document page controls (top right): every one reads as a button. */
+html[data-theme="light"] .doc-controls__controls {
+  gap: 10px;
+}
+html[data-theme="light"] .doc-controls__controls .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+html[data-theme="light"] .doc-controls__dots {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-base-250);
+  border-radius: 8px;
+  background: var(--dts-surface);
+}
+html[data-theme="light"] .doc-controls__dots:hover {
+  border-color: var(--dts-primary);
+  background: var(--dts-primary-tint);
+}
+
+/* Pagination: the previous and next arrows are filled blue buttons. */
+html[data-theme="light"] .clickable-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--dts-primary);
+  color: #ffffff;
+}
+html[data-theme="light"] .clickable-arrow .icon .stroke {
+  stroke: #ffffff;
+}
+html[data-theme="light"] .clickable-arrow:not(.clickable-arrow--is-disabled):hover,
+html[data-theme="light"] .clickable-arrow:not(.clickable-arrow--is-disabled):focus-visible {
+  background: var(--dts-primary-deep);
+}
+html[data-theme="light"] .clickable-arrow--is-disabled {
+  background: var(--color-base-150);
+}
+html[data-theme="light"] .clickable-arrow--is-disabled .icon .stroke {
+  stroke: var(--dts-muted);
+}
+html[data-theme="light"] .paginator__page {
+  width: 36px;
+  height: 36px;
+  align-items: center;
+}
+
+/* Service icon picker (src/cms/fields/icon-picker.tsx) */
+.dts-icon-pick {
+  min-width: 0;
+  margin: 0 0 var(--base);
+  padding: 0;
+  border: 0;
+}
+.dts-icon-pick__legend {
+  margin: 0 0 8px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.dts-icon-pick__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 10px;
+}
+.dts-icon-pick__option {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 14px 8px 10px;
+  border: 1px solid var(--dts-line);
+  border-radius: 10px;
+  background: var(--dts-surface);
+  cursor: pointer;
+  text-align: center;
+}
+.dts-icon-pick__option:hover {
+  border-color: var(--dts-primary);
+}
+.dts-icon-pick__tile {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--dts-blue-bg);
+  color: var(--dts-blue-fg);
+}
+.dts-icon-pick__tile svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.5;
+}
+.dts-icon-pick__name {
+  color: var(--dts-muted);
+  font-size: 0.8125rem;
+}
+.dts-icon-pick__option:has(input:checked) {
+  border-color: var(--dts-primary);
+  background: var(--dts-primary-tint);
+}
+.dts-icon-pick__option:has(input:checked) .dts-icon-pick__tile {
+  background: var(--dts-primary);
+  color: #ffffff;
+}
+.dts-icon-pick__option:has(input:checked) .dts-icon-pick__name {
+  color: var(--dts-primary-deep);
+  font-weight: 500;
+}
+.dts-icon-pick__option:has(input:focus-visible) {
+  outline: 2px solid var(--dts-primary);
+  outline-offset: 2px;
+}
+.dts-icon-pick__option:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 640px) {
+  .dts-back {
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+  }
+  .dts-back span {
+    display: none;
   }
 }
 

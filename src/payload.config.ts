@@ -74,7 +74,11 @@ export default buildConfig({
     components: {
       // Sidebar and top bar (src/cms/nav, src/cms/header); styled in admin-theme.css.
       Nav: "/cms/nav/admin-nav#AdminNav",
-      actions: ["/cms/header/header-actions#SearchAction", "/cms/header/header-actions#InboxBell"],
+      actions: [
+        "/cms/header/header-actions#BackAction",
+        "/cms/header/header-actions#SearchAction",
+        "/cms/header/header-actions#InboxBell",
+      ],
       // Typeset wordmark until the approved logo arrives (src/cms/graphics/logo.tsx).
       graphics: {
         Logo: "/cms/graphics/logo#Logo",

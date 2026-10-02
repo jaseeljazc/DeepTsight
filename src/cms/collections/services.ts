@@ -81,6 +81,7 @@ export const Services: CollectionConfig = {
       admin: {
         description:
           "Line icon shown beside the service title (FR-45). A fixed set; no shields, padlocks or globes.",
+        components: { Field: "/cms/fields/icon-picker#IconPicker" },
       },
     },
     { name: "challenge", label: "1.0 Client challenge", type: "textarea", required: true },

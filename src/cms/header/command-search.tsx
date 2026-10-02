@@ -5,14 +5,63 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
 /*
- * "Jump to": type to filter the admin's sections and press Enter to open one. Ctrl or Cmd + K
- * focuses it from anywhere. It searches destinations, not content (Payload has no
- * cross-collection search), and says so in its label.
+ * Header search: type to find an admin section, or a setting by its label or description (for
+ * example "business hours"), and press Enter to open it. A setting opens its page, switches to its
+ * tab and scrolls to it. Ctrl or Cmd + K focuses it from anywhere. It searches the admin's own
+ * labels, not the content records (Payload has no cross-collection search).
  */
 
-export type JumpItem = { label: string; group: string; href: string };
+export type JumpItem = {
+  label: string;
+  group: string;
+  href: string;
+  hint?: string;
+  /** Payload's DOM id of the field to scroll to. */
+  fieldId?: string;
+  /** Tab that holds the field. */
+  tab?: string;
+};
 
 const MAX_RESULTS = 8;
+
+/** 0 = the label starts with the search, 1 = it contains it, 2 = only the rest of the item does. */
+function rank(item: JumpItem, needle: string): number {
+  const label = item.label.toLowerCase();
+  if (label.startsWith(needle)) return 0;
+  if (label.includes(needle)) return 1;
+  const words = needle.split(/\s+/).filter(Boolean);
+  const haystack = `${item.label} ${item.group} ${item.hint ?? ""}`.toLowerCase();
+  return words.every((word) => haystack.includes(word)) ? 2 : -1;
+}
+
+/** Opens the item's tab if needed, then scrolls to the field once the page has drawn it. */
+function reveal(item: JumpItem) {
+  if (!item.fieldId && !item.tab) return;
+  let tries = 0;
+  let clicked = false;
+  const timer = window.setInterval(() => {
+    tries += 1;
+    let target = item.fieldId ? document.getElementById(item.fieldId) : null;
+    if (!target && item.tab && !clicked) {
+      const tab = Array.from(
+        document.querySelectorAll<HTMLElement>("button.tabs-field__tab-button"),
+      ).find((button) => button.textContent?.trim() === item.tab);
+      if (tab) {
+        tab.click();
+        clicked = true;
+      }
+    }
+    target = item.fieldId ? document.getElementById(item.fieldId) : null;
+    if (target) {
+      window.clearInterval(timer);
+      target.scrollIntoView({ block: "center" });
+      if (/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(target.tagName))
+        target.focus({ preventScroll: true });
+    } else if (tries > 30) {
+      window.clearInterval(timer);
+    }
+  }, 100);
+}
 
 export function CommandSearch({ items }: { items: JumpItem[] }) {
   const router = useRouter();
@@ -24,10 +73,13 @@ export function CommandSearch({ items }: { items: JumpItem[] }) {
 
   const results = React.useMemo(() => {
     const needle = query.trim().toLowerCase();
-    const matches = needle
-      ? items.filter((item) => `${item.label} ${item.group}`.toLowerCase().includes(needle))
-      : items;
-    return matches.slice(0, MAX_RESULTS);
+    if (!needle) return items.filter((item) => !item.fieldId && !item.tab).slice(0, MAX_RESULTS);
+    return items
+      .map((item, index) => ({ item, index, score: rank(item, needle) }))
+      .filter((match) => match.score >= 0)
+      .sort((a, b) => a.score - b.score || a.index - b.index)
+      .slice(0, MAX_RESULTS)
+      .map((match) => match.item);
   }, [items, query]);
 
   React.useEffect(() => {
@@ -48,6 +100,7 @@ export function CommandSearch({ items }: { items: JumpItem[] }) {
     setQuery("");
     inputRef.current?.blur();
     router.push(item.href);
+    reveal(item);
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -78,14 +131,14 @@ export function CommandSearch({ items }: { items: JumpItem[] }) {
         className="dts-search__input"
         type="text"
         role="combobox"
-        aria-label="Jump to a section"
+        aria-label="Search the admin"
         aria-expanded={showList}
         aria-controls={listId}
         aria-activedescendant={activeId}
         aria-autocomplete="list"
         autoComplete="off"
         spellCheck={false}
-        placeholder="Jump to a section"
+        placeholder="Search sections and settings"
         value={query}
         onChange={(event) => {
           setQuery(event.target.value);
@@ -102,13 +155,13 @@ export function CommandSearch({ items }: { items: JumpItem[] }) {
       <ul
         id={listId}
         role="listbox"
-        aria-label="Sections"
+        aria-label="Results"
         className="dts-search__list"
         hidden={!showList}
       >
         {results.map((item, index) => (
           <li
-            key={item.href}
+            key={`${item.href}#${item.fieldId ?? item.tab ?? ""}#${item.label}#${item.group}`}
             id={`${listId}-${index}`}
             role="option"
             aria-selected={index === active}

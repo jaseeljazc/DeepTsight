@@ -5,11 +5,13 @@ import type { PayloadRequest, ServerProps } from "payload";
 import { isAdmin } from "../access";
 import { labelText } from "../nav/label";
 import { groupEntries } from "../nav/nav-groups";
+import { BackLink, type BackTargets } from "./back-link";
 import { CommandSearch, type JumpItem } from "./command-search";
+import { collectFields } from "./search-index";
 
 /*
- * Top bar pieces next to Payload's breadcrumbs: the "jump to" box and the inbox bell. Both are
- * rendered only for an account that has passed the second factor.
+ * Top bar pieces around Payload's breadcrumbs: the back button, the search box and the inbox
+ * bell. All are rendered only for an account that has passed the second factor.
  */
 
 type ActionProps = ServerProps & { req?: PayloadRequest };
@@ -20,25 +22,55 @@ export function SearchAction(props: ActionProps) {
   const { payload, i18n, req } = props;
   if (!req || !isAdmin(req)) return null;
 
+  const language = i18n.language;
   const entries = [
     ...payload.config.collections.map((collection) => ({
       slug: collection.slug,
-      label: labelText(collection.labels?.plural, i18n.language, collection.slug),
+      label: labelText(collection.labels?.plural, language, collection.slug),
       href: `${ADMIN}/collections/${collection.slug}`,
+      fields: collection.fields,
     })),
     ...payload.config.globals.map((global) => ({
       slug: global.slug,
-      label: labelText(global.label, i18n.language, global.slug),
+      label: labelText(global.label, language, global.slug),
       href: `${ADMIN}/globals/${global.slug}`,
+      fields: global.fields,
     })),
   ];
-  const items: JumpItem[] = [
+
+  const sections: JumpItem[] = [
     { label: "Dashboard", group: "Overview", href: ADMIN },
     ...groupEntries(entries).flatMap((group) =>
       group.entries.map((entry) => ({ label: entry.label, group: group.label, href: entry.href })),
     ),
   ];
-  return <CommandSearch items={items} />;
+
+  // Fields come after every section, so a section name always outranks a field with the same name.
+  const fields: JumpItem[] = entries.flatMap((entry) =>
+    collectFields(entry.fields, language).map((hit) => ({
+      label: hit.label,
+      group: [entry.label, ...hit.trail].join(" › "),
+      href: entry.href,
+      hint: hit.hint,
+      fieldId: hit.fieldId,
+      tab: hit.tab,
+    })),
+  );
+
+  return <CommandSearch items={[...sections, ...fields]} />;
+}
+
+export function BackAction(props: ActionProps) {
+  const { payload, i18n, req } = props;
+  if (!req || !isAdmin(req)) return null;
+
+  const labels: BackTargets = Object.fromEntries(
+    payload.config.collections.map((collection) => [
+      collection.slug,
+      labelText(collection.labels?.plural, i18n.language, collection.slug),
+    ]),
+  );
+  return <BackLink adminRoute={ADMIN} labels={labels} />;
 }
 
 export async function InboxBell(props: ActionProps) {

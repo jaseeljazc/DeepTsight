@@ -72,6 +72,8 @@ test("icon tiles and pills are legible", () => {
   atLeast(variable("--dts-green-fg"), variable("--dts-surface"), 4.5, "positive trend on white");
   atLeast("#FFFFFF", variable("--dts-primary"), 4.5, "white on primary");
   atLeast("#FFFFFF", variable("--dts-primary-deep"), 4.5, "white on hovered primary");
+  atLeast("#FFFFFF", variable("--dts-secondary"), 4.5, "white on secondary button");
+  atLeast("#FFFFFF", variable("--dts-secondary-deep"), 4.5, "white on hovered secondary button");
   atLeast(
     variable("--dts-primary-deep"),
     variable("--dts-primary-tint"),

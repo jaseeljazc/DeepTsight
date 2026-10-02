@@ -51,7 +51,7 @@ export const Credentials: CollectionConfig = {
   admin: {
     group: GROUPS.credentials,
     useAsTitle: "title",
-    defaultColumns: ["title", "category", "issuer", "verified", "_status"],
+    defaultColumns: ["badge", "title", "category", "issuer", "verified", "_status"],
     description:
       "Qualifications, registrations, certifications and platforms. Only verified entries appear on the live site.",
   },
