@@ -158,3 +158,30 @@ switch is turned on.
   **Versions** on that document to restore the previous version.
 - **I cannot sign in:** see section 1. Do not share your password or recovery codes with anyone, including
   your developer.
+
+---
+
+## 10. Insights articles
+
+1. Go to **Insights → Article categories** and create the categories first. A category is shown on the site
+   only once it is published, and only while at least one published article uses it.
+2. Go to **Insights → Articles → Create new**. Give it a title, a one or two sentence summary and the text.
+   The text allows headings (H2, H3), bold, italic, links, lists and quotations. There are no images,
+   embeds or raw HTML. Never name a client, site, plant or network (section 5).
+3. The web address (slug) locks after the first publish. `category` cannot be used as a web address because
+   the site uses it for the category pages.
+4. **Save draft**, then **Preview** to read it as a visitor would, then **Publish**. The published date is set
+   on the first publish and the reading time is worked out from the length. Both are automatic.
+5. A later edit shows an "Updated" date on the article once it falls on a different day to the first publish.
+6. Published articles appear only while **Site settings → Insights switched on** is on. While it is off,
+   `/insights`, every article, every category page and the feed answer "not found", and nothing links to them.
+   With it on, the index shows a category filter and each article links to its categories.
+
+### Launch checklist (owner)
+
+1. The founder writes at least one article and the owner approves it. No one else writes the article text.
+2. The live site is set to read its content from the CMS (`CONTENT_SOURCE=cms` in the hosting environment).
+3. The owner switches the CMS on for the live site (`CMS_ADMIN_ENABLED=true`) once `pnpm cms:test` passes.
+4. An approver publishes the article or articles, then switches **Insights** on in Site settings.
+5. Check `/insights`, one article, one category page, `/insights/rss.xml` and `/sitemap.xml`, and that the
+   Insights link appears in the header and the footer.

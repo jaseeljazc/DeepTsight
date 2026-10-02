@@ -18,7 +18,7 @@ Ticked items are done.
 
 ## Still to build
 
-- [ ] Insights articles (the page is built but switched off)
+- [ ] Insights articles: the section is built (with a category filter) but switched off. The founder writes the articles in the CMS, then Insights is switched on
 - [ ] Downloadable capability statement, if the client wants one
 - [ ] CMS so the client can edit content (phase 2). Agreed list of what is editable is in `PROJECT.md` §9
 - [x] Written scope change for the CMS quotation (approved 2026-10-01)
