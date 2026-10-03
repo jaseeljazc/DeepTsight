@@ -266,3 +266,6 @@ decision, reason, how to reverse.
   in `src/cms/nav`; the top bar actions are in `src/cms/header`. `scripts/cms/admin-shots.ts` captures review
   screenshots and reuses a dev server that is already running. Reversal: revert this commit and `43e2ea9`, or
   remove the `components.Nav`, `components.actions` and `admin.avatar` entries from `payload.config.ts`.
+- **D-83** `pnpm dev:cms` (`scripts/dev-cms.ts`) starts the dev server with `CONTENT_SOURCE=cms`; plain `pnpm dev` stays
+  on the static source (D-02). A launcher, not an inline variable, because `VAR=x cmd` does not work in PowerShell or
+  cmd and the project has no `cross-env`. Reversal: delete the script and the `dev:cms` entry.
