@@ -120,7 +120,7 @@ html[data-theme="light"] {
 
   --app-header-height: 64px;
   --nav-width: 264px;
-  --gutter-h: 32px;
+  --gutter-h: 40px;
 
   --font-body: "IBM Plex Sans", Arial, sans-serif;
   --font-serif: "Archivo", Arial, sans-serif;
@@ -1571,4 +1571,84 @@ html[data-theme="light"] .template-minimal__wrap {
   border: 1px solid var(--dts-line);
   border-radius: 16px;
   background: var(--dts-surface);
+}
+
+/* ---------- Image preview (src/cms/media/image-preview.tsx) ---------- */
+
+html[data-theme="light"] .upload-relationship-details__thumbnail img,
+html[data-theme="light"] .file-details__thumbnail img {
+  cursor: zoom-in;
+}
+html[data-theme="light"] .upload-relationship-details__thumbnail img:focus-visible,
+html[data-theme="light"] .file-details__thumbnail img:focus-visible {
+  outline: 2px solid var(--dts-primary);
+  outline-offset: 2px;
+}
+
+.dts-lightbox {
+  width: min(1200px, 94vw);
+  max-width: none;
+  max-height: 94vh;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--dts-surface);
+  color: var(--dts-ink);
+  overflow: hidden;
+}
+.dts-lightbox[open] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.dts-lightbox::backdrop {
+  background: rgba(11, 18, 32, 0.78);
+}
+.dts-lightbox__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 8px 8px 20px;
+  border-bottom: 1px solid var(--dts-line);
+}
+.dts-lightbox__bar p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dts-lightbox__bar button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dts-ink);
+  cursor: pointer;
+}
+.dts-lightbox__bar button:hover {
+  background: var(--dts-page);
+}
+.dts-lightbox__bar button:focus-visible {
+  outline: 2px solid var(--dts-primary);
+  outline-offset: 2px;
+}
+.dts-lightbox__bar svg {
+  width: 22px;
+  height: 22px;
+}
+.dts-lightbox img {
+  display: block;
+  width: 100%;
+  max-height: calc(94vh - 61px);
+  background: var(--color-base-50);
+  object-fit: contain;
 }

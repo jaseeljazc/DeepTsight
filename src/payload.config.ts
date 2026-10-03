@@ -74,6 +74,8 @@ export default buildConfig({
     components: {
       // Sidebar and top bar (src/cms/nav, src/cms/header); styled in admin-theme.css.
       Nav: "/cms/nav/admin-nav#AdminNav",
+      // Click any image to see it large (src/cms/media/image-preview.tsx).
+      providers: ["/cms/media/image-preview#ImagePreviewProvider"],
       actions: [
         "/cms/header/header-actions#BackAction",
         "/cms/header/header-actions#SearchAction",

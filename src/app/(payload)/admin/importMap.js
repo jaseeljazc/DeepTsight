@@ -20,6 +20,7 @@ import { Logo as Logo_27752dc4f4524c0b69ecda95848d4409 } from '../../../cms/grap
 import { BackAction as BackAction_d086055ebb15ea50db15610c680b1aa2 } from '../../../cms/header/header-actions'
 import { SearchAction as SearchAction_d086055ebb15ea50db15610c680b1aa2 } from '../../../cms/header/header-actions'
 import { InboxBell as InboxBell_d086055ebb15ea50db15610c680b1aa2 } from '../../../cms/header/header-actions'
+import { ImagePreviewProvider as ImagePreviewProvider_ded36b04c62472839a3cb7a81791954b } from '../../../cms/media/image-preview'
 import { DashboardView as DashboardView_5a71943311f7d196f8097e6b23c97c20 } from '../../../cms/views/dashboard'
 import { MfaView as MfaView_1cc8028b62ee88f0abfe7196d091d2d3 } from '../../../cms/views/mfa-view'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -48,6 +49,7 @@ export const importMap = {
   "/cms/header/header-actions#BackAction": BackAction_d086055ebb15ea50db15610c680b1aa2,
   "/cms/header/header-actions#SearchAction": SearchAction_d086055ebb15ea50db15610c680b1aa2,
   "/cms/header/header-actions#InboxBell": InboxBell_d086055ebb15ea50db15610c680b1aa2,
+  "/cms/media/image-preview#ImagePreviewProvider": ImagePreviewProvider_ded36b04c62472839a3cb7a81791954b,
   "/cms/views/dashboard#DashboardView": DashboardView_5a71943311f7d196f8097e6b23c97c20,
   "/cms/views/mfa-view#MfaView": MfaView_1cc8028b62ee88f0abfe7196d091d2d3,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1

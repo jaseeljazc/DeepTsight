@@ -269,3 +269,10 @@ decision, reason, how to reverse.
 - **D-83** `pnpm dev:cms` (`scripts/dev-cms.ts`) starts the dev server with `CONTENT_SOURCE=cms`; plain `pnpm dev` stays
   on the static source (D-02). A launcher, not an inline variable, because `VAR=x cmd` does not work in PowerShell or
   cmd and the project has no `cross-env`. Reversal: delete the script and the `dev:cms` entry.
+- **D-84** Clicking an image in the admin opens it large (`src/cms/media/image-preview.tsx`, registered as a Payload
+  provider). Payload draws the thumbnails (an upload field's picture, the file on a media item's page), so the provider
+  listens for clicks on them rather than replacing the field; it also makes them keyboard-reachable (Tab, then Enter
+  or Space) and uses a native `<dialog>` (Esc closes, focus returns to the thumbnail). Images in list tables are left
+  alone because there a click opens the item. It shows the thumbnail's own file, so if image sizes are configured
+  later it would need to ask for the full-size URL. Also: `--gutter-h` is 40px on desktop so the sidebar button no
+  longer covers the page edge when the sidebar is closed. Reversal: remove the `providers` entry and the CSS block.
