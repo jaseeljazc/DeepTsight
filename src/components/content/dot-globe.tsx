@@ -29,6 +29,13 @@ const COLOR_DOT_MID = "#4F7EFF";
 const COLOR_DOT_LIGHT = "#A4BEFF";
 const COLOR_RULE = "#C9CECB";
 
+// Australia and Perth front and centre (124 degrees longitude)
+const START_LON = 124 * DEG2RAD;
+// How long the globe holds on Australia when it first comes into view, before it starts to spin
+const START_HOLD_MS = 1000;
+// Share of the globe that must be on screen to count as "in view"
+const IN_VIEW_THRESHOLD = 0.4;
+
 const emptySubscribe = () => () => {};
 
 /**
@@ -36,9 +43,13 @@ const emptySubscribe = () => () => {};
  * Renders an orthographic sphere of precomputed land dots on HTML5 canvas at 60fps,
  * revolving smoothly around its polar axis with Perth pinned as a terminal marker.
  *
+ * It stays still on Australia until it first comes into view, holds there for a moment, then
+ * starts to spin. Later visits carry on from wherever it was. Nothing renders while off screen.
+ *
  * Supports drag-to-inspect and honors prefers-reduced-motion.
  */
 export function DotGlobe({ label, className }: DotGlobeProps) {
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const pinRef = React.useRef<HTMLSpanElement | null>(null);
 
@@ -51,23 +62,26 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
 
   const [isDragging, setIsDragging] = React.useState(false);
 
-  // Start with Australia and Perth front and center (124 degrees longitude)
-  const rotLonRef = React.useRef(124 * DEG2RAD);
+  const rotLonRef = React.useRef(START_LON);
   const dragStartXRef = React.useRef(0);
-  const dragStartLonRef = React.useRef(124 * DEG2RAD);
+  const dragStartLonRef = React.useRef(START_LON);
+  // No spin until the globe has been seen; set to "now + hold" on first view
+  const spinFromRef = React.useRef(Number.POSITIVE_INFINITY);
   const isHoveredRef = React.useRef(false);
   const isDraggingRef = React.useRef(false);
 
   React.useEffect(() => {
     if (!isClient) return;
 
+    const root = rootRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!root || !canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animId: number;
+    let animId = 0;
     let lastTime = performance.now();
+    let hasEntered = false;
 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let prefersReduced = mediaQuery.matches;
@@ -81,7 +95,7 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
       lastTime = time;
 
       // Revolve slowly like the Earth (~40s per full rotation)
-      if (!isDraggingRef.current && !prefersReduced) {
+      if (!isDraggingRef.current && !prefersReduced && time >= spinFromRef.current) {
         // Slow down slightly on hover for easier inspection
         const speed = isHoveredRef.current ? 0.05 : 0.14;
         rotLonRef.current -= speed * dt;
@@ -216,10 +230,40 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
       animId = requestAnimationFrame(render);
     };
 
-    animId = requestAnimationFrame(render);
+    const start = () => {
+      if (animId) return;
+      lastTime = performance.now();
+      animId = requestAnimationFrame(render);
+    };
+    const stop = () => {
+      cancelAnimationFrame(animId);
+      animId = 0;
+    };
+
+    // Draw the still Australia frame once, then animate only while in view
+    render(performance.now());
+    stop();
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          stop();
+          return;
+        }
+        if (!hasEntered) {
+          hasEntered = true;
+          rotLonRef.current = START_LON;
+          spinFromRef.current = performance.now() + START_HOLD_MS;
+        }
+        start();
+      },
+      { threshold: IN_VIEW_THRESHOLD },
+    );
+    observer.observe(root);
 
     return () => {
-      cancelAnimationFrame(animId);
+      observer.disconnect();
+      stop();
       mediaQuery.removeEventListener("change", onMotionChange);
     };
   }, [isClient]);
@@ -253,6 +297,7 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
 
   return (
     <div
+      ref={rootRef}
       className={cn(
         "relative touch-none select-none",
         isDragging ? "cursor-grabbing" : "cursor-grab",

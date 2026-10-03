@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -68,55 +68,54 @@ export interface Config {
   blocks: {};
   collections: {
     services: Service;
-    "proof-items": ProofItem;
+    'proof-items': ProofItem;
     credentials: Credential;
-    "credential-groups": CredentialGroup;
+    'credential-groups': CredentialGroup;
     media: Media;
     articles: Article;
-    "article-categories": ArticleCategory;
-    "legal-pages": LegalPage;
+    'article-categories': ArticleCategory;
+    'legal-pages': LegalPage;
     enquiries: Enquiry;
-    "enquiry-types": EnquiryType;
+    'enquiry-types': EnquiryType;
     users: User;
-    "audit-log": AuditLog;
-    "payload-kv": PayloadKv;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'audit-log': AuditLog;
+    'payload-kv': PayloadKv;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     services: ServicesSelect<false> | ServicesSelect<true>;
-    "proof-items": ProofItemsSelect<false> | ProofItemsSelect<true>;
+    'proof-items': ProofItemsSelect<false> | ProofItemsSelect<true>;
     credentials: CredentialsSelect<false> | CredentialsSelect<true>;
-    "credential-groups": CredentialGroupsSelect<false> | CredentialGroupsSelect<true>;
+    'credential-groups': CredentialGroupsSelect<false> | CredentialGroupsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
-    "article-categories": ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
-    "legal-pages": LegalPagesSelect<false> | LegalPagesSelect<true>;
+    'article-categories': ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
+    'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
-    "enquiry-types": EnquiryTypesSelect<false> | EnquiryTypesSelect<true>;
+    'enquiry-types': EnquiryTypesSelect<false> | EnquiryTypesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    "audit-log": AuditLogSelect<false> | AuditLogSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-locked-documents":
-      PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences": PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    "payload-migrations": PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {
-    "site-settings": SiteSetting;
+    'site-settings': SiteSetting;
     home: Home;
     about: About;
     pages: Page;
     seo: Seo;
   };
   globalsSelect: {
-    "site-settings": SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
     about: AboutSelect<false> | AboutSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -182,18 +181,18 @@ export interface Service {
    * Line icon shown beside the service title (FR-45). A fixed set; no shields, padlocks or globes.
    */
   icon:
-    | "Cpu"
-    | "Network"
-    | "Split"
-    | "Gauge"
-    | "Activity"
-    | "Cable"
-    | "Server"
-    | "Workflow"
-    | "Waypoints"
-    | "Router"
-    | "Cog"
-    | "Wrench";
+    | 'Cpu'
+    | 'Network'
+    | 'Split'
+    | 'Gauge'
+    | 'Activity'
+    | 'Cable'
+    | 'Server'
+    | 'Workflow'
+    | 'Waypoints'
+    | 'Router'
+    | 'Cog'
+    | 'Wrench';
   challenge: string;
   whyItMatters: string;
   capability: string;
@@ -280,7 +279,7 @@ export interface Service {
   firstPublishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Images with their rights records. An image appears on the live site only once an approver marks it approved for public use. Never upload photographs that show a client site, plant, equipment tags or screens.
@@ -294,8 +293,8 @@ export interface Media {
    * Set by the import. Pages refer to images by this id.
    */
   legacyId?: string | null;
-  kind: "image" | "slot";
-  assetClass: "photograph" | "illustration" | "issuer-badge";
+  kind: 'image' | 'slot';
+  assetClass: 'photograph' | 'illustration' | 'issuer-badge';
   /**
    * Describe what the image shows for people who cannot see it. Required unless decorative.
    */
@@ -329,7 +328,7 @@ export interface Media {
   approvedForPublic?: boolean | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
   url?: string | null;
   thumbnailURL?: string | null;
   filename?: string | null;
@@ -372,7 +371,7 @@ export interface ProofItem {
   noIdentifyingDetailsConfirmed?: boolean | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Qualifications, registrations, certifications and platforms. Only verified entries appear on the live site.
@@ -386,7 +385,7 @@ export interface Credential {
    * Set by the import. Not shown on the site.
    */
   legacyId?: string | null;
-  category: "qualifications" | "registrations" | "certifications" | "platforms";
+  category: 'qualifications' | 'registrations' | 'certifications' | 'platforms';
   title: string;
   /**
    * The body that issued it.
@@ -422,7 +421,7 @@ export interface Credential {
   sortOrder: number;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * The four headings of the credentials register. One group per category.
@@ -432,7 +431,7 @@ export interface Credential {
  */
 export interface CredentialGroup {
   id: number;
-  category: "qualifications" | "registrations" | "certifications" | "platforms";
+  category: 'qualifications' | 'registrations' | 'certifications' | 'platforms';
   /**
    * Heading shown on the credentials page.
    */
@@ -443,7 +442,7 @@ export interface CredentialGroup {
   sortOrder: number;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Technical notes for the Insights section. Save drafts freely; only published articles appear, and only while Insights is switched on in Site settings. Never name a client, site, plant or network.
@@ -473,8 +472,8 @@ export interface Article {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -508,7 +507,7 @@ export interface Article {
   firstPublishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Categories shown on articles.
@@ -529,7 +528,7 @@ export interface ArticleCategory {
   firstPublishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Privacy notice, terms of use and accessibility statement. Wording must come from the client's adviser; do not edit it yourself.
@@ -542,7 +541,7 @@ export interface LegalPage {
   /**
    * Which page this is. The web address is fixed.
    */
-  slug: "privacy" | "terms" | "accessibility";
+  slug: 'privacy' | 'terms' | 'accessibility';
   title: string;
   /**
    * As shown on the page, for example “September 2026”.
@@ -555,7 +554,7 @@ export interface LegalPage {
   /**
    * Approvers only; every change is logged. Set to approved only when the adviser has approved the wording.
    */
-  adviserStatus: "pending-adviser" | "approved";
+  adviserStatus: 'pending-adviser' | 'approved';
   sections?:
     | {
         title: string;
@@ -565,7 +564,7 @@ export interface LegalPage {
     | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Every enquiry sent through the contact form. Search by name, email or keyword. Delete an enquiry when it is no longer needed or when the sender asks.
@@ -591,7 +590,7 @@ export interface Enquiry {
   enquiryTypeLabel: string;
   message: string;
   consent: boolean;
-  emailStatus: "pending" | "sent" | "failed" | "simulated";
+  emailStatus: 'pending' | 'sent' | 'failed' | 'simulated';
   /**
    * Short reason only.
    */
@@ -641,7 +640,7 @@ export interface User {
   /**
    * Editors change content. Approvers can also set the approval flags (verified, disclosure approved, approved for public).
    */
-  roles: ("editor" | "approver")[];
+  roles: ('editor' | 'approver')[];
   totpSecret?: string | null;
   pendingTotpSecret?: string | null;
   totpLastStep?: number | null;
@@ -673,7 +672,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: "users";
+  collection: 'users';
 }
 /**
  * Every sign-in, publish, deletion and approval change. Entries cannot be edited or deleted.
@@ -687,18 +686,18 @@ export interface AuditLog {
   userId?: string | null;
   userEmail?: string | null;
   action:
-    | "create"
-    | "update"
-    | "delete"
-    | "publish"
-    | "unpublish"
-    | "login"
-    | "login-blocked"
-    | "mfa-enrolled"
-    | "mfa-verified"
-    | "mfa-failed"
-    | "recovery-code-used"
-    | "flag-change";
+    | 'create'
+    | 'update'
+    | 'delete'
+    | 'publish'
+    | 'unpublish'
+    | 'login'
+    | 'login-blocked'
+    | 'mfa-enrolled'
+    | 'mfa-verified'
+    | 'mfa-failed'
+    | 'recovery-code-used'
+    | 'flag-change';
   targetCollection?: string | null;
   docId?: string | null;
   field?: string | null;
@@ -730,56 +729,56 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: "services";
+        relationTo: 'services';
         value: number | Service;
       } | null)
     | ({
-        relationTo: "proof-items";
+        relationTo: 'proof-items';
         value: number | ProofItem;
       } | null)
     | ({
-        relationTo: "credentials";
+        relationTo: 'credentials';
         value: number | Credential;
       } | null)
     | ({
-        relationTo: "credential-groups";
+        relationTo: 'credential-groups';
         value: number | CredentialGroup;
       } | null)
     | ({
-        relationTo: "media";
+        relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: "articles";
+        relationTo: 'articles';
         value: number | Article;
       } | null)
     | ({
-        relationTo: "article-categories";
+        relationTo: 'article-categories';
         value: number | ArticleCategory;
       } | null)
     | ({
-        relationTo: "legal-pages";
+        relationTo: 'legal-pages';
         value: number | LegalPage;
       } | null)
     | ({
-        relationTo: "enquiries";
+        relationTo: 'enquiries';
         value: number | Enquiry;
       } | null)
     | ({
-        relationTo: "enquiry-types";
+        relationTo: 'enquiry-types';
         value: number | EnquiryType;
       } | null)
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: "audit-log";
+        relationTo: 'audit-log';
         value: number | AuditLog;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -792,7 +791,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
@@ -1165,7 +1164,7 @@ export interface SiteSetting {
    */
   socialLinks?:
     | {
-        platform: "linkedin" | "x" | "youtube" | "github" | "facebook" | "instagram";
+        platform: 'linkedin' | 'x' | 'youtube' | 'github' | 'facebook' | 'instagram';
         /**
          * https only.
          */
@@ -1192,7 +1191,7 @@ export interface SiteSetting {
   showOfficeAddress?: boolean | null;
   businessHours?:
     | {
-        day: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+        day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
         /**
          * 24-hour time, for example 08:30.
          */
@@ -1253,7 +1252,7 @@ export interface SiteSetting {
    * Shows the Insights section and its menu link. Approvers only; every change is logged.
    */
   insightsEnabled?: boolean | null;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1386,7 +1385,7 @@ export interface Home {
      */
     close: number | Media;
   };
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1449,7 +1448,7 @@ export interface About {
      */
     desk: number | Media;
   };
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1534,7 +1533,7 @@ export interface Page {
         }[]
       | null;
   };
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1686,7 +1685,7 @@ export interface Seo {
      */
     ogImage?: (number | null) | Media;
   };
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2108,7 +2107,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: "full";
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2118,6 +2117,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }
