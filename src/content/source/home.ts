@@ -8,10 +8,9 @@ import type { HomeSource } from "../types";
  */
 export const homeSource: HomeSource = {
   hero: {
-    headline:
-      "Deep technical insight for safer, more reliable and more secure industrial operations.",
+    headline: "Deep insight for secure, reliable industrial operations.",
     supportingText:
-      "DeepTsight combines hands-on control systems and E&I engineering experience with practical OT cybersecurity and reliability thinking to solve complex operational challenges without losing sight of plant availability, lifecycle value or implementation reality.",
+      "DeepTsight combines hands-on control systems and E&I engineering experience with practical OT cybersecurity and reliability thinking, keeping plant availability in view.",
     facts: [
       { label: "Based", value: "Perth, WA. Working Australia-wide" },
       { label: "Disciplines", value: "Control systems, OT security, segregation, reliability" },

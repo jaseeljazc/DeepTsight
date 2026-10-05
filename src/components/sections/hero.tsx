@@ -54,11 +54,9 @@ export function HeroSection({ hero, ctaLabels }: HeroSectionProps) {
                 </Link>
                 <Link href="/services">{ctaLabels.secondary}</Link>
               </div>
-            </div>
 
-            {/* Right Column: Practice Particulars Schedule */}
-            <div className="flex flex-col justify-end lg:col-span-5 xl:col-span-4">
-              <div className="bg-panel rounded-panel border-rule border p-4 sm:p-5">
+              {/* Practice particulars sit under the actions, on the left; the telemetry fills the right. */}
+              <div className="rounded-panel border-rule max-w-prose-md mt-8 border p-4 sm:p-5 md:mt-10">
                 <p className="text-caption text-steel-600 mb-2 font-mono">Practice particulars</p>
                 <SpecBlock label="Practice particulars" items={hero.facts} density="compact" />
               </div>
