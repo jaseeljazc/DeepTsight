@@ -90,6 +90,10 @@ export default buildConfig({
         dashboard: {
           Component: "/cms/views/dashboard#DashboardView",
         },
+        images: {
+          Component: "/cms/views/images#ImagesView",
+          path: "/images",
+        },
         unauthorized: {
           Component: "/cms/views/mfa-view#MfaView",
           path: "/mfa",

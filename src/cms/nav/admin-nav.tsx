@@ -47,6 +47,8 @@ export async function AdminNav(props: AdminNavProps) {
         href: `${ADMIN_ROUTE}/${entity.type === EntityType.global ? "globals" : "collections"}/${entity.slug}`,
       })),
     );
+    // Not a collection or global, so it is added by hand.
+    entries.push({ slug: "images", label: "Images on the website", href: `${ADMIN_ROUTE}/images` });
   }
 
   return (

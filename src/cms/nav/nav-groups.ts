@@ -16,6 +16,7 @@ const GROUPS: { label: string; slugs: string[] }[] = [
       "credential-groups",
       "articles",
       "article-categories",
+      "images",
       "media",
     ],
   },
