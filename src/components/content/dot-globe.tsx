@@ -32,7 +32,7 @@ const COLOR_RULE = "#C9CECB";
 // Australia and Perth front and centre (124 degrees longitude)
 const START_LON = 124 * DEG2RAD;
 // How long the globe holds on Australia when it first comes into view, before it starts to spin
-const START_HOLD_MS = 1000;
+const START_HOLD_MS = 100;
 // Share of the globe that must be on screen to count as "in view"
 const IN_VIEW_THRESHOLD = 0.4;
 

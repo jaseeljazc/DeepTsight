@@ -35,7 +35,14 @@ export function ProcessSequence({
   const horizontal = orientation === "responsive";
 
   return (
-    <div className={cn(timelineRoot && "sequence", "relative", !horizontal && "sequence-vertical", className)}>
+    <div
+      className={cn(
+        timelineRoot && "sequence",
+        "relative",
+        !horizontal && "sequence-vertical",
+        className,
+      )}
+    >
       {/* Horizontal conductor, wide screens */}
       {horizontal && (
         <div

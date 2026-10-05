@@ -1182,23 +1182,23 @@
     }
 
     .rail-wire-1 {
-      animation-range: entry-crossing 0px entry-crossing 12rem;
+      animation-range: entry-crossing 0px entry-crossing 15rem;
     }
 
     .rail-wire-2 {
-      animation-range: entry-crossing 2rem entry-crossing 14rem;
+      animation-range: entry-crossing 2.5rem entry-crossing 17.5rem;
     }
 
     .rail-wire-3 {
-      animation-range: entry-crossing 4rem entry-crossing 16rem;
+      animation-range: entry-crossing 5rem entry-crossing 20rem;
     }
 
     .rail-wire-4 {
-      animation-range: entry-crossing 6rem entry-crossing 18rem;
+      animation-range: entry-crossing 7.5rem entry-crossing 22.5rem;
     }
 
     .rail-wire-trunk {
-      animation-range: entry-crossing 14rem entry-crossing 20rem;
+      animation-range: entry-crossing 18rem entry-crossing 25rem;
     }
 
     .rail-wire-node {
@@ -1208,7 +1208,7 @@
     }
 
     .rail-wire-junction {
-      animation-range: entry-crossing 12rem entry-crossing 16rem;
+      animation-range: entry-crossing 15rem entry-crossing 20rem;
     }
 
     /* A block fades up a few pixels as it enters. Cards follow one another. */
@@ -1242,13 +1242,25 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .sequence.sequence-vertical .sequence-lamp {
+    .sequence.sequence-vertical .sequence-lamp,
+    .sequence.sequence-vertical .sequence-step {
       animation-range: entry 40% cover 75%;
     }
 
     @media (max-width: 1023px) {
-      .sequence .sequence-lamp {
+      .sequence .sequence-lamp,
+      .sequence .sequence-step {
         animation-range: entry 40% cover 75%;
+      }
+    }
+
+    /* A tall sequence (the Home capability cards, about a screen high) starts as it comes in, not once it
+       has fully entered, or its cards stay hidden while it is already on screen. */
+    @media (min-width: 1024px) {
+      .sequence.sequence-early .sequence-fill-x,
+      .sequence.sequence-early .sequence-lamp,
+      .sequence.sequence-early .sequence-step {
+        animation-range: entry 25% cover 35%;
       }
     }
   }

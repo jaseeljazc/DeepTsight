@@ -5,15 +5,15 @@ Counts are records after the import. Field paths only; no content values.
 
 ## Records per collection
 
-| Collection | Records |
-|---|---|
-| services | 4 |
-| proof-items | 2 |
-| credentials | 15 |
-| credential-groups | 4 |
-| legal-pages | 3 |
-| enquiry-types | 5 |
-| media | 26 |
+| Collection        | Records |
+| ----------------- | ------- |
+| services          | 4       |
+| proof-items       | 2       |
+| credentials       | 15      |
+| credential-groups | 4       |
+| legal-pages       | 3       |
+| enquiry-types     | 5       |
+| media             | 26      |
 
 Globals imported: site-settings, home, about, pages, seo.
 

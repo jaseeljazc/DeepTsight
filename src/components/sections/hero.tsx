@@ -24,9 +24,10 @@ export function HeroSection({ hero, ctaLabels }: HeroSectionProps) {
       aria-labelledby="hero-heading"
       className="hero-section min-h-hero relative flex flex-col justify-between pt-3 pb-0 sm:pt-4 lg:pt-4"
     >
-      {/* Background ASCII Power Plant telemetry */}
+      {/* ASCII power plant telemetry: its own band under the content on small screens, so the
+          particulars stay legible and the plant stays whole; a full-bleed background from lg. */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 flex items-end justify-end overflow-hidden select-none"
+        className="aspect-classic md:aspect-wide max-h-hero-art pointer-events-none relative z-0 order-last flex items-end justify-end overflow-hidden select-none lg:absolute lg:inset-0 lg:order-0 lg:aspect-auto lg:max-h-none"
         aria-hidden="true"
       >
         <AsciiHeroPowerPlant align="right" className="h-full w-full opacity-85 lg:opacity-90" />
@@ -48,11 +49,14 @@ export function HeroSection({ hero, ctaLabels }: HeroSectionProps) {
               <p className="text-body md:text-lead text-ink-700 max-w-prose-md mt-4 md:mt-5">
                 {hero.supportingText}
               </p>
-              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 md:mt-8">
+              {/* One grid so both actions take the width of the wider one; stacked on narrow screens. */}
+              <div className="mt-6 grid w-fit grid-cols-1 gap-3 sm:auto-cols-fr sm:grid-flow-col sm:gap-x-4 md:mt-8">
                 <Link href="/contact" variant="buttonPrimary" withArrow>
                   {ctaLabels.primary}
                 </Link>
-                <Link href="/services">{ctaLabels.secondary}</Link>
+                <Link href="/services" variant="buttonSecondary">
+                  {ctaLabels.secondary}
+                </Link>
               </div>
 
               {/* Practice particulars sit under the actions, on the left; the telemetry fills the right. */}

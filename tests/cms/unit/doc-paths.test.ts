@@ -48,32 +48,48 @@ test("changedPaths treats null and undefined as the same empty value", () => {
 });
 
 test("setPath handles arrays correctly (does not replace with {})", () => {
-  const before = { steps: [{ title: "a", media: 1 }, { title: "b", media: 2 }] };
+  const before = {
+    steps: [
+      { title: "a", media: 1 },
+      { title: "b", media: 2 },
+    ],
+  };
   const after = setPath(before, "steps.1.media", 9);
-  assert.deepEqual(after, { steps: [{ title: "a", media: 1 }, { title: "b", media: 9 }] });
+  assert.deepEqual(after, {
+    steps: [
+      { title: "a", media: 1 },
+      { title: "b", media: 9 },
+    ],
+  });
   assert.ok(Array.isArray(after.steps), "steps must remain an array");
-  assert.deepEqual(before.steps, [{ title: "a", media: 1 }, { title: "b", media: 2 }]); // input not mutated
+  assert.deepEqual(before.steps, [
+    { title: "a", media: 1 },
+    { title: "b", media: 2 },
+  ]); // input not mutated
 });
 
 test("setPath never mutates array inputs", () => {
-  const before = [{ id: 1, title: "a" }, { id: 2, title: "b" }];
+  const before = [
+    { id: 1, title: "a" },
+    { id: 2, title: "b" },
+  ];
   const after = setPath(before as unknown as Record<string, unknown>, "1.title", "B");
-  assert.deepEqual(after, [{ id: 1, title: "a" }, { id: 2, title: "B" }]);
-  assert.deepEqual(before, [{ id: 1, title: "a" }, { id: 2, title: "b" }]); // original untouched
+  assert.deepEqual(after, [
+    { id: 1, title: "a" },
+    { id: 2, title: "B" },
+  ]);
+  assert.deepEqual(before, [
+    { id: 1, title: "a" },
+    { id: 2, title: "b" },
+  ]); // original untouched
 });
 
 test("setPath throws on empty path", () => {
-  assert.throws(
-    () => setPath({ a: 1 }, "", 2),
-    { message: /empty path/ }
-  );
+  assert.throws(() => setPath({ a: 1 }, "", 2), { message: /empty path/ });
 });
 
 test("setPath throws on invalid array index", () => {
-  assert.throws(
-    () => setPath({ a: [1, 2] }, "a.notanumber", 99),
-    { message: /invalid.*index/ }
-  );
+  assert.throws(() => setPath({ a: [1, 2] }, "a.notanumber", 99), { message: /invalid.*index/ });
 });
 
 test("getPath reads from arrays", () => {

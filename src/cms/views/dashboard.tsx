@@ -160,7 +160,7 @@ export async function DashboardView({ initPageResult }: AdminViewServerProps) {
               <span className="dts-stat__body">
                 <span className="dts-stat__label">{label}</span>
                 <span className="dts-stat__value">{value}</span>
-                <span className={`dts-stat__trend${added > 0 ? " dts-stat__trend--up" : ""}`}>
+                <span className={`dts-stat__trend${added > 0 ? "dts-stat__trend--up" : ""}`}>
                   {added > 0 ? <ArrowUp aria-hidden="true" /> : <Minus aria-hidden="true" />}
                   {added > 0 ? `${added} added in 30 days` : "No change in 30 days"}
                 </span>

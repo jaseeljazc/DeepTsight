@@ -15,7 +15,7 @@ export const homeSource: HomeSource = {
       { label: "Based", value: "Perth, WA. Working Australia-wide" },
       { label: "Disciplines", value: "Control systems, OT security, segregation, reliability" },
       { label: "Standards", value: "ISA/IEC 62443", mono: true },
-      { label: "Engagement", value: "Founder-led" },
+      // { label: "Engagement", value: "Founder-led" },
     ],
   },
   media: {

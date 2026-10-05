@@ -51,7 +51,7 @@ export const IconPicker: SelectFieldClientComponent = ({ field, path, readOnly }
 
   return (
     <fieldset
-      className={`field-type dts-icon-pick${showError ? " error" : ""}`}
+      className={`field-type dts-icon-pick${showError ? "error" : ""}`}
       id={`field-${path}`}
     >
       <legend className="dts-icon-pick__legend">

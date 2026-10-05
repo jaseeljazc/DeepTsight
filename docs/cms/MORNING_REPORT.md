@@ -4,7 +4,7 @@
 > to end (CMS build matches the static site with 0 unexplained differences; public E2E and axe 56/56 against the CMS
 > build; all 14 CMS tests pass, including sign-in with the authenticator code, lockout, the IP limit, draft → preview
 > → publish, the enquiry inbox, enquiry types and Insights). `pnpm cms:smoke` passes 12/12 and the backup →
-> restore → verify proof matches on all 80 tables. Sections 2, 3, 7 and 8 below describe the state *overnight*; where
+> restore → verify proof matches on all 80 tables. Sections 2, 3, 7 and 8 below describe the state _overnight_; where
 > they say "unverified", it is now verified. The real run found and fixed six bugs (D-73 and D-75 to D-79 in
 > `docs/cms/04_DECISIONS_DEFAULTS.md`), the most important being that my tests had been running anonymously.
 > Still open: the owner decisions in section 4.
@@ -29,39 +29,39 @@ execution in `next/og`, which the site uses). This branch upgrades to 16.3.7; **
 
 ## 2. Phase status
 
-| Phase | Status | Commit | Notes |
-|---|---|---|---|
-| 0 Setup and baseline | done (DB check blocked) | `0f1d77a`, `5bf04a0` | Baseline green; parity harness built; self-compare 0 differences |
-| 1 Install Payload | partial | `f65e805`, `c412fa0`, `6b84629` | Installed and wired; public site under `(public)`; initial migration created offline, **not applied**; `/admin` answers 500 without a database |
-| 2 Admin security | partial | `3919e80`, `d1d3a73` | Roles, MFA, lockout, audit log, admin CSP built; MFA logic unit-tested; E2E written, not run |
-| 3 Content model (Zod + static) | **done** | `bcfd7b0` | Parity 0; all verified offline |
-| 4 Collections and globals | partial | `f567c24` | Built; migration created offline; `pnpm cms:smoke` not run |
-| 5 Import | partial | `3913581` | Script built; only a dry-run report (`docs/cms/import-report.md`) |
-| 6 Adapter switch | partial | `ace26f5` | Static mode verified (parity 0); CMS mode not run |
-| 7 Revalidation, preview, dates | partial | `15ab2eb` | Built; preview E2E written, not run |
-| 8 Editable enquiry types | partial | `f1ce107` | Built; E2E written, not run |
-| 9 Enquiry inbox | partial | `8ead034` | Built; E2E written, not run. **Privacy notice not changed** (needs your adviser) |
-| 10 Media | done (unit-verified) | `dde0ee2` | EXIF/GPS stripping and SVG refusal proven by unit tests; Local API check in smoke not run |
-| 11 Placeholder gates | **done** | `4587433` | 19 markers in development output; production mode fails as intended (13) |
-| 12 Backup and restore | partial | `6d24f28` | Scripts built, refusal guards checked; the backup → restore → verify proof not run |
-| 13 Insights | partial | `6b2099c` | Built; "Insights off" tests run and pass; CMS insights E2E not run |
-| 14 Docs, QA, report | done | `00800fa`, `45645c2`, this commit | Includes the next 16.3.7 security upgrade |
+| Phase                          | Status                  | Commit                            | Notes                                                                                                                                          |
+| ------------------------------ | ----------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 Setup and baseline           | done (DB check blocked) | `0f1d77a`, `5bf04a0`              | Baseline green; parity harness built; self-compare 0 differences                                                                               |
+| 1 Install Payload              | partial                 | `f65e805`, `c412fa0`, `6b84629`   | Installed and wired; public site under `(public)`; initial migration created offline, **not applied**; `/admin` answers 500 without a database |
+| 2 Admin security               | partial                 | `3919e80`, `d1d3a73`              | Roles, MFA, lockout, audit log, admin CSP built; MFA logic unit-tested; E2E written, not run                                                   |
+| 3 Content model (Zod + static) | **done**                | `bcfd7b0`                         | Parity 0; all verified offline                                                                                                                 |
+| 4 Collections and globals      | partial                 | `f567c24`                         | Built; migration created offline; `pnpm cms:smoke` not run                                                                                     |
+| 5 Import                       | partial                 | `3913581`                         | Script built; only a dry-run report (`docs/cms/import-report.md`)                                                                              |
+| 6 Adapter switch               | partial                 | `ace26f5`                         | Static mode verified (parity 0); CMS mode not run                                                                                              |
+| 7 Revalidation, preview, dates | partial                 | `15ab2eb`                         | Built; preview E2E written, not run                                                                                                            |
+| 8 Editable enquiry types       | partial                 | `f1ce107`                         | Built; E2E written, not run                                                                                                                    |
+| 9 Enquiry inbox                | partial                 | `8ead034`                         | Built; E2E written, not run. **Privacy notice not changed** (needs your adviser)                                                               |
+| 10 Media                       | done (unit-verified)    | `dde0ee2`                         | EXIF/GPS stripping and SVG refusal proven by unit tests; Local API check in smoke not run                                                      |
+| 11 Placeholder gates           | **done**                | `4587433`                         | 19 markers in development output; production mode fails as intended (13)                                                                       |
+| 12 Backup and restore          | partial                 | `6d24f28`                         | Scripts built, refusal guards checked; the backup → restore → verify proof not run                                                             |
+| 13 Insights                    | partial                 | `6b2099c`                         | Built; "Insights off" tests run and pass; CMS insights E2E not run                                                                             |
+| 14 Docs, QA, report            | done                    | `00800fa`, `45645c2`, this commit | Includes the next 16.3.7 security upgrade                                                                                                      |
 
 No phase was reverted.
 
 ## 3. Test results
 
-| Check | Baseline (main) | Final (static) | Final (cms) |
-|---|---|---|---|
-| typecheck | pass | pass | not run (needs DB) |
-| lint | pass | pass | n/a (same code) |
-| build | pass (22 pages) | pass (24 pages) | not run |
-| E2E (Playwright, both projects) | 24/24 | 28/28 (4 new: Insights off) | not run |
-| axe | 28/28 | 28/28 | not run |
-| parity differences vs baseline | 0 | **0** (17 routes, headers byte-identical) | not run |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 28/28 | n/a |
-| CMS E2E (`pnpm test:cms`) | n/a | 14 written, 14 skipped | not run |
-| `pnpm audit --prod` | 1 critical, 2 high (+10 lower) before fixes | 0 critical, 0 high, 1 moderate, 1 low | — |
+| Check                                 | Baseline (main)                             | Final (static)                            | Final (cms)        |
+| ------------------------------------- | ------------------------------------------- | ----------------------------------------- | ------------------ |
+| typecheck                             | pass                                        | pass                                      | not run (needs DB) |
+| lint                                  | pass                                        | pass                                      | n/a (same code)    |
+| build                                 | pass (22 pages)                             | pass (24 pages)                           | not run            |
+| E2E (Playwright, both projects)       | 24/24                                       | 28/28 (4 new: Insights off)               | not run            |
+| axe                                   | 28/28                                       | 28/28                                     | not run            |
+| parity differences vs baseline        | 0                                           | **0** (17 routes, headers byte-identical) | not run            |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a                                         | 28/28                                     | n/a                |
+| CMS E2E (`pnpm test:cms`)             | n/a                                         | 14 written, 14 skipped                    | not run            |
+| `pnpm audit --prod`                   | 1 critical, 2 high (+10 lower) before fixes | 0 critical, 0 high, 1 moderate, 1 low     | —                  |
 
 Unit tests cover: TOTP against the RFC 6238 vectors, AES-256-GCM tamper detection, recovery codes, the MFA
 cookie binding, the production 404 gate, preview path safety, enquiry schema, maps links, navigation, service
@@ -75,15 +75,15 @@ ordering, media EXIF/GPS removal and SVG refusal, rich-text rendering and link s
 2. **Privacy notice wording before the inbox goes live (PRIV-09, U-17).** Nothing was changed (rule: no legal
    wording). Default: the inbox is built but only active with `CONTENT_SOURCE=cms`. Suggested wording for your
    adviser, as a starting point only:
-   > *4. Data storage and processing.* Enquiries submitted on this website are sent over HTTPS. Each enquiry is
+   > _4. Data storage and processing._ Enquiries submitted on this website are sent over HTTPS. Each enquiry is
    > stored in DeepTsight's website database, hosted in TBD — CLIENT, and a copy is emailed to DeepTsight's
    > mailbox. Only DeepTsight staff with two-step sign-in can read stored enquiries. Enquiries are deleted after
    > TBD — CLIENT, or sooner on request; copies in backups are deleted within TBD — CLIENT. To ask for your
    > enquiry to be deleted, email {site email}.
    >
-   > *5. Cookies.* The public website sets no cookies. The content management area used by DeepTsight staff
+   > _5. Cookies._ The public website sets no cookies. The content management area used by DeepTsight staff
    > uses essential sign-in cookies; visitors never receive them.
-   Then set `ENQUIRY_RETENTION_DAYS` to the agreed period.
+   > Then set `ENQUIRY_RETENTION_DAYS` to the agreed period.
 3. **Turn on the production admin only after the CMS tests pass.** `src/proxy.ts` makes `/admin`, `/api` and
    `/preview` answer 404 on the live site until `CMS_ADMIN_ENABLED=true` (D-29). Default: closed. Option: set it
    after `pnpm cms:test` is green on the production-like setup.
@@ -96,7 +96,7 @@ ordering, media EXIF/GPS removal and SVG refusal, rich-text rendering and link s
 6. **Project notes' "no identifying details" tick (D-48).** The import leaves it unticked; an editor must
    confirm it before re-publishing a note. Confirm that is the behaviour you want.
 7. **Admin network restriction (U-9).** Default: reachable from anywhere, protected by password + TOTP + lockout
-   + IP rate limit. Option: restrict `/admin` by IP at the host.
+   - IP rate limit. Option: restrict `/admin` by IP at the host.
 8. **IP rate limit trusts `X-Forwarded-For` (D-58).** Fine on Vercel; on another host, configure the trusted
    header before launch (already noted in `src/lib/rate-limit.ts`). Per-account lockout does not depend on it.
 9. **`package-lock.json` (rule 9: not edited).** It no longer matches `pnpm-lock.yaml` (no Payload, old next).
@@ -178,37 +178,37 @@ Full text and how to reverse each: `docs/cms/04_DECISIONS_DEFAULTS.md`.
 
 ## 8. Security checks
 
-| Check (03) | Result |
-|---|---|
-| REST lockdown (anonymous refused on every collection and global) | **Unverified at runtime**: access rules in code (default deny); E2E written |
-| GraphQL off | **Pass**: `/api/graphql` returns 404 for every method without loading Payload (probed) |
-| MFA (TOTP, encrypted at rest, recovery codes, rate limit, session-bound cookie) | Logic **pass** (unit tests incl. RFC vectors); flow **unverified** |
-| Lockout (5 attempts, 15 min) and login IP limit (10 / 15 min, hashed IP) | Configured; **unverified** (E2E written) |
-| Admin CSP and headers (strict CSP, noindex, no-store) | **Pass** (probed on `/admin`, `/api/users`, `/api/graphql`) |
-| Public CSP and headers unchanged | **Pass** (parity: byte-identical on every route) |
-| EXIF/GPS stripping | **Pass** (unit test with a GPS-tagged JPEG) |
-| SVG rejected | **Pass** (unit test; also GIF and non-images) |
-| Enquiry data minimal (no IP, UA, token, honeypot) | In code; **unverified** at runtime (E2E checks it) |
-| Audit log (append-only, approver flags from/to, fails closed) | In code; **unverified** at runtime |
-| No telemetry | **Pass** (`telemetry: false`; no email adapter output) |
-| Production fail-closed gate on `/admin`, `/api`, `/preview` | **Pass** (unit test) |
-| Robots: production disallows `/admin`, `/api`, `/preview` | In code |
-| Secrets | No connection string or password printed, logged or committed; `.data/` and `.env*` ignored |
+| Check (03)                                                                      | Result                                                                                      |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| REST lockdown (anonymous refused on every collection and global)                | **Unverified at runtime**: access rules in code (default deny); E2E written                 |
+| GraphQL off                                                                     | **Pass**: `/api/graphql` returns 404 for every method without loading Payload (probed)      |
+| MFA (TOTP, encrypted at rest, recovery codes, rate limit, session-bound cookie) | Logic **pass** (unit tests incl. RFC vectors); flow **unverified**                          |
+| Lockout (5 attempts, 15 min) and login IP limit (10 / 15 min, hashed IP)        | Configured; **unverified** (E2E written)                                                    |
+| Admin CSP and headers (strict CSP, noindex, no-store)                           | **Pass** (probed on `/admin`, `/api/users`, `/api/graphql`)                                 |
+| Public CSP and headers unchanged                                                | **Pass** (parity: byte-identical on every route)                                            |
+| EXIF/GPS stripping                                                              | **Pass** (unit test with a GPS-tagged JPEG)                                                 |
+| SVG rejected                                                                    | **Pass** (unit test; also GIF and non-images)                                               |
+| Enquiry data minimal (no IP, UA, token, honeypot)                               | In code; **unverified** at runtime (E2E checks it)                                          |
+| Audit log (append-only, approver flags from/to, fails closed)                   | In code; **unverified** at runtime                                                          |
+| No telemetry                                                                    | **Pass** (`telemetry: false`; no email adapter output)                                      |
+| Production fail-closed gate on `/admin`, `/api`, `/preview`                     | **Pass** (unit test)                                                                        |
+| Robots: production disallows `/admin`, `/api`, `/preview`                       | In code                                                                                     |
+| Secrets                                                                         | No connection string or password printed, logged or committed; `.data/` and `.env*` ignored |
 
 ## 9. New dependencies
 
-| Package | Version | Purpose | Licence |
-|---|---|---|---|
-| `payload` | 3.90.2 | The CMS | MIT |
-| `@payloadcms/next` | 3.90.2 | Admin UI and routes in Next.js | MIT |
-| `@payloadcms/ui` | 3.90.2 | Admin UI components | MIT |
-| `@payloadcms/db-postgres` | 3.90.2 | PostgreSQL adapter | MIT |
-| `@payloadcms/richtext-lexical` | 3.90.2 | Insights article editor | MIT |
-| `sharp` | 0.35.5 | Image processing, metadata stripping | Apache-2.0 |
-| `graphql` | 16.14.2 | Required peer of Payload (GraphQL disabled) | MIT |
-| `uqr` | 0.1.3 | Local QR code for MFA enrolment | MIT |
-| `undici` (override) | 7.29.1 | Patched version of Payload's HTTP client | MIT |
-| `next`, `eslint-config-next` (upgrade) | 16.3.7 | Security fix (was 16.3.5) | MIT |
+| Package                                | Version | Purpose                                     | Licence    |
+| -------------------------------------- | ------- | ------------------------------------------- | ---------- |
+| `payload`                              | 3.90.2  | The CMS                                     | MIT        |
+| `@payloadcms/next`                     | 3.90.2  | Admin UI and routes in Next.js              | MIT        |
+| `@payloadcms/ui`                       | 3.90.2  | Admin UI components                         | MIT        |
+| `@payloadcms/db-postgres`              | 3.90.2  | PostgreSQL adapter                          | MIT        |
+| `@payloadcms/richtext-lexical`         | 3.90.2  | Insights article editor                     | MIT        |
+| `sharp`                                | 0.35.5  | Image processing, metadata stripping        | Apache-2.0 |
+| `graphql`                              | 16.14.2 | Required peer of Payload (GraphQL disabled) | MIT        |
+| `uqr`                                  | 0.1.3   | Local QR code for MFA enrolment             | MIT        |
+| `undici` (override)                    | 7.29.1  | Patched version of Payload's HTTP client    | MIT        |
+| `next`, `eslint-config-next` (upgrade) | 16.3.7  | Security fix (was 16.3.5)                   | MIT        |
 
 Recorded in `docs/LICENCES_SERVICES.md` §4 and `TECH_STACK.md` §0 and §4.
 

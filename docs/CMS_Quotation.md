@@ -2,13 +2,13 @@
 
 ## Commercial Summary
 
-| Field | Details |
-|---|---|
-| **Quotation No.** | CDG-Q-0008 |
-| **Date** | 09-09-2026 |
-| **Project** | Design and development of a Basic Content Management System (CMS) for the website |
-| **Total Payable** | ₹45,000 |
-| **Amount in Words** | Forty Five Thousand Rupees Only |
+| Field               | Details                                                                           |
+| ------------------- | --------------------------------------------------------------------------------- |
+| **Quotation No.**   | CDG-Q-0008                                                                        |
+| **Date**            | 09-09-2026                                                                        |
+| **Project**         | Design and development of a Basic Content Management System (CMS) for the website |
+| **Total Payable**   | ₹45,000                                                                           |
+| **Amount in Words** | Forty Five Thousand Rupees Only                                                   |
 
 ### Project Overview
 
@@ -261,19 +261,19 @@ Full technical documentation is provided at final handover, including:
 
 ## Commercial Snapshot
 
-| Item | Details |
-|---|---|
-| **Project** | Basic Content Management System (CMS) |
-| **Quotation** | CDG-Q-0008 |
-| **Date** | 09-09-2026 |
-| **Total** | ₹45,000 |
-| **Payment** | 50% advance + 50% on completion and approval |
-| **Estimated Timeline** | 30–40 working days |
-| **Free Support** | 2 months from handover |
-| **Included Support Sittings** | Up to 3 |
-| **Post-Warranty Support** | ₹500/hour |
-| **Hosting** | Vercel free plan |
-| **SSL** | Included with Vercel hosting |
-| **Quotation Validity** | 30 days from date of issue |
+| Item                          | Details                                      |
+| ----------------------------- | -------------------------------------------- |
+| **Project**                   | Basic Content Management System (CMS)        |
+| **Quotation**                 | CDG-Q-0008                                   |
+| **Date**                      | 09-09-2026                                   |
+| **Total**                     | ₹45,000                                      |
+| **Payment**                   | 50% advance + 50% on completion and approval |
+| **Estimated Timeline**        | 30–40 working days                           |
+| **Free Support**              | 2 months from handover                       |
+| **Included Support Sittings** | Up to 3                                      |
+| **Post-Warranty Support**     | ₹500/hour                                    |
+| **Hosting**                   | Vercel free plan                             |
+| **SSL**                       | Included with Vercel hosting                 |
+| **Quotation Validity**        | 30 days from date of issue                   |
 
 > **Reference:** Codeigo Quotation CDG-Q-0008.

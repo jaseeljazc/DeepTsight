@@ -4,6 +4,7 @@ Each phase lists its dependencies, its tasks and its exit checks. A phase is don
 exit checks pass and it is committed.
 
 ## Database safety (applies to every phase)
+
 - Three databases, all owned by `deeptsight_cms`:
   - `DATABASE_URI` (dev): used by `pnpm dev` and manual checks; changed only by migrations and the import
   - `DATABASE_URI_TEST`: used by E2E, parity and smoke runs; reset freely
@@ -20,6 +21,7 @@ exit checks pass and it is committed.
 ---
 
 ## Phase 0: Setup and baseline (deps: none)
+
 - Create branch `cms/phase-2`. Commit `docs/cms/*` ("cms(phase 0): add build plan").
 - `pnpm install`. Record installed versions of next, react, typescript, zod in PROGRESS.
 - Check that all three databases answer (`select 1` through a Node script using the env variables;
@@ -40,6 +42,7 @@ exit checks pass and it is committed.
 - Exit: baseline recorded; databases reachable; comparing the baseline with itself gives 0 differences.
 
 ## Phase 1: Install Payload (deps: 0)
+
 - **Version check first.** `pnpm view payload versions --json`. Pick the highest stable 3.x.
   `pnpm view payload@<v> peerDependencies` must accept next 16.3.7 and react/react-dom 19.3.0.
   Do the same check for `@payloadcms/next`, `@payloadcms/ui`, `@payloadcms/db-postgres` and
@@ -96,10 +99,12 @@ exit checks pass and it is committed.
   `static-before` gives 0 differences. Build, E2E and axe are green.
 
 ## Phase 2: Admin security (deps: 1)
+
 Implement `03_SECURITY_AND_OPS.md` sections 2 to 6: users and roles, MFA, lockout, login rate limit,
 sessions, audit log, admin CSP and headers, REST lockdown, and `scripts/cms/create-admin.ts`.
 The dev account is `editor@example.com`, with its password and TOTP secret written to
 `.data/dev-admin.txt` (git-ignored). Back up dev first; create and apply migrations.
+
 - Tests in `tests/cms/admin-security.spec.ts`, against a reset and migrated test database:
   - anonymous `GET /api/users`, `/api/services` and `/api/enquiries` are refused (401 or 403)
   - `/api/graphql` returns 404
@@ -111,7 +116,9 @@ The dev account is `editor@example.com`, with its password and TOTP secret writt
 - Exit: tests green, parity 0 differences, migration chain proven on a fresh test database.
 
 ## Phase 3: Content model changes in Zod and static source (deps: 0)
+
 The Zod schemas are the contract, so change them first and keep the static site's output identical.
+
 - `Site`:
   - add `socialLinks[]`, `mapsUrl?`, `locationLabel`, `officeAddress?` with `showOfficeAddress`
     (default false), and `businessHours?` with `showBusinessHours` (default false)
@@ -134,9 +141,11 @@ The Zod schemas are the contract, so change them first and keep the static site'
 - Exit: static parity 0 differences; green.
 
 ## Phase 4: Collections and globals (deps: 1, 2, 3)
+
 Build everything in `02_CONTENT_MODEL.md`: drafts, the publish validation hook (Zod), access rules,
 field-level permissions, the revalidation hooks (guarded; they become active in Phase 7), and the
 admin grouping and field descriptions.
+
 - Back up dev. `payload migrate:create collections`, then `payload migrate` on dev.
 - `npx payload generate:types` → `src/cms/payload-types.ts`. Run `generate:importmap`.
 - `scripts/cms/smoke.ts`: reset and migrate the test database, then create, update, publish and delete
@@ -145,6 +154,7 @@ admin grouping and field descriptions.
   fresh test database; green.
 
 ## Phase 5: Import (deps: 4)
+
 - `scripts/cms/import-from-source.ts --db <ENV_VAR_NAME>`: idempotent upsert by natural key (slug,
   legacy id). A `--reset` flag wipes content collections only (never users, audit log or enquiries).
   Set `context.disableRevalidate = true`. Copy image files from `public/` into Payload media; leave
@@ -156,6 +166,7 @@ admin grouping and field descriptions.
 - Exit: running the import twice produces identical counts; report written.
 
 ## Phase 6: Adapter switch (deps: 5)
+
 - `src/content/index.ts` becomes a dispatcher with the same exported signatures:
   - `src/content/static-source.ts`: today's behaviour, moved, unchanged
   - `src/content/cms-source.ts`: Payload Local API, mappers in `src/content/mappers/*`, the same
@@ -174,6 +185,7 @@ admin grouping and field descriptions.
 - Exit: parity passes; full E2E and axe suites green in both modes.
 
 ## Phase 7: Revalidation, preview, dates (deps: 6)
+
 - `afterChange` and `afterDelete` hooks call `revalidateTag` according to the tag map. A slug change
   invalidates both the old and the new slug. Hooks are skipped when `context.disableRevalidate` is set
   and are wrapped in try/catch outside a request. Check `revalidateTag`'s signature in Next 16.3.
@@ -193,6 +205,7 @@ admin grouping and field descriptions.
 - Exit: E2E green; parity green.
 
 ## Phase 8: Editable enquiry types (deps: 6)
+
 - The contact page passes the enabled types to the form as props (tag `enquiry-types`). The client
   resolver uses `buildEnquirySchema` with those values.
 - The Server Action fetches the enabled types at request time (uncached) and validates against them.
@@ -201,7 +214,9 @@ admin grouping and field descriptions.
   by the server.
 
 ## Phase 9: Enquiry inbox (deps: 8)
+
 Implement `03_SECURITY_AND_OPS.md` section 7. Back up dev; create and apply migrations.
+
 - New order in the Server Action: honeypot → Zod → rate limit → Turnstile → timing →
   **save (emailStatus = pending)** → email → update emailStatus → redirect.
 - Saving goes through `src/content/enquiries.ts` (inside the content seam), not through Payload
@@ -214,18 +229,22 @@ Implement `03_SECURITY_AND_OPS.md` section 7. Back up dev; create and apply migr
 - Exit: full suite green in both modes. Commit. (Tier A complete.)
 
 ## Phase 10: Media (deps: 4; parity again after)
+
 Implement `03_SECURITY_AND_OPS.md` section 8. Back up dev; create and apply migrations if fields change.
+
 - Update `next.config.ts` image settings for Payload file URLs.
 - Test: generate a JPEG with GPS EXIF using sharp, upload it through the Local API, and assert the
   stored file has no EXIF data. Also assert an SVG upload is rejected.
 
 ## Phase 11: Placeholder and integrity gates (deps: 6)
+
 - `scripts/check-content-output.ts`: calls every getter and scans all returned strings with
   `isPlaceholder`. Fails when `NEXT_PUBLIC_ENV=production`; otherwise prints a count. Add it to
   `check:content`. Keep `check-placeholders.ts` for code (decision D-12).
 - Publishing a record that contains a marker is blocked when `NEXT_PUBLIC_ENV=production`.
 
 ## Phase 12: Backup and restore (deps: 4)
+
 - Complete `scripts/cms/backup.ts --db <ENV_VAR_NAME>`: `pg_dump --format=custom --no-owner` to
   `.data/backups/<dbname>-YYYYMMDD-HHMMSS.dump`, plus a copy of the media directory beside it.
 - `scripts/cms/restore.ts --from <file> --db <ENV_VAR_NAME>`: refuses unless the target name ends in
@@ -238,6 +257,7 @@ Implement `03_SECURITY_AND_OPS.md` section 8. Back up dev; create and apply migr
   off-machine copy.
 
 ## Phase 13: Insights (deps: 6, 7, 10)
+
 - Back up dev; create and apply migrations.
 - `articles` and `article-categories` collections, as in `02_CONTENT_MODEL.md`.
 - Lexical → React renderer in `src/components/content/rich-text.tsx`, mapped to design-system
@@ -250,6 +270,7 @@ Implement `03_SECURITY_AND_OPS.md` section 8. Back up dev; create and apply migr
   article and one draft → the article renders, axe passes, the draft is absent, the RSS feed is valid XML.
 
 ## Phase 14: Documentation, QA, report (always)
+
 - Full suite in both modes; parity; migration chain on a fresh test database; `pnpm audit --prod`
   (report high and critical findings).
 - Update: `ARCHITECTURE.md` §2 to §4, `TECH_STACK.md` (installed versions, Payload, Postgres 17),
@@ -262,6 +283,7 @@ Implement `03_SECURITY_AND_OPS.md` section 8. Back up dev; create and apply migr
 ---
 
 ## Fallback Track (only if no Payload version supports Next 16.3.7 / React 19.3)
+
 Do Phase 0, Phase 3, the static part of Phase 11, and the `buildEnquirySchema` change. Write
 `docs/cms/02_CONTENT_MODEL.md` notes on what is ready. Report the exact peer-dependency mismatch and
 the options: wait for Payload, pin Next to the newest version Payload supports, or use another CMS.

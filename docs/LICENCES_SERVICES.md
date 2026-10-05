@@ -44,17 +44,17 @@ _Never commit these values to the repository._
 Added 1 October 2026. Everything below runs inside this application or on infrastructure the client
 controls; none of it sends data to a third party. Payload telemetry is switched off in the config.
 
-| Component                                                                 | Version          | Licence    | Purpose                                                        |
-| ------------------------------------------------------------------------- | ---------------- | ---------- | -------------------------------------------------------------- |
-| `payload`                                                                 | 3.90.2           | MIT        | The CMS, running inside the Next.js app (`/admin`, `/api`)     |
-| `@payloadcms/next`, `@payloadcms/ui`                                      | 3.90.2           | MIT        | Admin interface and route handlers                             |
-| `@payloadcms/db-postgres`                                                 | 3.90.2           | MIT        | PostgreSQL adapter                                             |
-| `@payloadcms/richtext-lexical`                                            | 3.90.2           | MIT        | Formatted text for Insights articles                           |
-| `sharp`                                                                   | 0.35.5           | Apache-2.0 | Image processing; strips metadata from uploads                 |
-| `graphql`                                                                 | 16.14.2          | MIT        | Required peer of Payload; GraphQL is disabled                  |
-| `uqr`                                                                     | 0.1.3            | MIT        | QR code for authenticator enrolment, drawn locally             |
-| `undici` (override of Payload's pin)                                      | 7.29.1           | MIT        | HTTP client inside Payload; patched version                    |
-| PostgreSQL                                                                | 17               | PostgreSQL | Database. Local for development; production host to be decided |
+| Component                            | Version | Licence    | Purpose                                                        |
+| ------------------------------------ | ------- | ---------- | -------------------------------------------------------------- |
+| `payload`                            | 3.90.2  | MIT        | The CMS, running inside the Next.js app (`/admin`, `/api`)     |
+| `@payloadcms/next`, `@payloadcms/ui` | 3.90.2  | MIT        | Admin interface and route handlers                             |
+| `@payloadcms/db-postgres`            | 3.90.2  | MIT        | PostgreSQL adapter                                             |
+| `@payloadcms/richtext-lexical`       | 3.90.2  | MIT        | Formatted text for Insights articles                           |
+| `sharp`                              | 0.35.5  | Apache-2.0 | Image processing; strips metadata from uploads                 |
+| `graphql`                            | 16.14.2 | MIT        | Required peer of Payload; GraphQL is disabled                  |
+| `uqr`                                | 0.1.3   | MIT        | QR code for authenticator enrolment, drawn locally             |
+| `undici` (override of Payload's pin) | 7.29.1  | MIT        | HTTP client inside Payload; patched version                    |
+| PostgreSQL                           | 17      | PostgreSQL | Database. Local for development; production host to be decided |
 
 **Services:** no new external service. The production database host and media storage are owner decisions
 (U-2); whichever is chosen must be added to section 1 with its cost, region and renewal.

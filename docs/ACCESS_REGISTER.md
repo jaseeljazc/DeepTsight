@@ -4,19 +4,19 @@ This register details the administrative accounts required to govern the DeepTsi
 
 **IMPORTANT: This document must be kept strictly confidential. The client (Founder) must retain Owner-level access to all listed platforms.**
 
-| Platform                | Purpose                          | Access Role Needed (Founder) | Access Role Needed (Developer)        |
-| ----------------------- | -------------------------------- | ---------------------------- | ------------------------------------- |
-| **Domain Registrar**    | Domain Name Ownership & DNS      | Owner / Admin                | None (or restricted technical access) |
-| **Vercel**              | Hosting & Deployments            | Owner                        | Member / Contributor                  |
-| **Cloudflare**          | DNS Routing & Turnstile Security | Owner / Super Admin          | Administrator                         |
-| **Upstash**             | Rate-limiting infrastructure     | Owner                        | Member                                |
-| **Resend**              | Transactional Email API          | Owner                        | Member                                |
-| **Plausible Analytics** | Traffic Analytics                | Owner                        | Viewer                                |
-| **GitHub**              | Source Code Repository           | Owner                        | Collaborator (with write access)      |
-| **CMS admin (`/admin`)** | Content and the enquiry inbox    | Editor + Approver (MFA)      | Editor only, while building; remove after handover |
-| **PostgreSQL**          | CMS database (content, inbox, audit log) | Database owner (host account) | Application role `deeptsight_cms` only |
-| **Database host**       | Production PostgreSQL (TBD — CLIENT, U-2) | Owner                   | Member                                |
-| **Media storage**       | Uploaded images (TBD — CLIENT, U-2) | Owner                     | Member                                |
+| Platform                 | Purpose                                   | Access Role Needed (Founder)  | Access Role Needed (Developer)                     |
+| ------------------------ | ----------------------------------------- | ----------------------------- | -------------------------------------------------- |
+| **Domain Registrar**     | Domain Name Ownership & DNS               | Owner / Admin                 | None (or restricted technical access)              |
+| **Vercel**               | Hosting & Deployments                     | Owner                         | Member / Contributor                               |
+| **Cloudflare**           | DNS Routing & Turnstile Security          | Owner / Super Admin           | Administrator                                      |
+| **Upstash**              | Rate-limiting infrastructure              | Owner                         | Member                                             |
+| **Resend**               | Transactional Email API                   | Owner                         | Member                                             |
+| **Plausible Analytics**  | Traffic Analytics                         | Owner                         | Viewer                                             |
+| **GitHub**               | Source Code Repository                    | Owner                         | Collaborator (with write access)                   |
+| **CMS admin (`/admin`)** | Content and the enquiry inbox             | Editor + Approver (MFA)       | Editor only, while building; remove after handover |
+| **PostgreSQL**           | CMS database (content, inbox, audit log)  | Database owner (host account) | Application role `deeptsight_cms` only             |
+| **Database host**        | Production PostgreSQL (TBD — CLIENT, U-2) | Owner                         | Member                                             |
+| **Media storage**        | Uploaded images (TBD — CLIENT, U-2)       | Owner                         | Member                                             |
 
 ## CMS accounts and roles
 

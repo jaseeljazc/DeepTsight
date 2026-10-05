@@ -102,18 +102,18 @@ manager for changed slugs (slugs lock after the first publish instead, D-09).
 
 ## 3. Routes and rendering
 
-| Route                                  | Rendering                                           | Content                                                |
-| -------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
-| `/`, `/about`, `/services`, `/contact` | Static; regenerated on demand by content tags (CMS) | adapter getters                                        |
-| `/services/[slug]`                     | Static, `generateStaticParams` (enabled services)   | `getServices()` → `getService(slug)`                   |
-| `/credentials`                         | Static, also re-rendered daily (expiry)             | `getCredentials()`, `getPageContent()`                 |
-| `/insights`, `/insights/[slug]`        | Static; 404 while `insightsEnabled` is false        | `getArticles()`, `getArticle(slug)`                    |
-| `/insights/rss.xml`                    | Static route handler; 404 while off                 | `getArticles()`                                        |
-| `/contact/thank-you`, `/legal/*`       | Static                                              | `getPageContent()`, `getLegalPage(slug)`               |
-| `/sitemap.xml`, `/robots.txt`          | Build time                                          | content, stored `updatedAt`, `NEXT_PUBLIC_SITE_URL`    |
-| `/admin/**`                            | Dynamic (Payload admin)                             | Payload; strict CSP, noindex, no-store                 |
-| `/api/**`                              | Dynamic (Payload REST)                              | access-controlled; GraphQL always 404                  |
-| `/preview`, `/preview/exit`            | Dynamic                                             | turns Next draft mode on (MFA admin) / off             |
+| Route                                  | Rendering                                           | Content                                             |
+| -------------------------------------- | --------------------------------------------------- | --------------------------------------------------- |
+| `/`, `/about`, `/services`, `/contact` | Static; regenerated on demand by content tags (CMS) | adapter getters                                     |
+| `/services/[slug]`                     | Static, `generateStaticParams` (enabled services)   | `getServices()` → `getService(slug)`                |
+| `/credentials`                         | Static, also re-rendered daily (expiry)             | `getCredentials()`, `getPageContent()`              |
+| `/insights`, `/insights/[slug]`        | Static; 404 while `insightsEnabled` is false        | `getArticles()`, `getArticle(slug)`                 |
+| `/insights/rss.xml`                    | Static route handler; 404 while off                 | `getArticles()`                                     |
+| `/contact/thank-you`, `/legal/*`       | Static                                              | `getPageContent()`, `getLegalPage(slug)`            |
+| `/sitemap.xml`, `/robots.txt`          | Build time                                          | content, stored `updatedAt`, `NEXT_PUBLIC_SITE_URL` |
+| `/admin/**`                            | Dynamic (Payload admin)                             | Payload; strict CSP, noindex, no-store              |
+| `/api/**`                              | Dynamic (Payload REST)                              | access-controlled; GraphQL always 404               |
+| `/preview`, `/preview/exit`            | Dynamic                                             | turns Next draft mode on (MFA admin) / off          |
 
 Public pages assert `dynamic = "force-static"`. In CMS mode their reads are cached with content tags and
 regenerated when a publish invalidates a tag (§4.4). In draft mode (preview) they render dynamically with

@@ -52,58 +52,84 @@ export function CapabilityRail({
           </p>
         </div>
 
-        <ul className="rail-stagger mt-10 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 md:mt-12 md:gap-y-12 xl:grid-cols-4">
-          {services.map((service, index) => {
-            const summary = summaryFor(service.slug);
-            const title = summary?.title ?? service.title;
-            const outcome = summary?.outcome ?? service.outcome;
-            const headingId = `capability-${service.slug}`;
-            const outputs = service.scopeAndOutputs
-              .flatMap((group) => group.outputs)
-              .slice(0, OUTPUTS_SHOWN);
-            const standards = service.standards.slice(0, STANDARDS_SHOWN).join(" · ");
+        {/* The delivery sequence's motion (globals.css .sequence): the conductor fills along the four
+            terminals, each lamp lights and each card rises in turn as the list scrolls through. */}
+        <div className="sequence sequence-early relative mt-10 md:mt-12">
+          <div
+            aria-hidden="true"
+            className="sequence-conductor-x sequence-conductor-rail absolute right-0 hidden xl:block"
+          >
+            <div className="bg-rule absolute inset-0" />
+            <div className="sequence-fill-x sequence-conductor-fill absolute inset-0" />
+          </div>
+          <ul className="relative grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 md:gap-y-12 xl:grid-cols-4">
+            {services.map((service, index) => {
+              const summary = summaryFor(service.slug);
+              const title = summary?.title ?? service.title;
+              const outcome = summary?.outcome ?? service.outcome;
+              const headingId = `capability-${service.slug}`;
+              const outputs = service.scopeAndOutputs
+                .flatMap((group) => group.outputs)
+                .slice(0, OUTPUTS_SHOWN);
+              const standards = service.standards.slice(0, STANDARDS_SHOWN).join(" · ");
 
-            return (
-              <li key={service.slug} className="rail-rise">
-                <NextLink
-                  href={`/services/${service.slug}`}
-                  aria-labelledby={headingId}
-                  className="group border-ink-900 flex h-full flex-col gap-4 border-t pt-6"
+              return (
+                <li
+                  key={service.slug}
+                  className="sequence-step relative pt-12"
+                  data-step={Math.min(index + 1, 4)}
                 >
-                  <DotNumeral value={String(index + 1).padStart(2, "0")} className="w-numeral" />
-                  <h3
-                    id={headingId}
-                    className="font-display text-ink-900 group-hover:text-primary text-h3-lg flex items-start gap-3 font-medium transition-colors duration-150"
+                  {/* Below xl each card carries its own hairline; from xl one conductor joins the four. */}
+                  <span
+                    aria-hidden="true"
+                    className="sequence-conductor-x bg-rule absolute inset-x-0 xl:hidden"
+                  />
+                  <span
+                    aria-hidden="true"
+                    // The lamp keyframes in globals.css cover four stages; there are four services.
+                    data-step={Math.min(index + 1, 4)}
+                    className="sequence-lamp sequence-lamp-size marker-square absolute top-0 left-0"
+                  />
+                  <NextLink
+                    href={`/services/${service.slug}`}
+                    aria-labelledby={headingId}
+                    className="group flex h-full flex-col gap-4"
                   >
-                    <ServiceIcon name={service.icon} />
-                    <span>{title}</span>
-                  </h3>
-                  <p className="text-ink-700 text-small">{service.summary}</p>
-                  <p className="text-ink-900 text-small border-rule border-t pt-4">{outcome}</p>
-                  {outputs.length > 0 && (
-                    <ul className="text-ink-700 text-small divide-rule border-rule divide-y border-t">
-                      {outputs.map((output) => (
-                        <li key={output} className="py-2">
-                          {output}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {standards && (
-                    <p className="text-steel-600 text-caption mt-auto font-mono">{standards}</p>
-                  )}
-                  <span className="text-ink-900 text-small flex items-center gap-2 font-medium">
-                    {labels.viewService}
-                    <ArrowRight
-                      className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </NextLink>
-              </li>
-            );
-          })}
-        </ul>
+                    <DotNumeral value={String(index + 1).padStart(2, "0")} className="w-numeral" />
+                    <h3
+                      id={headingId}
+                      className="font-display text-ink-900 group-hover:text-primary text-h3-lg flex items-start gap-3 font-medium transition-colors duration-150"
+                    >
+                      <ServiceIcon name={service.icon} />
+                      <span>{title}</span>
+                    </h3>
+                    <p className="text-ink-700 text-small">{service.summary}</p>
+                    <p className="text-ink-900 text-small border-rule border-t pt-4">{outcome}</p>
+                    {outputs.length > 0 && (
+                      <ul className="text-ink-700 text-small divide-rule border-rule divide-y border-t">
+                        {outputs.map((output) => (
+                          <li key={output} className="py-2">
+                            {output}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {standards && (
+                      <p className="text-steel-600 text-caption mt-auto font-mono">{standards}</p>
+                    )}
+                    <span className="text-ink-900 text-small flex items-center gap-2 font-medium">
+                      {labels.viewService}
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </NextLink>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
         <RailWiring />
         <p className="bg-ink-900 text-on-dark rounded-control font-display text-lead mt-6 w-fit px-6 py-3 font-medium xl:mx-auto xl:mt-0">

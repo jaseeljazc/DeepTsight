@@ -12,11 +12,11 @@
 
 ## Decisions (from the owner, 2026-10-02)
 
-| Question | Decision |
-| --- | --- |
-| Launch scope (Q-01 / OPEN-05) | **Launch with articles.** Insights is switched on only after real, approved articles are published. |
-| Authoring | **In the CMS only.** No MDX files and no MDX dependency. FR-26's "MDX in Phase 1" is superseded; record it in `TASKS.md` decisions log. |
-| Extras in scope | Design pass on index and article pages; category filter (FR-28); accessibility and responsive QA. |
+| Question                      | Decision                                                                                                                                |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Launch scope (Q-01 / OPEN-05) | **Launch with articles.** Insights is switched on only after real, approved articles are published.                                     |
+| Authoring                     | **In the CMS only.** No MDX files and no MDX dependency. FR-26's "MDX in Phase 1" is superseded; record it in `TASKS.md` decisions log. |
+| Extras in scope               | Design pass on index and article pages; category filter (FR-28); accessibility and responsive QA.                                       |
 
 ## Global Constraints
 
@@ -33,14 +33,14 @@
 
 ## Skills to use while executing
 
-| When | Skill |
-| --- | --- |
-| Every new function | `superpowers:test-driven-development` |
-| Task 5 (design pass) | `frontend-design`, `impeccable` (critique, then polish), `design-taste-frontend`; review with the `UI Finish-Gate Reviewer` agent; copy check with `deslop` |
-| Task 6 (JSON-LD) | `claude-seo:seo-schema` to validate the output |
-| Task 7 | `web-design-guidelines` for the review pass |
-| Before claiming any task done | `superpowers:verification-before-completion` |
-| End | `superpowers:requesting-code-review`, then `superpowers:finishing-a-development-branch` |
+| When                          | Skill                                                                                                                                                       |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every new function            | `superpowers:test-driven-development`                                                                                                                       |
+| Task 5 (design pass)          | `frontend-design`, `impeccable` (critique, then polish), `design-taste-frontend`; review with the `UI Finish-Gate Reviewer` agent; copy check with `deslop` |
+| Task 6 (JSON-LD)              | `claude-seo:seo-schema` to validate the output                                                                                                              |
+| Task 7                        | `web-design-guidelines` for the review pass                                                                                                                 |
+| Before claiming any task done | `superpowers:verification-before-completion`                                                                                                                |
+| End                           | `superpowers:requesting-code-review`, then `superpowers:finishing-a-development-branch`                                                                     |
 
 ## Review Focus
 
@@ -54,23 +54,23 @@ Failure modes the requirements imply but no existing test exercises, most likely
 
 ## File Structure
 
-| File | Responsibility |
-| --- | --- |
-| `src/content/schema.ts` (modify) | Add `categories` to `articleSummarySchema` (the contract). |
-| `src/content/mappers/index.ts` (modify) | `mapArticle` emits `categories` and derives `tags` from it. |
-| `src/content/cms-source.ts` (modify) | `getArticles` passes `categories` through. |
-| `src/lib/insights.ts` (create) | Pure helpers: `usedCategories`, `articlesInCategory`, `RESERVED_ARTICLE_SLUGS`. |
-| `src/cms/hooks/validators.ts` (modify) | `validateArticle` refuses reserved slugs. |
-| `src/components/content/article-list.tsx` (create) | The ruled article list, shared by the index and category pages. |
-| `src/components/content/category-filter.tsx` (create) | Links row: "All" plus each used category. Server component, no JS. |
-| `src/app/(public)/(site)/insights/page.tsx` (modify) | Use the shared list and filter. |
-| `src/app/(public)/(site)/insights/category/[slug]/page.tsx` (create) | Statically generated category listing. |
-| `src/app/(public)/(site)/insights/[slug]/page.tsx` (modify) | Updated date, category links, end-of-article actions. |
-| `src/lib/jsonld.ts` (modify) | `articleLd` gains `author` and `mainEntityOfPage`. |
-| `tests/cms/unit/article-categories.test.ts` (create) | Mapper and helper tests. |
-| `tests/cms/unit/article-jsonld.test.ts` (create) | JSON-LD tests. |
-| `tests/cms/insights.spec.ts` (modify) | Category, nav, a11y and overflow checks with fixtures. |
-| `docs/CONTENT_EDITING_GUIDE.md`, `TASKS.md`, `pending_work.md` (modify) | Runbook and ticks. |
+| File                                                                    | Responsibility                                                                  |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `src/content/schema.ts` (modify)                                        | Add `categories` to `articleSummarySchema` (the contract).                      |
+| `src/content/mappers/index.ts` (modify)                                 | `mapArticle` emits `categories` and derives `tags` from it.                     |
+| `src/content/cms-source.ts` (modify)                                    | `getArticles` passes `categories` through.                                      |
+| `src/lib/insights.ts` (create)                                          | Pure helpers: `usedCategories`, `articlesInCategory`, `RESERVED_ARTICLE_SLUGS`. |
+| `src/cms/hooks/validators.ts` (modify)                                  | `validateArticle` refuses reserved slugs.                                       |
+| `src/components/content/article-list.tsx` (create)                      | The ruled article list, shared by the index and category pages.                 |
+| `src/components/content/category-filter.tsx` (create)                   | Links row: "All" plus each used category. Server component, no JS.              |
+| `src/app/(public)/(site)/insights/page.tsx` (modify)                    | Use the shared list and filter.                                                 |
+| `src/app/(public)/(site)/insights/category/[slug]/page.tsx` (create)    | Statically generated category listing.                                          |
+| `src/app/(public)/(site)/insights/[slug]/page.tsx` (modify)             | Updated date, category links, end-of-article actions.                           |
+| `src/lib/jsonld.ts` (modify)                                            | `articleLd` gains `author` and `mainEntityOfPage`.                              |
+| `tests/cms/unit/article-categories.test.ts` (create)                    | Mapper and helper tests.                                                        |
+| `tests/cms/unit/article-jsonld.test.ts` (create)                        | JSON-LD tests.                                                                  |
+| `tests/cms/insights.spec.ts` (modify)                                   | Category, nav, a11y and overflow checks with fixtures.                          |
+| `docs/CONTENT_EDITING_GUIDE.md`, `TASKS.md`, `pending_work.md` (modify) | Runbook and ticks.                                                              |
 
 ---
 
@@ -79,10 +79,12 @@ Failure modes the requirements imply but no existing test exercises, most likely
 The CMS Insights spec was written during a night with no database (blocker B-1) and never run. Find out what is really broken before building on it.
 
 **Files:**
+
 - Read: `tests/cms/insights.spec.ts`, `tests/e2e/insights-off.spec.ts`, `docs/cms/PROGRESS.md` (Phase 13)
 - Modify (only if a test fails for a real defect): the file the failure points to
 
 **Interfaces:**
+
 - Consumes: `.env.local` with `DATABASE_URI_TEST` (database name ends in `_test`); never `DATABASE_URI`.
 - Produces: a recorded baseline (pass/fail per spec) in the `TASKS.md` decisions log.
 
@@ -119,12 +121,14 @@ git commit -m "docs: record Insights baseline and CMS-only authoring decision"
 ### Task 2: Category data in the contract (Zod, mapper, CMS source)
 
 **Files:**
+
 - Modify: `src/content/schema.ts` (the `articleSummarySchema`, around line 251)
 - Modify: `src/content/mappers/index.ts` (`mapArticle`, around line 433)
 - Modify: `src/content/cms-source.ts` (`getArticles`, around line 295)
 - Test: `tests/cms/unit/article-categories.test.ts` (create)
 
 **Interfaces:**
+
 - Produces: `ArticleSummary.categories: { slug: string; name: string }[]` (published categories only). `tags: string[]` is kept and is always `categories.map(c => c.name)`. `Article` inherits `categories` because `articleSchema` extends the summary.
 - Consumed by: Tasks 4, 5, 6.
 
@@ -222,19 +226,19 @@ Keep the rest of the returned object exactly as it is.
 In `src/content/cms-source.ts` `getArticles`, destructure and parse `categories` too:
 
 ```ts
-      const { slug, title, summary, publishedAt, readingMinutes, categories, tags } = mapArticle(
-        doc,
-        draft,
-      );
-      return articleSummarySchema.parse({
-        slug,
-        title,
-        summary,
-        publishedAt,
-        readingMinutes,
-        categories,
-        tags,
-      });
+const { slug, title, summary, publishedAt, readingMinutes, categories, tags } = mapArticle(
+  doc,
+  draft,
+);
+return articleSummarySchema.parse({
+  slug,
+  title,
+  summary,
+  publishedAt,
+  readingMinutes,
+  categories,
+  tags,
+});
 ```
 
 - [ ] **Step 6: Run the tests and the typechecker**
@@ -259,11 +263,13 @@ git commit -m "feat(content): articles carry published categories as slug and na
 `/insights/category/[slug]` is a static segment and wins over `/insights/[slug]`, so an article called `category` could never be opened.
 
 **Files:**
+
 - Create: `src/lib/insights.ts`
 - Modify: `src/cms/hooks/validators.ts` (`validateArticle`, line 129)
 - Test: `tests/cms/unit/article-categories.test.ts` (append)
 
 **Interfaces:**
+
 - Produces: `RESERVED_ARTICLE_SLUGS: readonly string[]` from `@/lib/insights`.
 
 - [ ] **Step 1: Write the failing test** (append to the test file from Task 2)
@@ -311,12 +317,12 @@ export const RESERVED_ARTICLE_SLUGS: readonly string[] = ["category"];
 In `src/cms/hooks/validators.ts`, import `RESERVED_ARTICLE_SLUGS` from `../../lib/insights` and in `validateArticle`, before the body check:
 
 ```ts
-  const slug = typeof doc["slug"] === "string" ? doc["slug"] : "";
-  if (RESERVED_ARTICLE_SLUGS.includes(slug))
-    issues.push({
-      path: "slug",
-      message: `"${slug}" is reserved for the site. Choose a different web address.`,
-    });
+const slug = typeof doc["slug"] === "string" ? doc["slug"] : "";
+if (RESERVED_ARTICLE_SLUGS.includes(slug))
+  issues.push({
+    path: "slug",
+    message: `"${slug}" is reserved for the site. Choose a different web address.`,
+  });
 ```
 
 - [ ] **Step 5: Run the tests, then commit**
@@ -334,6 +340,7 @@ git commit -m "feat(cms): refuse the reserved article slug 'category'"
 ### Task 4: Category filter and category pages
 
 **Files:**
+
 - Modify: `src/lib/insights.ts`
 - Create: `src/components/content/article-list.tsx`, `src/components/content/category-filter.tsx`
 - Create: `src/app/(public)/(site)/insights/category/[slug]/page.tsx`
@@ -341,6 +348,7 @@ git commit -m "feat(cms): refuse the reserved article slug 'category'"
 - Test: `tests/cms/unit/article-categories.test.ts` (append)
 
 **Interfaces:**
+
 - Produces in `@/lib/insights`:
   - `type CategoryLink = { slug: string; name: string; count: number }`
   - `usedCategories(articles: ArticleSummary[]): CategoryLink[]` — categories on at least one article, sorted by name.
@@ -416,7 +424,9 @@ export function usedCategories(articles: ArticleSummary[]): CategoryLink[] {
 }
 
 export function articlesInCategory(articles: ArticleSummary[], slug: string): ArticleSummary[] {
-  return articles.filter((article) => article.categories.some((category) => category.slug === slug));
+  return articles.filter((article) =>
+    article.categories.some((category) => category.slug === slug),
+  );
 }
 ```
 
@@ -615,10 +625,12 @@ git commit -m "feat(insights): category filter and statically generated category
 This task is a critique-then-fix loop, not a code recipe, because "does it look designed" cannot be written as a test. The deliverable is a short written critique and the resulting edits.
 
 **Files:**
+
 - Modify: `src/components/content/article-list.tsx`, `src/components/content/category-filter.tsx`, `src/app/(public)/(site)/insights/[slug]/page.tsx`
 - Read first: `DESIGN.md` §0 to §6, `PRODUCT.md`, `src/components/primitives/prose.tsx`, `src/components/content/index-list.tsx`
 
 **Interfaces:**
+
 - Consumes: `Article.categories` (Task 2), `usedCategories` (Task 4).
 - Produces: no new exports.
 
@@ -708,11 +720,13 @@ git commit -m "feat(insights): design pass, updated date, category links, end-of
 `articleLd` currently has publisher and dates but no `author` and no `mainEntityOfPage`. Authorship must come from the About content, and never from a placeholder.
 
 **Files:**
+
 - Modify: `src/lib/jsonld.ts` (`articleLd`, line 116)
 - Modify: `src/app/(public)/(site)/insights/[slug]/page.tsx` (call site)
 - Test: `tests/cms/unit/article-jsonld.test.ts` (create)
 
 **Interfaces:**
+
 - Produces: `articleLd(article: Article, site: Site, about?: AboutContent)`. `author` is present only when `about` is given and `about.founder.name` is not a placeholder.
 - Consumes: `getAboutContent()` from `@/content`.
 
@@ -823,10 +837,12 @@ git commit -m "feat(seo): Article JSON-LD gains author and main entity"
 ### Task 7: Accessibility, navigation and responsive proof with fixtures
 
 **Files:**
+
 - Modify: `tests/cms/insights.spec.ts`
 - Read: `tests/cms/helpers.ts`, `tests/cms/global-setup.ts`
 
 **Interfaces:**
+
 - Consumes: the helpers already used in that file (`fullLogin`, `readAccount`, `setInsights`, `body`, `INSIGHTS_FILE`).
 
 - [ ] **Step 1: Extend the existing test with category, nav, axe and overflow checks**
@@ -901,6 +917,7 @@ git commit -m "test(insights): category, navigation, axe and overflow checks wit
 No agent action here turns Insights on. This task writes down what the owner must do and ticks what is finished.
 
 **Files:**
+
 - Modify: `docs/CONTENT_EDITING_GUIDE.md`, `TASKS.md`, `pending_work.md`
 
 - [ ] **Step 1: Add an "Insights" section to the editing guide**

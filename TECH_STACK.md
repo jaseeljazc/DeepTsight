@@ -12,30 +12,30 @@ Nothing outside this document may be added without approval. See `CLAUDE.md` §7
 What `node_modules` actually contains, as §8 asks. Where it differs from the planned version in the sections
 below, the installed version is what the code is written against.
 
-| Package                                              | Installed           | Planned below   | Note                                                                           |
-| ---------------------------------------------------- | ------------------- | --------------- | ------------------------------------------------------------------------------ |
-| `next`, `eslint-config-next`                         | 16.3.7              | 16.3.x          |                                                                                |
-| `react`, `react-dom`                                 | 19.3.0              | 19.2.x          | Newer minor                                                                    |
-| `typescript`                                         | 5.9.3               | 5.9.x           |                                                                                |
-| `tailwindcss`, `@tailwindcss/postcss`                | 4.3.3               | 4.3.x           |                                                                                |
-| `class-variance-authority`, `clsx`, `tailwind-merge` | 0.7.1, 2.1.1, 3.7.0 | 0.7.x, 2.x, 3.x |                                                                                |
-| `zod`                                                | **3.25.76**         | 4.x             | Code uses the Zod 3 API. Decide 3 or 4 before writing CMS schemas (audit M-18) |
-| `react-hook-form`, `@hookform/resolvers`             | 7.88.0, 5.9.1       | 7.x, 5.x        |                                                                                |
-| `lucide-react`                                       | **1.49.0**          | 0.5xx.x         | Major version 1; icons imported individually                                   |
-| `resend`                                             | 4.8.0               | 4.x             |                                                                                |
-| `@marsidev/react-turnstile`                          | 1.6.1               | 1.x             |                                                                                |
-| `@upstash/ratelimit`, `@upstash/redis`               | 2.2.0, 1.39.0       | listed          |                                                                                |
-| `eslint`, `eslint-plugin-jsx-a11y`                   | 9.39.5, 6.10.2      | 9.x, 6.x        |                                                                                |
-| `prettier`, `prettier-plugin-tailwindcss`            | 3.9.9, 0.6.14       | 3.x, 0.6.x      |                                                                                |
-| `@playwright/test`, `@axe-core/playwright`           | 1.63.0, 4.13.0      | 1.5x, 4.x       |                                                                                |
-| `tsx`                                                | 4.23.15             | —               | Runs the build scripts                                                         |
-| Node / pnpm                                          | 22 / 10.28.2        | 22 / 10.x       | A `package-lock.json` is also committed; pnpm's lockfile is the one used       |
-| `payload`, `@payloadcms/{next,ui,db-postgres,richtext-lexical}` | 3.90.2 (exact) | 3.x | Phase 2 CMS (branch `cms/phase-2`); peer range accepts next >=16.3.3 and react ^19 |
-| `graphql`                                            | 16.14.2 (exact)     | —               | Required peer of `payload`; GraphQL itself is disabled and has no route        |
-| `sharp`                                              | 0.35.5 (exact)      | —               | Payload image processing and the upload sanitiser                               |
-| `uqr`                                                | 0.1.3 (exact)       | —               | QR code for authenticator enrolment, rendered locally (no network)              |
-| `undici` (override)                                  | 7.29.1              | —               | `pnpm.overrides`: payload pins 7.29.0, which has two high advisories           |
-| PostgreSQL                                           | 17                  | —               | Local install for development; production host undecided (U-2)                  |
+| Package                                                         | Installed           | Planned below   | Note                                                                               |
+| --------------------------------------------------------------- | ------------------- | --------------- | ---------------------------------------------------------------------------------- |
+| `next`, `eslint-config-next`                                    | 16.3.7              | 16.3.x          |                                                                                    |
+| `react`, `react-dom`                                            | 19.3.0              | 19.2.x          | Newer minor                                                                        |
+| `typescript`                                                    | 5.9.3               | 5.9.x           |                                                                                    |
+| `tailwindcss`, `@tailwindcss/postcss`                           | 4.3.3               | 4.3.x           |                                                                                    |
+| `class-variance-authority`, `clsx`, `tailwind-merge`            | 0.7.1, 2.1.1, 3.7.0 | 0.7.x, 2.x, 3.x |                                                                                    |
+| `zod`                                                           | **3.25.76**         | 4.x             | Code uses the Zod 3 API. Decide 3 or 4 before writing CMS schemas (audit M-18)     |
+| `react-hook-form`, `@hookform/resolvers`                        | 7.88.0, 5.9.1       | 7.x, 5.x        |                                                                                    |
+| `lucide-react`                                                  | **1.49.0**          | 0.5xx.x         | Major version 1; icons imported individually                                       |
+| `resend`                                                        | 4.8.0               | 4.x             |                                                                                    |
+| `@marsidev/react-turnstile`                                     | 1.6.1               | 1.x             |                                                                                    |
+| `@upstash/ratelimit`, `@upstash/redis`                          | 2.2.0, 1.39.0       | listed          |                                                                                    |
+| `eslint`, `eslint-plugin-jsx-a11y`                              | 9.39.5, 6.10.2      | 9.x, 6.x        |                                                                                    |
+| `prettier`, `prettier-plugin-tailwindcss`                       | 3.9.9, 0.6.14       | 3.x, 0.6.x      |                                                                                    |
+| `@playwright/test`, `@axe-core/playwright`                      | 1.63.0, 4.13.0      | 1.5x, 4.x       |                                                                                    |
+| `tsx`                                                           | 4.23.15             | —               | Runs the build scripts                                                             |
+| Node / pnpm                                                     | 22 / 10.28.2        | 22 / 10.x       | A `package-lock.json` is also committed; pnpm's lockfile is the one used           |
+| `payload`, `@payloadcms/{next,ui,db-postgres,richtext-lexical}` | 3.90.2 (exact)      | 3.x             | Phase 2 CMS (branch `cms/phase-2`); peer range accepts next >=16.3.3 and react ^19 |
+| `graphql`                                                       | 16.14.2 (exact)     | —               | Required peer of `payload`; GraphQL itself is disabled and has no route            |
+| `sharp`                                                         | 0.35.5 (exact)      | —               | Payload image processing and the upload sanitiser                                  |
+| `uqr`                                                           | 0.1.3 (exact)       | —               | QR code for authenticator enrolment, rendered locally (no network)                 |
+| `undici` (override)                                             | 7.29.1              | —               | `pnpm.overrides`: payload pins 7.29.0, which has two high advisories               |
+| PostgreSQL                                                      | 17                  | —               | Local install for development; production host undecided (U-2)                     |
 
 **Planned but not installed:** `@tailwindcss/typography`, the Radix packages for shadcn
 `dialog`/`accordion`/`tabs`, `@next/mdx` or `next-mdx-remote`, `gray-matter`, `reading-time`,

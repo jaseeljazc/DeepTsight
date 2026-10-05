@@ -3,11 +3,13 @@
 Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-01
 
 ## Current state
+
 - Current phase: all phases done (0-14). CMS verified against PostgreSQL 17 on 2026-10-02 (see the last entry).
 - Last commit: see git log
 - Next step (owner): decisions in docs/cms/MORNING_REPORT.md section 4 (privacy wording, retention, hosting)
 
 ## Blockers
+
 - **B-1 Databases unreachable (all phases that need a database).** `.env.local` does not exist, so
   `DATABASE_URI`, `DATABASE_URI_TEST` and `DATABASE_URI_RESTORE` are not set (preflight step F not done).
   The Postgres 17 server answers on localhost:5432, but role `deeptsight_cms` needs a password.
@@ -16,25 +18,29 @@ Branch: `cms/phase-2` · Start commit: `b2092d6` (main) · Run started 2026-10-0
   code and tests are written but not run.
 
 ## Versions (installed, Phase 0)
+
 next 16.3.5 (the plan names 16.3.7; `package.json` allows ^16.3.5 and the lockfile pins 16.3.5) · react / react-dom 19.3.0 ·
 typescript 5.9.3 · zod 3.25.76 · node v22.16.0 · pnpm 10.28.2 · PostgreSQL client 17.4 (not on PATH)
 
 ## Test counts
-| Check | Baseline | Current |
-|---|---|---|
-| typecheck | pass | pass |
-| lint | pass | pass |
-| build (static) | pass (22 static pages) | pass |
-| Playwright E2E (prod build) | 24/24 | 28/28 (4 new: Insights off) |
-| axe (prod build) | 28/28 | 28/28 |
-| parity baseline vs itself | 0 differences (17 routes) | 0 |
-| CMS unit tests (`pnpm test:cms-unit`) | n/a | 28/28 |
-| CMS E2E (`pnpm test:cms`) | n/a | 14 written, all skipped (B-1) |
+
+| Check                                 | Baseline                  | Current                       |
+| ------------------------------------- | ------------------------- | ----------------------------- |
+| typecheck                             | pass                      | pass                          |
+| lint                                  | pass                      | pass                          |
+| build (static)                        | pass (22 static pages)    | pass                          |
+| Playwright E2E (prod build)           | 24/24                     | 28/28 (4 new: Insights off)   |
+| axe (prod build)                      | 28/28                     | 28/28                         |
+| parity baseline vs itself             | 0 differences (17 routes) | 0                             |
+| CMS unit tests (`pnpm test:cms-unit`) | n/a                       | 28/28                         |
+| CMS E2E (`pnpm test:cms`)             | n/a                       | 14 written, all skipped (B-1) |
 
 ## Dev-database backups
+
 - `.data/backups/deeptsight_cms_dev-20261002-121308.dump` (taken before the first migration; empty database).
 
 ## Phase log
+
 - **Phase 0** done. Baseline green; parity harness built; DB check blocked (B-1).
 - **Phase 1** partial. Payload 3.90.2 installed (all @payloadcms/* 3.90.2, sharp 0.35.5, graphql 16.14.2
   as a required peer). Public site moved under `(public)`; `global-not-found.tsx` for unmatched URLs.

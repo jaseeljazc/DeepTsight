@@ -4,12 +4,14 @@ The site is a work sample for a security consultancy (`CLAUDE.md` §2). The admi
 authenticated surface. Default to deny; fail closed.
 
 ## 1. Exposure
+
 - The admin lives at `/admin`; Payload's REST API at `/api`. GraphQL is disabled and has no routes.
 - `X-Robots-Tag: noindex, nofollow` and `Cache-Control: no-store` on `/admin/*` and `/api/*`.
 - In production, `robots.txt` adds `Disallow: /admin` and `Disallow: /api` (D-13).
 - Admin reachable from any network, protected by MFA (U-9 default; IP restriction is a morning question).
 
 ## 2. Users and authentication
+
 - `users` collection: email, name, roles (multi-select: `editor`, `approver`), plus the MFA fields
   in section 3. The founder will hold both roles.
 - Auth settings: max 5 login attempts with a 15-minute lock; token expiry 2 hours; cookies Secure
@@ -24,6 +26,7 @@ authenticated surface. Default to deny; fail closed.
 - Admin avatar: no Gravatar. No external requests from the admin UI.
 
 ## 3. MFA (TOTP)
+
 - First choice: a maintained Payload 3 TOTP plugin. Criteria: compatible with the installed version,
   released in the last 6 months, permissive licence, readable source, no network calls. Pin it exactly.
 - Otherwise, build it in house with `otplib`:
@@ -42,10 +45,12 @@ authenticated surface. Default to deny; fail closed.
   `NEXT_PUBLIC_ENV=production`. Put this in the morning report as urgent.
 
 ## 4. Field-level permissions
+
 `verified`, `disclosureApproved`, `approvedForPublic`, legal `status` and `insightsEnabled` can only
 be updated by users with the `approver` role and a valid MFA session. Editors see them read-only.
 
 ## 5. Audit log
+
 - `audit-log` collection: at, userId, userEmail, action (create, update, delete, publish, unpublish,
   login, login-failed where a hook exists, mfa-enrolled, flag-change), collection, docId, field, from, to.
 - Written only by server hooks through the Local API. API access: read for admins; create, update
@@ -54,15 +59,17 @@ be updated by users with the `approver` role and a valid MFA session. Editors se
 - Enquiry entries record id and action only, never personal data.
 
 ## 6. Headers and CSP
+
 - The public CSP and headers stay exactly as they are (parity compares them byte for byte).
 - Admin and API CSP, as a separate header rule:
   `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
-  img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';
-  form-action 'self'; base-uri 'self'; object-src 'none'`.
+img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';
+form-action 'self'; base-uri 'self'; object-src 'none'`.
   Add `'unsafe-eval'` only if the admin demonstrably fails without it, and log a D-entry.
 - Header rules must not overlap. Verify which headers each path actually receives.
 
 ## 7. Enquiry inbox (FR-44, PRIV-09)
+
 - Fields: name, workEmail, organisation, phone, enquiryTypeValue, enquiryTypeLabel (a copy taken at
   submission, so deleted types still display), message, consent (always true), submittedAt, read
   (default false), emailStatus (pending, sent, failed, simulated), emailError (short reason; never
@@ -80,6 +87,7 @@ be updated by users with the `approver` role and a valid MFA session. Editors se
 - Do not change the privacy notice. Draft suggested wording in the morning report only.
 
 ## 8. Media uploads
+
 - Allowed types: JPEG, PNG, WebP, AVIF. No SVG (script risk). Maximum 10 MB.
 - Verify the real type by decoding with sharp; reject anything sharp cannot decode.
 - Re-encode the original on upload: `sharp().rotate()`, same format, no metadata. This removes
@@ -89,10 +97,12 @@ be updated by users with the `approver` role and a valid MFA session. Editors se
   Rights fields are hidden from anonymous reads through field access.
 
 ## 9. Rich text (Insights)
+
 Render to React nodes only (SEC-07). Links: only `http`, `https`, `mailto` and internal paths;
 external links get `rel="noopener noreferrer"`. No raw HTML node, no iframes, no embeds.
 
 ## 10. Secrets, env and database access
+
 - New variables are added to the env rules and server schema (Phase 1). Errors name variables,
   never values. Nothing secret is logged, committed or written into reports.
 - The app connects as a least-privilege role that owns only its own database. Never a superuser.
@@ -103,6 +113,7 @@ external links get `rel="noopener noreferrer"`. No raw HTML node, no iframes, no
   echoed to the terminal or written to logs.
 
 ## 11. Backups
+
 - Development (Phase 12): `pg_dump --format=custom --no-owner`, stored in `.data/backups/` with a copy
   of the media directory. Restore is proven into the `_restore` database and verified by row counts.
 - Production (morning item): daily automated `pg_dump` (or the host's managed backups), a copy stored
@@ -110,4 +121,5 @@ external links get `rel="noopener noreferrer"`. No raw HTML node, no iframes, no
   restore before go-live (`TECH_STACK.md` §4).
 
 ## 12. Dependency hygiene
+
 Exact pins. `pnpm audit --prod` in Phase 14. Report high and critical findings with the affected package.

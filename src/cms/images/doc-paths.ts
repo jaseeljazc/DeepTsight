@@ -33,12 +33,7 @@ export function getPath(doc: unknown, path: string): unknown {
  * A copy of `doc` with one path set. Groups (objects) on the way are created when missing.
  * Arrays are copied (not mutated). A path through a primitive replaces it with a group.
  */
-function setPathRecurse(
-  current: unknown,
-  parts: string[],
-  index: number,
-  value: unknown
-): unknown {
+function setPathRecurse(current: unknown, parts: string[], index: number, value: unknown): unknown {
   if (index >= parts.length) return current;
 
   const key = parts[index];
@@ -92,7 +87,7 @@ function walk(
   after: unknown,
   prefix: string,
   out: string[],
-  isArrayElement: boolean = false
+  isArrayElement: boolean = false,
 ): void {
   if (empty(before) && empty(after)) return;
   if (Array.isArray(before) || Array.isArray(after)) {
