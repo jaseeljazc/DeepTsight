@@ -47,6 +47,8 @@ Grouped in site order. Each group heading names the page and links to it (opens 
 | Credential badges             | One spot per credential (`credentials.badge`), optional                                                                                               |
 | Share images                  | One spot per fixed route (`seo.<route>.ogImage`), optional                                                                                            |
 
+Credential badge spots are listed only for credentials that already have a badge; a badge is added from the credential's own record.
+
 The exact field paths above are verified against `src/cms` during planning; the spot registry (§5.1) is
 the authority.
 
@@ -76,8 +78,11 @@ upload date, approval status and _Delete_ (one confirmation).
 
 ### 3.1 Change image (put a different image in a spot)
 
-- Opens the CMS's standard upload drawer for the `media` collection: choose from the library or upload.
-  Badge spots keep their existing filter (issuer badges only).
+- Opens the page's own accessible picker (a `<dialog>` listing library images with search, plus an upload
+  form with the rights fields). Payload's upload drawer needs Payload's form context, which a custom admin
+  view does not have. Uploads go through Payload REST (`POST /api/media`), so the existing sanitising,
+  validation, hooks and audit apply. New uploads are created published and **not approved**; an approver
+  approves them in the Media section. Badge spots show issuer badges only.
 - Saves a **draft** of the owning document (global or collection document) with only that field changed.
 - The card then shows _Draft change waiting_ with **Preview** (`/preview?path=<page>`) and **Publish**.
 - **Publish publishes the whole owning document.** Before publishing, the page compares the draft with the
@@ -85,14 +90,16 @@ upload date, approval status and _Delete_ (one confirmation).
 - Publishing goes through the existing publish guard, so validation, placeholder and approval rules apply
   unchanged. Errors are shown on the card in words.
 
-### 3.2 Replace file (same image record, better photo)
+### 3.2 Replace file (better photo of the same thing)
 
 - Before upload, the dialog lists every spot that uses this image ("all of these will change").
-- Caption, alt text and rights record are kept; the editor confirms the rights still apply.
-- **To verify in the plan's first task:** how Payload 3.90 stores a new file on a drafts-enabled upload
-  collection, and whether the published version keeps serving the old file until publish. If it does not,
-  _Replace file_ instead creates a new media record (copying caption, alt, rights, focal point; approval
-  is **not** copied) and changes every spot to it as drafts. The editor sees the same result.
+- The upload creates a **new** media record (through `POST /api/media`) that copies caption, alt text,
+  decorative flag, type, source, licence, usage rights, attribution and focal point, and then re-points every
+  spot that used the old image to the new one as drafts. Approval is **not** copied: the new image is not
+  approved until an approver approves it.
+- The old image stays in the library as an unused image and can be deleted from the _Unused images_ tab.
+- Decision: Payload keeps an upload's file with its document, so replacing a file in place cannot keep the
+  old file live until publish. A new record is the safe design.
 
 ### 3.3 Set focal point
 
@@ -100,7 +107,9 @@ upload date, approval status and _Delete_ (one confirmation).
   Payload already provides on upload collections).
 - Live previews: every spot the image uses, in its real frame shapes on desktop and phone (and the share
   card for share images).
-- Saved as a draft of the media record, published with Publish like any other change.
+- Saved as a **draft** of the media record. The card shows _Draft change waiting_ with Preview (previews read
+  draft media) and **Publish image** (publishes the media record). Nothing about the live site changes until
+  then.
 - **Website:** add `focalX`/`focalY` to the figure contract (`src/content/schema.ts`, optional, default
   centre), map them in `src/content/mappers`, carry them in the static source and the import, and render
   them in `Figure`, index thumbnails and badges as `object-position`. Migration for any new columns.
@@ -181,7 +190,7 @@ A test walks the Payload config and fails if any `upload` field to `media` is mi
   (`DATABASE_URI_TEST`, name ending `_test`): page lists every spot; change creates a draft and leaves the
   live page unchanged; preview shows it; publish makes it live; publish warning lists other draft changes;
   replace file; focal point reaches the website; unused delete; in-use two-step delete and placeholder;
-  Media-section delete refused; publish blocked on an empty required spot; non-admin and password-only
+  Media-section delete refused; publish refused (Payload's own required-field check) on an empty required spot; non-admin and password-only
   sessions get nothing.
 - Existing gates: `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm test:a11y`, `pnpm cms:test`,
   `pnpm cms:parity`.
