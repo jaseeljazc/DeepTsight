@@ -15,15 +15,15 @@ publish, without opening any other section.
 
 ### Owner decisions (conversation, 2026-10-05)
 
-| #   | Decision                                                                                                                 |
-| --- | ------------------------------------------------------------------------------------------------------------------------ |
-| D1  | Build a new admin page (option 1), not a "used in" column on Media, not a restructured content model.                    |
-| D2  | "Change" offers both: pick a different image (library or upload) **and** replace the file of the current image.          |
-| D3  | Changes save as drafts on the owning section; Preview, then Publish. Same as every other CMS section.                    |
-| D4  | Framing is a **focal point** per image (not a fixed crop), with per-spot desktop and phone previews.                     |
-| D5  | Deleting an image that is in use is allowed after a warning listing every spot and a second confirmation.                |
-| D6  | Connect the per-page share image (Open Graph) to the website and show share images on the page.                          |
-| D7  | Code-drawn graphics (dithered power plant, globe, dot numerals, dot ramp, typeset wordmark) are out of scope and say so. |
+| #   | Decision                                                                                                                                                                     |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Build a new admin page (option 1), not a "used in" column on Media, not a restructured content model.                                                                        |
+| D2  | "Change" offers both: pick a different image (library or upload) **and** replace the current image with a new record that copies the details and re-points every spot to it. |
+| D3  | Section changes save as drafts on the owning section; Preview, then Publish. Focal point changes are drafts of the media record, published separately with Publish image.    |
+| D4  | Framing is a **focal point** per image (not a fixed crop), with per-spot desktop and phone previews.                                                                         |
+| D5  | Deleting an image that is in use is allowed after a warning listing every spot and a second confirmation.                                                                    |
+| D6  | Connect the per-page share image (Open Graph) to the website and show share images on the page.                                                                              |
+| D7  | Code-drawn graphics (dithered power plant, globe, dot numerals, dot ramp, typeset wordmark) are out of scope and say so.                                                     |
 
 ## 2. What the page shows
 
@@ -44,7 +44,7 @@ Grouped in site order. Each group heading names the page and links to it (opens 
 | Each service (one group each) | Main image (`services.media.hero`) · Detail image beside "3.0 Capability" (`services.media.detail`) · Share image (`services.seo.ogImage`, new field) |
 | Credentials page              | Image under the heading (`pages.credentials.figure`)                                                                                                  |
 | Contact page                  | Image beside the form (`pages.contact.figure`)                                                                                                        |
-| Credential badges             | One spot per credential (`credentials.badge`), optional                                                                                               |
+| Credential badges             | One spot per credential that already has a badge (`credentials.badge`), optional                                                                      |
 | Share images                  | One spot per fixed route (`seo.<route>.ogImage`), optional                                                                                            |
 
 Credential badge spots are listed only for credentials that already have a badge; a badge is added from the credential's own record.
@@ -58,10 +58,10 @@ the authority.
   square, share card 1200×630), using the image's focal point;
 - the location in words, e.g. "Home → Why DeepTsight section, beside the three pillars", and the frame shape;
 - status in words, never colour alone: _Approved for public use_ / _Not approved — hidden on the live site_,
-  _Draft change waiting_, _No image — shows a placeholder_ (required spots) or _No image — not shown_
-  (optional spots);
+  _Draft change waiting_, _No image — shows a placeholder_ (required spots), or _No image — not shown_
+  (optional spots, except badge spots which only appear if a badge exists);
 - actions: _Change image_, _Replace file_, _Set focal point_, _Open section_; _Preview_ and _Publish_ when a
-  draft is waiting.
+  section draft is waiting, or _Publish image_ when a focal point change is waiting.
 
 **Toolbar:** text search (matches location, caption, file name), filter _Needs attention_ (empty spot, not
 approved, draft waiting), filter by page.
@@ -137,7 +137,7 @@ upload date, approval status and _Delete_ (one confirmation).
   `[PLACEHOLDER] image removed — choose a new one`); the page lists them under _Needs attention_.
 - On the live site the image disappears immediately (the file is gone). The empty figure is omitted; no
   placeholder is ever shown on the live site. Affected pages are revalidated.
-- Publishing an owning document with an empty **required** spot is blocked with a message naming it.
+- Publishing an owning document with an empty **required** spot is refused by Payload's required-field check; the editor sees that error on the card or section.
 - Optional spots: a deleted badge leaves the credential without a badge; a deleted share image falls back
   to the generated share card. Neither blocks publishing.
 
@@ -166,7 +166,7 @@ A test walks the Payload config and fails if any `upload` field to `media` is mi
 - `src/cms/views/images.tsx` — server component; `isAdmin` check, loads spots, renders groups (pattern of
   `dashboard.tsx`). Registered in `payload.config.ts` under `admin.components.views` and added to the
   sidebar in `src/cms/nav/nav-groups.ts`.
-- Small client components for: the change/replace drawers, focal-point picker with previews, publish
+- Small client components for: the change/replace dialogs and picker, focal-point picker with previews, publish
   confirmation with diff summary, two-step delete dialog, search and filters.
 - Writes go through Payload's normal APIs from the admin session (drafts via the REST API with the
   existing CSRF origin rules), so access, hooks, audit and revalidation run unchanged. The in-use delete is
@@ -181,7 +181,7 @@ A test walks the Payload config and fails if any `upload` field to `media` is mi
   `src/lib/site-url.ts`), only when the image is approved for public use; otherwise the generated card.
   Service pages get the same `ogImage` field in their SEO group (new field, migration, mapper).
 - Empty required spot: `Figure` renders the marked placeholder outside production and nothing in
-  production; publish guard blocks it (`src/cms/hooks/validators.ts`).
+  production; publishing is refused by Payload's required-field check.
 
 ## 6. Testing and verification
 
@@ -205,6 +205,6 @@ and office address; bulk upload or bulk change.
 
 ## 8. Risks and open checks
 
-- Replace-file behaviour with drafts (§3.2) — verified first; fallback defined.
+- Replace-file behaviour (§3.2): confirmed that Payload keeps an upload's file with its document, so a new record is the safe design.
 - Payload's FK behaviour on deleting a referenced upload (set null vs error) — verified before building §4.
 - Memory on this machine: `pnpm build` has failed for lack of free RAM; builds and tests need other apps closed.
