@@ -9,6 +9,7 @@ import {
   collectionBeforeChange,
 } from "../hooks/lifecycle";
 import { validateMedia } from "../hooks/validators";
+import { refuseInUseDelete } from "../images/in-use";
 import { sanitizeUpload } from "../media/hook";
 import { GROUPS, contentAccess, contentVersions } from "./shared";
 
@@ -71,6 +72,7 @@ export const Media: CollectionConfig = {
     beforeOperation: [sanitizeUpload],
     beforeChange: [collectionBeforeChange("media", validateMedia)],
     afterChange: [collectionAfterChange("media", { flags: ["approvedForPublic"], tags })],
+    beforeDelete: [refuseInUseDelete],
     afterDelete: [collectionAfterDelete("media", tags)],
   },
   fields: [
