@@ -1,7 +1,6 @@
 import type { Payload } from "payload";
 import { mediaSrc } from "../../content/mappers";
-import { buildCard } from "./cards";
-import { getPath } from "./doc-paths";
+import { buildCard, hasBadgeInEitherCopy, mediaIdAt } from "./cards";
 import { asDoc, localApi, type Doc } from "./local-api";
 import { credentialSpot, globalSpots, serviceSpots } from "./spots";
 import type {
@@ -17,7 +16,11 @@ import type {
 /*
  * Reads every image owner (Home, About, Pages, Search results, each service, each credential)
  * twice, the latest draft and the published copy, plus every image record, and builds the cards.
- * Runs in the admin view and in the delete guard, always after an isAdmin check.
+ * Runs in the admin view and in the delete guard.
+ *
+ * Every read here uses `overrideAccess: true`, so it bypasses collection access rules. That is safe
+ * ONLY because every caller must first pass `isAdmin()` (signed in, with a verified second factor).
+ * Any new caller must do the same before calling these functions.
  */
 
 const text = (doc: Doc, key: string): string =>
@@ -113,13 +116,14 @@ async function loadOwners(payload: Payload): Promise<OwnerDocs[]> {
 
   const publishedCredentials = byId(await all(payload, "credentials", false));
   for (const doc of await all(payload, "credentials", true)) {
-    if (getPath(doc, "badge") === null || getPath(doc, "badge") === undefined) continue;
     const id = number(doc, "id", 0);
+    const published = publishedCredentials.get(id) ?? null;
+    if (!hasBadgeInEitherCopy(doc, published)) continue;
     owners.push({
       owner: { kind: "collection", slug: "credentials", id },
       adminHref: `/admin/collections/credentials/${id}`,
       latest: doc,
-      published: publishedCredentials.get(id) ?? null,
+      published,
       spots: [credentialSpot({ id, title: text(doc, "title") })],
     });
   }
@@ -150,11 +154,8 @@ function usedIds(owners: OwnerDocs[]): Set<number> {
   for (const { latest, published, spots } of owners) {
     for (const spot of spots) {
       for (const doc of [latest, published]) {
-        const value = getPath(doc, spot.path);
-        if (typeof value === "number") ids.add(value);
-        else if (value && typeof value === "object" && typeof (value as Doc)["id"] === "number") {
-          ids.add((value as Doc)["id"] as number);
-        }
+        const id = mediaIdAt(doc, spot.path);
+        if (id !== null) ids.add(id);
       }
     }
   }
@@ -203,11 +204,7 @@ export async function findUsages(payload: Payload, mediaId: number): Promise<Usa
   const usages: UsageView[] = [];
   for (const { latest, published, spots } of owners) {
     for (const spot of spots) {
-      const hit = [latest, published].some((doc) => {
-        const value = getPath(doc, spot.path);
-        const id = typeof value === "number" ? value : asDoc(value)["id"];
-        return id === mediaId;
-      });
+      const hit = [latest, published].some((doc) => mediaIdAt(doc, spot.path) === mediaId);
       if (hit)
         usages.push({ spotId: spot.id, group: spot.group, title: spot.title, where: spot.where });
     }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildCard, cardStatus, needsAttention } from "../../../src/cms/images/cards";
-import { globalSpots } from "../../../src/cms/images/spots";
+import { buildCard, cardStatus, hasBadgeInEitherCopy, needsAttention } from "../../../src/cms/images/cards";
+import { credentialSpot, globalSpots } from "../../../src/cms/images/spots";
 import type { ImageView } from "../../../src/cms/images/types";
 
 function image(id: number, over: Partial<ImageView> = {}): ImageView {
@@ -105,4 +105,26 @@ test("an unpublished focal point change is flagged", () => {
     adminHref: "/admin/globals/home",
   });
   assert.equal(card.focalPending, true);
+});
+
+test("a badge counts as present when it is in either copy of a credential", () => {
+  assert.equal(hasBadgeInEitherCopy({ badge: 1 }, { badge: 1 }), true);
+  assert.equal(hasBadgeInEitherCopy({ badge: 1 }, null), true);
+  assert.equal(hasBadgeInEitherCopy({ badge: null }, { badge: 1 }), true);
+  assert.equal(hasBadgeInEitherCopy({ badge: null }, { badge: null }), false);
+  assert.equal(hasBadgeInEitherCopy({}, null), false);
+});
+
+test("a badge cleared only in the draft is a pending change, with the published image still in use", () => {
+  const badgeSpot = credentialSpot({ id: 3, title: "Test credential" });
+  const card = buildCard(badgeSpot, {
+    latest: { badge: null },
+    published: { badge: 1 },
+    media: new Map(),
+    publishedMedia: new Map([[1, image(1)]]),
+    adminHref: "/admin/collections/credentials/3",
+  });
+  assert.equal(card.image, null);
+  assert.equal(card.pending, true);
+  assert.equal(needsAttention(card), true);
 });

@@ -12,13 +12,24 @@ export interface CardContext {
 }
 
 /** The id of the image at a path, whether the document holds an id or a populated record. */
-function mediaIdAt(doc: Doc | null, path: string): number | null {
+export function mediaIdAt(doc: Doc | null, path: string): number | null {
   const value = getPath(doc, path);
   if (typeof value === "number") return value;
   if (value && typeof value === "object" && typeof (value as Doc)["id"] === "number") {
     return (value as Doc)["id"] as number;
   }
   return null;
+}
+
+/**
+ * A credential has an image to track when its badge is set in the latest draft or in the published
+ * copy. A badge cleared only in a draft is still served by the live site until that is published.
+ */
+export function hasBadgeInEitherCopy(latest: Doc | null, published: Doc | null): boolean {
+  return [latest, published].some((doc) => {
+    const badge = getPath(doc, "badge");
+    return badge !== null && badge !== undefined;
+  });
 }
 
 export function buildCard(spot: SpotInstance, ctx: CardContext): SpotCard {
