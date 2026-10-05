@@ -19,6 +19,7 @@ export const ENQUIRY_TYPES_FILE = path.join(TEST_DATA_DIR, "cms-enquiry-types.js
 export const INBOX_FILE = path.join(TEST_DATA_DIR, "cms-inbox.json");
 export const INSIGHTS_FILE = path.join(TEST_DATA_DIR, "cms-insights.json");
 export const PREVIEW_FILE = path.join(TEST_DATA_DIR, "cms-preview.json");
+export const IMAGES_FILE = path.join(TEST_DATA_DIR, "cms-images.json");
 
 function run(script: string, args: string[]): void {
   const result = spawnSync(
@@ -41,6 +42,7 @@ export function prepareTestDb(): void {
     [INBOX_FILE, "inbox@example.com", "Test Inbox", "editor,approver"],
     [INSIGHTS_FILE, "insights@example.com", "Test Insights", "editor,approver"],
     [PREVIEW_FILE, "preview@example.com", "Test Preview", "editor,approver"],
+    [IMAGES_FILE, "images@example.com", "Test Images", "editor,approver"],
   ];
   for (const [file, email, name, roles] of accounts) {
     run(path.join("scripts", "cms", "create-admin.ts"), [
