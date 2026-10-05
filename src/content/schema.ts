@@ -287,6 +287,9 @@ export const mediaAssetSchema = z.object({
   usageRights: z.string(),
   attribution: z.string().optional(),
   approvedForPublic: z.boolean(),
+  /** Where the subject is, in percent from the top-left. The frame keeps this point in view. */
+  focalX: z.number().min(0).max(100).optional(),
+  focalY: z.number().min(0).max(100).optional(),
 });
 
 /** A reserved image position with no approved photograph yet. Renders as a marked frame. */

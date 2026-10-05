@@ -73,6 +73,8 @@ export function mapMedia(doc: Doc): FigureData {
     usageRights: str(doc, "usageRights"),
     attribution: opt(doc, "attribution"),
     approvedForPublic: bool(doc, "approvedForPublic"),
+    ...(typeof doc["focalX"] === "number" ? { focalX: doc["focalX"] } : {}),
+    ...(typeof doc["focalY"] === "number" ? { focalY: doc["focalY"] } : {}),
   };
 }
 

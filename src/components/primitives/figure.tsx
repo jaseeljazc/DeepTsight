@@ -1,6 +1,7 @@
 import * as React from "react";
 import Image from "next/image";
 import type { FigureData } from "@/content/types";
+import { objectPositionOf } from "@/lib/focal";
 import { cn } from "@/lib/utils";
 
 export type FigureAspect = "banner" | "wide" | "landscape" | "classic" | "portrait" | "square";
@@ -72,6 +73,7 @@ export function Figure({
               preload={preload}
               sizes={sizes}
               className="photo-grade object-cover"
+              style={{ objectPosition: objectPositionOf(figure) }}
             />
           </div>
         ) : (

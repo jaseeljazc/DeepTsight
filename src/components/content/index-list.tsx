@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import type { FigureData } from "@/content/types";
+import { objectPositionOf } from "@/lib/focal";
 import { cn } from "@/lib/utils";
 
 export type IndexListItem = {
@@ -85,6 +86,7 @@ export function IndexList({
                       fill
                       sizes="(min-width: 1024px) 12rem, 0px"
                       className="photo-grade object-cover"
+                      style={{ objectPosition: objectPositionOf(thumb) }}
                     />
                   </span>
                 )}
