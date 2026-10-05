@@ -25,12 +25,27 @@ test("with a share image the page uses it for Open Graph and Twitter", () => {
   assert.equal(tw.images?.[0]?.endsWith("/api/media/file/share.jpg"), true);
 });
 
-test("only an approved, populated image can be a share image", () => {
+test("only an approved, published, populated image can be a share image", () => {
   assert.equal(shareImageSrc(null), undefined);
   assert.equal(shareImageSrc(12), undefined); // an unpopulated id
   assert.equal(shareImageSrc({ filename: "a.jpg", approvedForPublic: false }), undefined);
   assert.equal(
-    shareImageSrc({ filename: "a.jpg", approvedForPublic: true }),
+    shareImageSrc({ filename: "a.jpg", approvedForPublic: true, _status: "published" }),
     "/api/media/file/a.jpg",
+  );
+});
+
+test("an approved image that is not published is not a share image (its file is not served)", () => {
+  assert.equal(
+    shareImageSrc({ filename: "a.jpg", approvedForPublic: true, _status: "draft" }),
+    undefined,
+  );
+  assert.equal(shareImageSrc({ filename: "a.jpg", approvedForPublic: true }), undefined);
+});
+
+test("a published image that is not approved is not a share image", () => {
+  assert.equal(
+    shareImageSrc({ filename: "a.jpg", approvedForPublic: false, _status: "published" }),
+    undefined,
   );
 });

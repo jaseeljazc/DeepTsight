@@ -49,11 +49,15 @@ export function mediaSrc(doc: Doc): string {
   return filename ? `${MEDIA_FILE_ROUTE}/${encodeURIComponent(filename)}` : "";
 }
 
-/** A share image's public path, only when the image is populated and approved for public use. */
+/**
+ * A share image's public path, only when the image is populated, approved for public use and
+ * published: on the live site only those files are served (readMedia in src/cms/collections/media.ts),
+ * so any other image would be a broken link preview.
+ */
 export function shareImageSrc(ref: unknown): string | undefined {
   if (!ref || typeof ref !== "object") return undefined;
   const doc = ref as Doc;
-  if (!bool(doc, "approvedForPublic")) return undefined;
+  if (!bool(doc, "approvedForPublic") || str(doc, "_status") !== "published") return undefined;
   return mediaSrc(doc) || undefined;
 }
 
@@ -90,6 +94,7 @@ export function mapService(doc: Doc): Service {
   const slug = str(doc, "slug");
   const seo = group(doc, "seo");
   const media = group(doc, "media");
+  const ogImage = shareImageSrc(seo["ogImage"]);
   return {
     slug,
     title: str(doc, "title"),
@@ -118,7 +123,7 @@ export function mapService(doc: Doc): Service {
       title: str(seo, "title"),
       description: str(seo, "description"),
       canonical: `/services/${slug}`,
-      ...(shareImageSrc(seo["ogImage"]) ? { ogImage: shareImageSrc(seo["ogImage"]) } : {}),
+      ...(ogImage ? { ogImage } : {}),
     },
     enabled: doc["enabled"] !== false,
     sortOrder: num(doc, "sortOrder", 100),
