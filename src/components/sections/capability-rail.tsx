@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import NextLink from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/layout/container";
@@ -9,13 +10,15 @@ import { Link } from "@/components/primitives/link";
 import { RailWiring } from "@/components/content/rail-wiring";
 import { DotNumeral } from "@/components/content/dot-numeral";
 import { ServiceIcon } from "@/components/content/service-icon";
-import type { HomeContent, Service, UiLabels } from "@/content/types";
+import { objectPositionOf } from "@/lib/focal";
+import type { FigureData, HomeContent, Service, UiLabels } from "@/content/types";
 
 export type CapabilityRailProps = {
   title: string;
   intro: string;
   capabilities: HomeContent["coreCapabilities"];
   services: Service[];
+  figures?: Record<string, FigureData>;
   /** The line on the common terminal where the disciplines meet. */
   convergenceLabel: string;
   /** "All services" and "View service" wording, from site.uiLabels. */
@@ -36,6 +39,7 @@ export function CapabilityRail({
   intro,
   capabilities,
   services,
+  figures,
   convergenceLabel,
   labels,
 }: CapabilityRailProps) {
@@ -72,6 +76,13 @@ export function CapabilityRail({
                 .flatMap((group) => group.outputs)
                 .slice(0, OUTPUTS_SHOWN);
               const standards = service.standards.slice(0, STANDARDS_SHOWN).join(" · ");
+              const fig = figures?.[service.media.hero];
+              const imageSrc =
+                fig?.kind === "image"
+                  ? fig.src
+                  : `/images/${service.media.hero.replace(/^img-/, "")}.jpg`;
+              const imageStyle =
+                fig?.kind === "image" ? { objectPosition: objectPositionOf(fig) } : undefined;
 
               return (
                 <li
@@ -103,6 +114,18 @@ export function CapabilityRail({
                       <ServiceIcon name={service.icon} />
                       <span>{title}</span>
                     </h3>
+                    {imageSrc && (
+                      <div className="aspect-landscape rounded-panel border-rule bg-ground-deep relative w-full overflow-hidden border">
+                        <Image
+                          src={imageSrc}
+                          alt=""
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                          className="photo-grade object-cover"
+                          style={imageStyle}
+                        />
+                      </div>
+                    )}
                     <p className="text-ink-700 text-small">{service.summary}</p>
                     <p className="text-ink-900 text-small border-rule border-t pt-4">{outcome}</p>
                     {outputs.length > 0 && (

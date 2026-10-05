@@ -40,6 +40,7 @@ export default async function HomePage() {
         intro={home.coreCapabilitiesIntro}
         capabilities={home.coreCapabilities}
         services={services}
+        figures={figures}
         convergenceLabel={home.whyDeepTsight.convergenceLabel}
         labels={site.uiLabels}
       />
