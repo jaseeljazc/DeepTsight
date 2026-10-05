@@ -45,9 +45,11 @@ import {
 } from "./mappers";
 import { asDoc, refs, rows, type Doc } from "./mappers/util";
 import {
+  REMOVED_FIGURE_ID,
   assertFigures,
   buildSite,
   enabledServices,
+  removedFigure,
   seoOrFallback,
   showPending,
   visibleCredentialGroups,
@@ -149,6 +151,9 @@ async function loadFigures(draft: boolean): Promise<Record<string, FigureData>> 
     const figure = figureSchema.parse(mapMedia(doc));
     figures[figure.id] = figure;
   }
+  // Previews and non-production builds show a marked placeholder where an image was removed. The
+  // live site leaves the spot out (the page gets no figure for the empty id).
+  if (draft || showPending()) figures[REMOVED_FIGURE_ID] = removedFigure();
   return figures;
 }
 

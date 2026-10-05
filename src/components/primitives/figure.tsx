@@ -123,7 +123,7 @@ function SlotFrame({ subject, promptRef, onDark }: SlotFrameProps) {
     >
       <span className="tag-plate self-start">[PLACEHOLDER] image</span>
       <span className="text-small sm:text-lead max-w-prose-sm font-sans">{subject}</span>
-      <span className="text-caption font-mono opacity-80">Brief: {promptRef}</span>
+      {promptRef && <span className="text-caption font-mono opacity-80">Brief: {promptRef}</span>}
     </div>
   );
 }

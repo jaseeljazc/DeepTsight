@@ -1,5 +1,13 @@
 import { navRoutes, seoEntrySchema, serviceSchema, siteSchema } from "./schema";
-import type { Credential, CredentialGroup, SeoEntry, Service, Site, SiteSource } from "./types";
+import type {
+  Credential,
+  CredentialGroup,
+  FigureData,
+  SeoEntry,
+  Service,
+  Site,
+  SiteSource,
+} from "./types";
 
 /*
  * Rules both content sources apply, so static and CMS mode behave identically (D-02, D-06).
@@ -23,13 +31,32 @@ export function buildSite(source: SiteSource): Site {
   return siteSchema.parse({ ...source, nav });
 }
 
-/** A reference to a figure that does not exist is a content error and fails the render. */
+/** The figure id a page gets when its image was removed (the field is empty). */
+export const REMOVED_FIGURE_ID = "";
+
+/** Shown in the admin, previews and non-production builds where an image was removed. */
+export function removedFigure(): FigureData {
+  return {
+    kind: "slot",
+    id: REMOVED_FIGURE_ID,
+    subject: "Image removed. Choose a new one in the CMS (Images on the website).",
+    caption: "Image removed.",
+    promptRef: "",
+  };
+}
+
+/**
+ * A reference to a figure that does not exist is a content error and fails the render. An empty
+ * reference is an image that was deleted: the page leaves it out on the live site and shows a
+ * marked placeholder elsewhere.
+ */
 export function assertFigures(
   ids: Record<string, string>,
   known: Set<string>,
   where: string,
 ): void {
   for (const [field, id] of Object.entries(ids)) {
+    if (id === REMOVED_FIGURE_ID) continue;
     if (!known.has(id)) throw new Error(`${where} ${field} refers to unknown figure "${id}".`);
   }
 }
