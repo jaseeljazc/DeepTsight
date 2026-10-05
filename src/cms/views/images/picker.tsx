@@ -3,8 +3,9 @@
 import * as React from "react";
 import { setSpotImage } from "../../images/actions";
 import type { SpotCard } from "../../images/types";
-import { Dialog, ErrorText } from "./dialog";
-import { createdId, libraryUrl, restError } from "./logic";
+import { Dialog, ErrorText, useDialogLock } from "./dialog";
+import { libraryUrl } from "./logic";
+import { UploadForm, type UploadResult } from "./picker-upload";
 import { useRun } from "./use-run";
 
 interface LibraryItem {
@@ -12,8 +13,6 @@ interface LibraryItem {
   caption: string | null;
   filename: string | null;
 }
-
-export const ACCEPT_IMAGES = "image/jpeg,image/png,image/webp,image/avif";
 
 /** Change image: choose from the library, or upload a new image, then save it as a draft. */
 export function PickerDialog({
@@ -43,6 +42,8 @@ function PickerBody({ card, onClose }: { card: SpotCard; onClose: () => void }) 
   const [uploading, setUploading] = React.useState(false);
   const [uploaded, setUploaded] = React.useState<string | null>(null);
   const errorId = React.useId();
+  const working = busy || uploading;
+  useDialogLock(working);
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -71,51 +72,22 @@ function PickerBody({ card, onClose }: { card: SpotCard; onClose: () => void }) 
     };
   }, [query, reload, card.badgeOnly, setError]);
 
-  async function upload(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+  function onUploadStart(problem: string | null) {
+    setError(problem);
     setUploaded(null);
-    const form = new FormData(event.currentTarget);
-    const file = form.get("file");
-    if (!(file instanceof File) || file.size === 0) {
-      setError("Choose an image file to upload.");
+    if (!problem) setUploading(true);
+  }
+
+  function onUploadDone(result: UploadResult) {
+    setUploading(false);
+    if (!result.ok) {
+      setError(result.message);
       return;
     }
-    const payload = {
-      kind: "image",
-      assetClass: card.badgeOnly ? "issuer-badge" : "photograph",
-      alt: String(form.get("alt") ?? ""),
-      caption: String(form.get("caption") ?? ""),
-      source: String(form.get("source") ?? ""),
-      licence: String(form.get("licence") ?? ""),
-      usageRights: String(form.get("usageRights") ?? ""),
-      _status: "published",
-    };
-    const body = new FormData();
-    body.append("file", file);
-    body.append("_payload", JSON.stringify(payload));
-    setUploading(true);
-    try {
-      const res = await fetch("/api/media", { method: "POST", body, credentials: "same-origin" });
-      const json: unknown = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(restError(json));
-        return;
-      }
-      const id = createdId(json);
-      if (id === null) {
-        setError("The upload finished but the image could not be found.");
-        return;
-      }
-      setChosen(id);
-      setQuery("");
-      setReload((n) => n + 1);
-      setUploaded("Uploaded and selected. Choose “Use this image” to put it in this spot.");
-    } catch {
-      setError("The upload did not reach the server. Nothing was saved.");
-    } finally {
-      setUploading(false);
-    }
+    setChosen(result.id);
+    setQuery("");
+    setReload((n) => n + 1);
+    setUploaded("Uploaded and selected. Choose “Use this image” to put it in this spot.");
   }
 
   async function use() {
@@ -158,66 +130,26 @@ function PickerBody({ card, onClose }: { card: SpotCard; onClose: () => void }) 
       </ul>
       {loaded && items.length === 0 && <p>No images match.</p>}
 
-      <details className="dts-img__upload">
-        <summary>Upload a new image</summary>
-        <form onSubmit={upload}>
-          <label className="dts-img__field">
-            <span>Image file (JPEG, PNG, WebP or AVIF, up to 10 MB)</span>
-            <input
-              name="file"
-              type="file"
-              accept={ACCEPT_IMAGES}
-              required
-              aria-describedby={describedBy}
-            />
-          </label>
-          <label className="dts-img__field">
-            <span>Alternative text (what the image shows)</span>
-            <input name="alt" required />
-          </label>
-          <label className="dts-img__field">
-            <span>Caption</span>
-            <input name="caption" required />
-          </label>
-          <label className="dts-img__field">
-            <span>Source (where it came from)</span>
-            <input name="source" required />
-          </label>
-          <label className="dts-img__field">
-            <span>Licence</span>
-            <input name="licence" required />
-          </label>
-          <label className="dts-img__field">
-            <span>Usage rights</span>
-            <input name="usageRights" required />
-          </label>
-          <p>
-            Never upload photographs that show a client site, plant, equipment tags or screens. A
-            new image is not approved until an approver approves it in Media.
-          </p>
-          <button
-            className="dts-img__btn"
-            type="submit"
-            disabled={uploading}
-            aria-describedby={describedBy}
-          >
-            {uploading ? "Uploading…" : "Upload"}
-          </button>
-        </form>
-      </details>
+      <UploadForm
+        badgeOnly={card.badgeOnly}
+        uploading={uploading}
+        describedBy={describedBy}
+        onStart={onUploadStart}
+        onDone={onUploadDone}
+      />
 
       <p className="dts-img__notice" role="status">
         {uploaded}
       </p>
       <ErrorText id={errorId} message={error} />
       <div className="dts-img__dialog-actions">
-        <button type="button" className="dts-img__btn" onClick={onClose}>
+        <button type="button" className="dts-img__btn" disabled={working} onClick={onClose}>
           Cancel
         </button>
         <button
           type="button"
           className="dts-img__btn dts-img__btn--primary"
-          disabled={chosen === null || busy || uploading}
+          disabled={chosen === null || working}
           aria-describedby={describedBy}
           onClick={use}
         >

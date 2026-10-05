@@ -5,7 +5,7 @@ import { objectPositionOf } from "../../../lib/focal";
 import { saveFocalPoint } from "../../images/actions";
 import { FRAME_LABEL, FRAME_RATIO } from "../../images/frames";
 import type { ImageView, SpotCard } from "../../images/types";
-import { Dialog, ErrorText } from "./dialog";
+import { Dialog, ErrorText, useDialogLock } from "./dialog";
 import { nudgePoint, pointFromPointer, setAxis, type Point } from "./logic";
 import { useRun } from "./use-run";
 
@@ -42,6 +42,7 @@ function FocalBody({
   onClose: () => void;
 }) {
   const { run, busy, error } = useRun();
+  useDialogLock(busy);
   const errorId = React.useId();
   const helpId = React.useId();
   const [point, setPoint] = React.useState<Point>({ x: image.focalX, y: image.focalY });
@@ -89,7 +90,7 @@ function FocalBody({
             type="range"
             min={0}
             max={100}
-            step={1}
+            step={0.1}
             value={point.x}
             aria-valuetext={`${across} percent across`}
             onChange={(event) => setPoint((p) => setAxis(p, "x", event.target.valueAsNumber))}
@@ -101,7 +102,7 @@ function FocalBody({
             type="range"
             min={0}
             max={100}
-            step={1}
+            step={0.1}
             value={point.y}
             aria-valuetext={`${down} percent down`}
             onChange={(event) => setPoint((p) => setAxis(p, "y", event.target.valueAsNumber))}
@@ -129,7 +130,7 @@ function FocalBody({
       </ul>
       <ErrorText id={errorId} message={error} />
       <div className="dts-img__dialog-actions">
-        <button type="button" className="dts-img__btn" onClick={onClose}>
+        <button type="button" className="dts-img__btn" disabled={busy} onClick={onClose}>
           Cancel
         </button>
         <button

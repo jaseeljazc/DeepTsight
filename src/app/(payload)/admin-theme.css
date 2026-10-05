@@ -1708,6 +1708,11 @@ html[data-theme="light"] .file-details__thumbnail img:focus-visible {
   align-items: baseline;
   margin: 0 0 16px;
 }
+.dts-img__group-head a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 .dts-img__group-head h2 {
   margin: 0;
   font-size: 18px;
@@ -1994,4 +1999,17 @@ html[data-theme="light"] .file-details__thumbnail img:focus-visible {
   min-height: 44px;
   margin: 0;
   accent-color: var(--dts-primary);
+}
+.dts-img__rights {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 0 0 16px;
+}
+.dts-img__rights dt {
+  font-weight: 600;
+}
+.dts-img__rights dd {
+  margin: 0;
+  overflow-wrap: anywhere;
 }

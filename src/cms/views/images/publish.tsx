@@ -3,7 +3,7 @@
 import * as React from "react";
 import { publishImage, publishSpot } from "../../images/actions";
 import type { SpotCard } from "../../images/types";
-import { Dialog, ErrorText } from "./dialog";
+import { Dialog, ErrorText, useDialogLock } from "./dialog";
 import { useRun } from "./use-run";
 
 const SHOWN = 8;
@@ -28,6 +28,7 @@ export function PublishDialog({
 /** Mounted only while the dialog is open, so an old error never shows on a new opening. */
 function PublishBody({ card, onClose }: { card: SpotCard; onClose: () => void }) {
   const { run, busy, error } = useRun();
+  useDialogLock(busy);
   const errorId = React.useId();
   const others = card.otherChanges;
 
@@ -63,7 +64,7 @@ function PublishBody({ card, onClose }: { card: SpotCard; onClose: () => void })
       {card.focalPending && <p>The focal point change for this image will be published as well.</p>}
       <ErrorText id={errorId} message={error} />
       <div className="dts-img__dialog-actions">
-        <button type="button" className="dts-img__btn" onClick={onClose}>
+        <button type="button" className="dts-img__btn" disabled={busy} onClick={onClose}>
           Cancel
         </button>
         <button

@@ -85,3 +85,25 @@ export function needsAttention(card: SpotCard): boolean {
   if (!card.image) return card.required;
   return !card.image.approved;
 }
+
+/**
+ * Whether the latest draft of a document holds this image at a path. Replace file re-points only
+ * these spots: one whose published copy still shows the old image but whose newer draft already
+ * points elsewhere is left alone, so the swap never undoes a draft choice the editor made.
+ */
+export function holdsImage(latest: Doc | null, path: string, mediaId: number): boolean {
+  return mediaIdAt(latest, path) === mediaId;
+}
+
+const placesText = (count: number): string => `${count} place${count === 1 ? "" : "s"}`;
+
+/** The Replace file outcome in words, including spots left unchanged because a draft moved on. */
+export function swapSummary(changed: number, skipped: number): string {
+  const head =
+    changed === 0
+      ? "Nothing used the old image."
+      : `${placesText(changed)} now use${changed === 1 ? "s" : ""} the new image as a draft.`;
+  if (skipped === 0) return head;
+  const verb = skipped === 1 ? "it already points" : "they already point";
+  return `${head} ${placesText(skipped)} left unchanged because ${verb} to another image in a draft.`;
+}

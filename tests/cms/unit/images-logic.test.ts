@@ -10,9 +10,11 @@ import {
   nudgePoint,
   pageNames,
   pointFromPointer,
+  publishLabel,
   restError,
   setAxis,
   siblingsOf,
+  uploadedOn,
 } from "../../../src/cms/views/images/logic";
 
 function image(id: number, over: Partial<ImageView> = {}): ImageView {
@@ -195,4 +197,17 @@ test("a slider sets one axis and ignores non-numbers", () => {
   assert.deepEqual(setAxis({ x: 50, y: 50 }, "x", 20), { x: 20, y: 50 });
   assert.deepEqual(setAxis({ x: 50, y: 50 }, "y", 140), { x: 50, y: 100 });
   assert.deepEqual(setAxis({ x: 50, y: 50 }, "y", Number.NaN), { x: 50, y: 50 });
+});
+
+test("the publish button names what goes live", () => {
+  assert.equal(publishLabel({ pending: true, focalPending: false }), "Publish");
+  assert.equal(publishLabel({ pending: true, focalPending: true }), "Publish");
+  assert.equal(publishLabel({ pending: false, focalPending: true }), "Publish image");
+});
+
+test("the upload date is in words, from the UTC date", () => {
+  assert.equal(uploadedOn("2026-10-03T09:15:00.000Z"), "Uploaded 3 Oct 2026");
+  assert.equal(uploadedOn("2026-01-31T23:59:59.000Z"), "Uploaded 31 Jan 2026");
+  assert.equal(uploadedOn(""), null);
+  assert.equal(uploadedOn("not a date"), null);
 });

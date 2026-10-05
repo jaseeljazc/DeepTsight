@@ -134,3 +134,24 @@ export function setAxis(point: Point, axis: "x" | "y", value: number): Point {
   if (!Number.isFinite(value)) return point;
   return { ...point, [axis]: tenth(clamp(value)) };
 }
+
+/**
+ * The card's publish button: "Publish" when the section has a draft (publishing makes the whole
+ * section live), "Publish image" when only the image's own focal point change is waiting.
+ */
+export function publishLabel(card: Pick<SpotCard, "pending" | "focalPending">): string {
+  return card.pending ? "Publish" : "Publish image";
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/**
+ * "Uploaded 3 Oct 2026" from an ISO timestamp, or null when there is none. Uses the UTC date so
+ * the server and browser render the same text whatever their time zones.
+ */
+export function uploadedOn(iso: string): string | null {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return `Uploaded ${date.getUTCDate()} ${MONTHS[date.getUTCMonth()] ?? ""} ${date.getUTCFullYear()}`;
+}

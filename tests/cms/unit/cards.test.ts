@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildCard, cardStatus, hasBadgeInEitherCopy, needsAttention } from "../../../src/cms/images/cards";
+import {
+  buildCard,
+  cardStatus,
+  hasBadgeInEitherCopy,
+  holdsImage,
+  needsAttention,
+  swapSummary,
+} from "../../../src/cms/images/cards";
 import { credentialSpot, globalSpots } from "../../../src/cms/images/spots";
 import type { ImageView } from "../../../src/cms/images/types";
 
@@ -127,4 +134,27 @@ test("a badge cleared only in the draft is a pending change, with the published 
   assert.equal(card.image, null);
   assert.equal(card.pending, true);
   assert.equal(needsAttention(card), true);
+});
+
+test("holdsImage reads the latest draft only, as an id or a populated record", () => {
+  assert.equal(holdsImage({ media: { why: 4 } }, "media.why", 4), true);
+  assert.equal(holdsImage({ media: { why: { id: 4 } } }, "media.why", 4), true);
+  // Published with 4 but the newer draft points at 9: not held, so Replace leaves it alone.
+  assert.equal(holdsImage({ media: { why: 9 } }, "media.why", 4), false);
+  assert.equal(holdsImage({ media: { why: null } }, "media.why", 4), false);
+  assert.equal(holdsImage(null, "media.why", 4), false);
+});
+
+test("swapSummary counts changed and skipped places in words", () => {
+  assert.equal(swapSummary(0, 0), "Nothing used the old image.");
+  assert.equal(swapSummary(1, 0), "1 place now uses the new image as a draft.");
+  assert.equal(swapSummary(3, 0), "3 places now use the new image as a draft.");
+  assert.equal(
+    swapSummary(2, 1),
+    "2 places now use the new image as a draft. 1 place left unchanged because it already points to another image in a draft.",
+  );
+  assert.equal(
+    swapSummary(0, 2),
+    "Nothing used the old image. 2 places left unchanged because they already point to another image in a draft.",
+  );
 });

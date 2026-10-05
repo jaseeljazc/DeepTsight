@@ -5,6 +5,7 @@ import { APIError, getPayload, ValidationError, type Payload, type PayloadReques
 import config from "@payload-config";
 import { isAdmin } from "../access";
 import { setPath } from "./doc-paths";
+import { holdsImage, swapSummary } from "./cards";
 import { ALLOW_IN_USE_DELETE } from "./in-use";
 import { findUsages } from "./data";
 import { asDoc, localApi, type Doc } from "./local-api";
@@ -229,22 +230,34 @@ export async function publishImage(mediaInput: number): Promise<ActionResult> {
   }
 }
 
-/** Points every spot that uses `oldId` at `newId`, as drafts (used after Replace file). */
+/**
+ * Points every spot whose LATEST draft holds `oldId` at `newId`, as drafts (used after Replace
+ * file). A spot that still shows the old image only in its published copy, because a newer draft
+ * already chose another image, is left unchanged and counted in the message.
+ */
 export async function swapImage(oldInput: number, newInput: number): Promise<ActionResult> {
   const oldId = parseId(oldInput);
   const newId = parseId(newInput);
   if (oldId === null || newId === null) return refuse("That image was not found.");
   if (oldId === newId) return refuse("The new image is the same as the old one.");
   let context: Context;
-  let spots: { owner: OwnerRef; path: string }[];
+  const spots: { owner: OwnerRef; path: string }[] = [];
+  let skipped = 0;
   try {
     context = await adminContext();
     const replacement = await readMedia(context.payload, newId);
     // Spot ids encode owner and path; anything that does not decode to a registered spot is skipped.
-    spots = (await findUsages(context.payload, oldId))
+    const candidates = (await findUsages(context.payload, oldId))
       .map((usage) => decodeSpotId(usage.spotId))
       .filter((spot) => spot !== null);
-    if (spots.length === 0) return { ok: true, message: "Nothing used the old image." };
+    for (const spot of candidates) {
+      if (holdsImage(await readLatest(context.payload, spot.owner), spot.path, oldId)) {
+        spots.push(spot);
+      } else {
+        skipped += 1;
+      }
+    }
+    if (spots.length === 0) return { ok: true, message: swapSummary(0, skipped) };
     // Check every spot before writing any, so a mismatch changes nothing.
     for (const { owner, path } of spots) {
       const problem = imageProblemFor(replacement, owner, path);
@@ -259,6 +272,11 @@ export async function swapImage(oldInput: number, newInput: number): Promise<Act
   try {
     for (const { owner, path } of spots) {
       const latest = await readLatest(context.payload, owner);
+      // Re-checked at write time: a draft saved meanwhile may have moved this spot on.
+      if (!holdsImage(latest, path, oldId)) {
+        skipped += 1;
+        continue;
+      }
       await save(context, owner, setPath(latest, path, newId), "draft");
       saved += 1;
     }
@@ -269,7 +287,7 @@ export async function swapImage(oldInput: number, newInput: number): Promise<Act
       `The swap stopped part way${detail}. ${places(saved)} may already use the new image as a draft; check the Images page before trying again.`,
     );
   }
-  return { ok: true, message: `${places(spots.length)} now use the new image as a draft.` };
+  return { ok: true, message: swapSummary(saved, skipped) };
 }
 
 export async function deleteImage(

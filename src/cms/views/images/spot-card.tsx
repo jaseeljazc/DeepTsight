@@ -8,6 +8,7 @@ import type { SpotCard } from "../../images/types";
 import { previewUrl } from "../../preview-url";
 import { DeleteDialog } from "./delete";
 import { FocalDialog } from "./focal";
+import { publishLabel } from "./logic";
 import { PickerDialog } from "./picker";
 import { PublishDialog } from "./publish";
 import { ReplaceDialog } from "./replace";
@@ -87,7 +88,8 @@ export function SpotCardView({ card, siblings }: { card: SpotCard; siblings: Spo
             className="dts-img__btn dts-img__btn--primary"
             onClick={() => setOpen("publish")}
           >
-            Publish<span className="dts-sr-only">: {card.title}</span>
+            {publishLabel(card)}
+            <span className="dts-sr-only">: {card.title}</span>
           </button>
         )}
         <a className="dts-img__btn" href={card.adminHref}>

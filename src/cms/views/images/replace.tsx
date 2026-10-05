@@ -3,9 +3,9 @@
 import * as React from "react";
 import { swapImage } from "../../images/actions";
 import type { ImageView, SpotCard } from "../../images/types";
-import { Dialog, ErrorText } from "./dialog";
-import { createdId, restError } from "./logic";
-import { ACCEPT_IMAGES } from "./picker";
+import { useAnnounce } from "./announce";
+import { Dialog, ErrorText, useAlive, useDialogLock } from "./dialog";
+import { ACCEPT_IMAGES, postMedia } from "./picker-upload";
 import { useRun } from "./use-run";
 
 /** Replace file: upload a new file with the same rights record and point every spot at it. */
@@ -27,6 +27,8 @@ export function ReplaceDialog({
   );
 }
 
+const orBlank = (value: string): string => value.trim() || "(not recorded)";
+
 /** Mounted only while the dialog is open, so every opening starts clean. */
 function ReplaceBody({
   card,
@@ -38,42 +40,20 @@ function ReplaceBody({
   onClose: () => void;
 }) {
   const { run, busy, error, setError } = useRun();
+  const announce = useAnnounce();
+  const alive = useAlive();
   const [uploading, setUploading] = React.useState(false);
+  const controller = React.useRef<AbortController | null>(null);
   const errorId = React.useId();
+  const rightsId = React.useId();
+  const working = busy || uploading;
+  useDialogLock(working);
+  // Closing the dialog cancels an upload still in flight.
+  React.useEffect(() => () => controller.current?.abort(), []);
+
+  // The swap changes the spots whose latest draft uses this image: this one and sharedWith.
   const places = [`${card.group} → ${card.title}`, ...card.sharedWith];
   const describedBy = error ? errorId : undefined;
-
-  async function upload(file: File): Promise<number | null> {
-    const body = new FormData();
-    body.append("file", file);
-    body.append(
-      "_payload",
-      JSON.stringify({
-        kind: "image",
-        ...current.meta,
-        focalX: current.focalX,
-        focalY: current.focalY,
-        _status: "published",
-      }),
-    );
-    setUploading(true);
-    try {
-      const res = await fetch("/api/media", { method: "POST", body, credentials: "same-origin" });
-      const json: unknown = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(restError(json));
-        return null;
-      }
-      const id = createdId(json);
-      if (id === null) setError("The upload finished but the new image could not be found.");
-      return id;
-    } catch {
-      setError("The upload did not reach the server. Nothing was saved.");
-      return null;
-    } finally {
-      setUploading(false);
-    }
-  }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -85,11 +65,37 @@ function ReplaceBody({
       return;
     }
     if (form.get("rights") !== "on") {
-      setError("Confirm the usage rights still apply to the new photograph.");
+      setError("Confirm the source, licence and usage rights still apply to the new image.");
       return;
     }
-    const newId = await upload(file);
-    if (newId === null) return;
+    controller.current = new AbortController();
+    setUploading(true);
+    const upload = await postMedia(
+      file,
+      {
+        kind: "image",
+        ...current.meta,
+        focalX: current.focalX,
+        focalY: current.focalY,
+        _status: "published",
+      },
+      controller.current.signal,
+    );
+    setUploading(false);
+    if (!alive.current) {
+      // The dialog was forced closed mid-upload: change nothing, but say what happened.
+      if (upload.ok) {
+        announce(
+          "The new file was uploaded, but the dialog was closed, so no spot was changed. It is listed under Unused images.",
+        );
+      }
+      return;
+    }
+    if (!upload.ok) {
+      setError(upload.message);
+      return;
+    }
+    const newId = upload.id;
     const result = await run(() => swapImage(current.id, newId));
     if (result.ok) onClose();
   }
@@ -106,6 +112,14 @@ function ReplaceBody({
         The caption, alternative text and rights record are copied. The new image is not approved
         until an approver approves it.
       </p>
+      <dl className="dts-img__rights" id={rightsId}>
+        <dt>Source</dt>
+        <dd>{orBlank(current.meta.source)}</dd>
+        <dt>Licence</dt>
+        <dd>{orBlank(current.meta.licence)}</dd>
+        <dt>Usage rights</dt>
+        <dd>{orBlank(current.meta.usageRights)}</dd>
+      </dl>
       <form onSubmit={submit}>
         <label className="dts-img__field">
           <span>New image file</span>
@@ -118,19 +132,19 @@ function ReplaceBody({
           />
         </label>
         <label className="dts-img__check">
-          <input name="rights" type="checkbox" aria-describedby={describedBy} />
-          <span>The source, licence and usage rights above still apply to this photograph.</span>
+          <input
+            name="rights"
+            type="checkbox"
+            aria-describedby={[rightsId, describedBy].filter(Boolean).join(" ")}
+          />
+          <span>The source, licence and usage rights above still apply to the new image.</span>
         </label>
         <ErrorText id={errorId} message={error} />
         <div className="dts-img__dialog-actions">
-          <button type="button" className="dts-img__btn" onClick={onClose}>
+          <button type="button" className="dts-img__btn" disabled={working} onClick={onClose}>
             Cancel
           </button>
-          <button
-            type="submit"
-            className="dts-img__btn dts-img__btn--primary"
-            disabled={busy || uploading}
-          >
+          <button type="submit" className="dts-img__btn dts-img__btn--primary" disabled={working}>
             {uploading ? "Uploading…" : "Replace file (save as draft)"}
           </button>
         </div>

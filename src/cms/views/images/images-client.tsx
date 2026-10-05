@@ -5,7 +5,7 @@ import { needsAttention } from "../../images/cards";
 import type { ImagesPageData } from "../../images/types";
 import { Announcer } from "./announce";
 import { DeleteDialog } from "./delete";
-import { filterCards, groupCards, pageNames, siblingsOf } from "./logic";
+import { filterCards, groupCards, pageNames, siblingsOf, uploadedOn } from "./logic";
 import { SpotCardView } from "./spot-card";
 
 type Tab = "used" | "unused";
@@ -149,7 +149,7 @@ export function ImagesClient({ data }: { data: ImagesPageData }) {
           <p>Every image in the library is in use.</p>
         ) : (
           <ul className="dts-img__grid">
-            {data.unused.map(({ image }) => (
+            {data.unused.map(({ image, createdAt }) => (
               <li key={image.id} className="dts-img__card">
                 <div className="dts-img__frame" style={{ aspectRatio: "3 / 2" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -157,6 +157,7 @@ export function ImagesClient({ data }: { data: ImagesPageData }) {
                 </div>
                 <h3>{image.caption || image.filename}</h3>
                 <p className="dts-img__where">{image.filename}</p>
+                {uploadedOn(createdAt) && <p className="dts-img__where">{uploadedOn(createdAt)}</p>}
                 <ul className="dts-img__status" aria-label="Status">
                   <li data-tone={image.approved ? "ok" : "warn"}>
                     {image.approved

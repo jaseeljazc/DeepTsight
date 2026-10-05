@@ -3,7 +3,7 @@
 import * as React from "react";
 import { deleteImage } from "../../images/actions";
 import type { ImageView, UsageView } from "../../images/types";
-import { Dialog, ErrorText } from "./dialog";
+import { Dialog, ErrorText, useDialogLock } from "./dialog";
 import { useRun } from "./use-run";
 
 /*
@@ -37,9 +37,12 @@ function DeleteBody({ image, onClose }: { image: ImageView; onClose: () => void 
   const [usages, setUsages] = React.useState<UsageView[] | null>(null);
   const [understood, setUnderstood] = React.useState(false);
   const errorId = React.useId();
+  const warningId = React.useId();
+  const placesId = React.useId();
   const checkRef = React.useRef<HTMLInputElement>(null);
 
   const inUse = usages !== null;
+  useDialogLock(busy);
 
   // The Delete button disables when the warning appears; move focus to the tick-box it waits on.
   React.useEffect(() => {
@@ -54,20 +57,26 @@ function DeleteBody({ image, onClose }: { image: ImageView; onClose: () => void 
 
   return (
     <>
-      {!inUse && <p>This permanently deletes the image and its file. It cannot be undone.</p>}
+      {!inUse && (
+        <p>
+          Deleting removes the image and its file for good; it cannot be undone. If the image is
+          used anywhere on the website, you are shown where and asked to confirm before anything is
+          deleted.
+        </p>
+      )}
       {usages !== null && (
         <>
           <p>
             <strong>This image is in use.</strong> It appears here:
           </p>
-          <ul>
+          <ul id={placesId}>
             {usages.map((u) => (
               <li key={u.spotId}>
                 {u.group} → {u.title}: {u.where}
               </li>
             ))}
           </ul>
-          <p>
+          <p id={warningId}>
             If you delete it, those spots are left without an image. On the live site the image
             disappears straight away. The pages cannot be published again until you choose a new
             image.
@@ -77,6 +86,7 @@ function DeleteBody({ image, onClose }: { image: ImageView; onClose: () => void 
               ref={checkRef}
               type="checkbox"
               checked={understood}
+              aria-describedby={`${placesId} ${warningId}`}
               onChange={(event) => setUnderstood(event.target.checked)}
             />
             <span>I understand these spots will be left without an image</span>
@@ -85,7 +95,7 @@ function DeleteBody({ image, onClose }: { image: ImageView; onClose: () => void 
       )}
       <ErrorText id={errorId} message={error} />
       <div className="dts-img__dialog-actions">
-        <button type="button" className="dts-img__btn" onClick={onClose}>
+        <button type="button" className="dts-img__btn" disabled={busy} onClick={onClose}>
           Cancel
         </button>
         <button
