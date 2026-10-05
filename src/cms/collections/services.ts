@@ -139,7 +139,7 @@ export const Services: CollectionConfig = {
         mediaField("detail", "Detail image", "Shown beside part 3.0 Capability."),
       ],
     },
-    seoGroup(),
+    seoGroup("seo", "Search result", { shareImage: true }),
     {
       name: "enabled",
       type: "checkbox",

@@ -351,7 +351,7 @@ export async function getLegalPage(slug: LegalSlug): Promise<LegalPage | null> {
 }
 
 export async function getSeo(route: string): Promise<SeoEntry> {
-  const entries = await read(["seo"], ["seo"], async (draft) =>
+  const entries = await read(["seo"], ["seo", "media"], async (draft) =>
     mapSeo(await findGlobal("seo", draft, 1)),
   );
   return seoOrFallback(entries[route], route);

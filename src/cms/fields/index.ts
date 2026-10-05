@@ -118,7 +118,11 @@ export function mediaField(
 }
 
 /** Title and description for search results. Length hints only; nothing is blocked. */
-export function seoGroup(name = "seo", label = "Search result"): GroupField {
+export function seoGroup(
+  name = "seo",
+  label = "Search result",
+  options: { shareImage?: boolean } = {},
+): GroupField {
   return {
     name,
     label,
@@ -142,6 +146,16 @@ export function seoGroup(name = "seo", label = "Search result"): GroupField {
         required: true,
         admin: { description: "Aim for 160 characters or fewer." },
       },
+      ...(options.shareImage
+        ? [
+            mediaField(
+              "ogImage",
+              "Share image",
+              "Optional picture shown when a link to this page is shared. Only approved images are used.",
+              { required: false },
+            ),
+          ]
+        : []),
     ],
   };
 }

@@ -18,6 +18,7 @@ import {
 import { FinalCta } from "@/components/sections/final-cta";
 import { ServiceIcon } from "@/components/content/service-icon";
 import { lowerFirst } from "@/lib/utils";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 
@@ -52,20 +53,7 @@ function blockLayout(index: number) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeo("/services");
-  return {
-    title: seo.title,
-    description: seo.description,
-    alternates: {
-      canonical: seo.canonical,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      url: seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(await getSeo("/services"));
 }
 
 export default async function ServicesPage() {

@@ -49,6 +49,14 @@ export function mediaSrc(doc: Doc): string {
   return filename ? `${MEDIA_FILE_ROUTE}/${encodeURIComponent(filename)}` : "";
 }
 
+/** A share image's public path, only when the image is populated and approved for public use. */
+export function shareImageSrc(ref: unknown): string | undefined {
+  if (!ref || typeof ref !== "object") return undefined;
+  const doc = ref as Doc;
+  if (!bool(doc, "approvedForPublic")) return undefined;
+  return mediaSrc(doc) || undefined;
+}
+
 export function mapMedia(doc: Doc): FigureData {
   const id = figureKey(doc);
   if (str(doc, "kind") === "slot") {
@@ -110,6 +118,7 @@ export function mapService(doc: Doc): Service {
       title: str(seo, "title"),
       description: str(seo, "description"),
       canonical: `/services/${slug}`,
+      ...(shareImageSrc(seo["ogImage"]) ? { ogImage: shareImageSrc(seo["ogImage"]) } : {}),
     },
     enabled: doc["enabled"] !== false,
     sortOrder: num(doc, "sortOrder", 100),
@@ -321,12 +330,12 @@ export function mapSeo(doc: Doc): Record<string, SeoEntry> {
   const entries: Record<string, SeoEntry> = {};
   for (const [route, key] of Object.entries(SEO_ROUTES)) {
     const entry = group(doc, key);
-    const ogImage = entry["ogImage"];
+    const ogImage = shareImageSrc(entry["ogImage"]);
     entries[route] = {
       title: str(entry, "title"),
       description: str(entry, "description"),
       canonical: route,
-      ...(ogImage && typeof ogImage === "object" ? { ogImage: mediaSrc(ogImage as Doc) } : {}),
+      ...(ogImage ? { ogImage } : {}),
     };
   }
   return entries;

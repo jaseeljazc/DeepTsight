@@ -13,24 +13,12 @@ import { Link } from "@/components/primitives/link";
 import { SpecBlock } from "@/components/primitives/spec-block";
 import { MarkedText, isPlaceholder } from "@/components/primitives/placeholder";
 import { EnquiryForm } from "@/components/forms/enquiry-form";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeo("/contact");
-  return {
-    title: seo.title,
-    description: seo.description,
-    alternates: {
-      canonical: seo.canonical,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      url: seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(await getSeo("/contact"));
 }
 
 export default async function ContactPage() {

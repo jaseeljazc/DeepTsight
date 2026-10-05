@@ -10,24 +10,12 @@ import { MarkedText, isPlaceholder } from "@/components/primitives/placeholder";
 import { FinalCta } from "@/components/sections/final-cta";
 import { personLd } from "@/lib/jsonld";
 import { JsonLd } from "@/components/seo/json-ld";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeo("/about");
-  return {
-    title: seo.title,
-    description: seo.description,
-    alternates: {
-      canonical: seo.canonical,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      url: seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(await getSeo("/about"));
 }
 
 export default async function AboutPage() {

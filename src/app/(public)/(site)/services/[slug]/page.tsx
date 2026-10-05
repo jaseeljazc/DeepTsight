@@ -5,6 +5,7 @@ import { ServiceTemplate } from "@/components/content/service-template";
 import { serviceLd, breadcrumbLd } from "@/lib/jsonld";
 import { JsonLd } from "@/components/seo/json-ld";
 import { absoluteUrl } from "@/lib/site-url";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 
@@ -29,19 +30,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     };
   }
 
-  return {
-    title: service.seo.title,
-    description: service.seo.description,
-    alternates: {
-      canonical: service.seo.canonical,
-    },
-    openGraph: {
-      title: service.seo.title,
-      description: service.seo.description,
-      url: service.seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(service.seo);
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {

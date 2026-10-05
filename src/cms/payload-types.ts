@@ -264,6 +264,10 @@ export interface Service {
      * Aim for 160 characters or fewer.
      */
     description: string;
+    /**
+     * Optional picture shown when a link to this page is shared. Only approved images are used. Never upload photographs that show a client site, plant, equipment tags or screens (CLAUDE.md §6).
+     */
+    ogImage?: (number | null) | Media;
   };
   /**
    * Off: the service disappears from the site, menus, related links and the sitemap.
@@ -871,6 +875,7 @@ export interface ServicesSelect<T extends boolean = true> {
     | {
         title?: T;
         description?: T;
+        ogImage?: T;
       };
   enabled?: T;
   sortOrder?: T;

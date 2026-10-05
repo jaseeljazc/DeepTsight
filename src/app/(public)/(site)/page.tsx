@@ -11,24 +11,12 @@ import { PerthContext } from "@/components/sections/perth-context";
 import { FinalCta } from "@/components/sections/final-cta";
 import { organizationLd, localBusinessLd } from "@/lib/jsonld";
 import { JsonLd } from "@/components/seo/json-ld";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeo("/");
-  return {
-    title: seo.title,
-    description: seo.description,
-    alternates: {
-      canonical: seo.canonical,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      url: seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(await getSeo("/"));
 }
 
 export default async function HomePage() {

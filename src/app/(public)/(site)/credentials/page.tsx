@@ -7,26 +7,14 @@ import { Figure } from "@/components/primitives/figure";
 import { Placeholder } from "@/components/primitives/placeholder";
 import { CredentialGroup } from "@/components/content/credential-group";
 import { FinalCta } from "@/components/sections/final-cta";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 /** Re-rendered daily so an expired credential drops off without a publish (FR-21). */
 export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeo("/credentials");
-  return {
-    title: seo.title,
-    description: seo.description,
-    alternates: {
-      canonical: seo.canonical,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      url: seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(await getSeo("/credentials"));
 }
 
 export default async function CredentialsPage() {

@@ -3,24 +3,12 @@ import { notFound } from "next/navigation";
 import { getLegalPage, getSeo } from "@/content";
 import { LegalDocument } from "@/components/content/legal-document";
 import { Link } from "@/components/primitives/link";
+import { seoMetadata } from "@/lib/seo-metadata";
 
 export const dynamic = "force-static";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeo("/legal/accessibility");
-  return {
-    title: seo.title,
-    description: seo.description,
-    alternates: {
-      canonical: seo.canonical,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      url: seo.canonical,
-      type: "website",
-    },
-  };
+  return seoMetadata(await getSeo("/legal/accessibility"));
 }
 
 export default async function AccessibilityPage() {
