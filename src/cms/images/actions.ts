@@ -10,6 +10,8 @@ import { findUsages } from "./data";
 import { asDoc, localApi, type Doc } from "./local-api";
 import type { ActionResult, OwnerRef } from "./types";
 import {
+  asDraft,
+  asPublished,
   decodeSpotId,
   imageProblemFor,
   isConfirmed,
@@ -18,7 +20,6 @@ import {
   parseOwner,
   parsePercent,
   parseSpotPath,
-  writable,
 } from "./validate";
 
 /*
@@ -27,7 +28,7 @@ import {
  * rule as the rest of the CMS (signed in AND a valid second-factor cookie), re-reads the latest
  * draft at call time, and changes one path only. Writes go through the Local API with the user, so
  * the publish guard, the audit log and revalidation all run as for any other edit. Approval flags
- * are never sent (see writable()).
+ * are never sent, and every draft save states _status "draft" (see validate.ts).
  *
  * The reads and writes use overrideAccess. That is safe ONLY because adminContext() has passed.
  * Nothing here logs request data.
@@ -115,13 +116,20 @@ async function readMedia(payload: Payload, id: number): Promise<Doc | null> {
   return doc === undefined ? null : asDoc(doc);
 }
 
+/**
+ * Saves a document built from its latest version. The mode decides both `draft` and `_status`
+ * (asDraft / asPublished), so a draft save can never go live: Payload treats `draft: true` with
+ * `_status: "published"` as a publish.
+ */
 async function save(
   { payload, user }: Context,
   owner: OwnerRef,
-  data: Doc,
-  draft: boolean,
+  doc: Doc,
+  mode: "draft" | "publish",
 ): Promise<void> {
   const api = localApi(payload);
+  const draft = mode === "draft";
+  const data = draft ? asDraft(doc) : asPublished(doc);
   const args = { data, draft, overrideAccess: true, user };
   if (owner.kind === "global") await api.updateGlobal({ slug: owner.slug, ...args });
   else await api.update({ collection: owner.slug, id: owner.id, ...args });
@@ -145,8 +153,8 @@ export async function setSpotImage(
       const problem = imageProblemFor(await readMedia(context.payload, mediaId), owner, path);
       if (problem) return refuse(problem);
     }
-    const latest = writable(await readLatest(context.payload, owner));
-    await save(context, owner, setPath(latest, path, mediaId), true);
+    const latest = await readLatest(context.payload, owner);
+    await save(context, owner, setPath(latest, path, mediaId), "draft");
     return { ok: true, message: "Saved as a draft. Preview it, then publish." };
   } catch (error) {
     return refuse(describe(error));
@@ -158,8 +166,7 @@ export async function publishSpot(ownerInput: OwnerRef): Promise<ActionResult> {
   if (!owner) return refuse("That section is not recognised.");
   try {
     const context = await adminContext();
-    const latest = writable(await readLatest(context.payload, owner));
-    await save(context, owner, { ...latest, _status: "published" }, false);
+    await save(context, owner, await readLatest(context.payload, owner), "publish");
     return { ok: true, message: "Published." };
   } catch (error) {
     return refuse(describe(error));
@@ -186,7 +193,11 @@ export async function saveFocalPoint(
     await localApi(context.payload).update({
       collection: "media",
       id: mediaId,
-      data: { focalX: Math.round(x * 10) / 10, focalY: Math.round(y * 10) / 10 },
+      data: {
+        focalX: Math.round(x * 10) / 10,
+        focalY: Math.round(y * 10) / 10,
+        _status: "draft",
+      },
       draft: true,
       overrideAccess: true,
       user: context.user,
@@ -207,7 +218,7 @@ export async function publishImage(mediaInput: number): Promise<ActionResult> {
     await localApi(context.payload).update({
       collection: "media",
       id: mediaId,
-      data: { ...writable(latest), _status: "published" },
+      data: asPublished(latest),
       draft: false,
       overrideAccess: true,
       user: context.user,
@@ -224,11 +235,13 @@ export async function swapImage(oldInput: number, newInput: number): Promise<Act
   const newId = parseId(newInput);
   if (oldId === null || newId === null) return refuse("That image was not found.");
   if (oldId === newId) return refuse("The new image is the same as the old one.");
+  let context: Context;
+  let spots: { owner: OwnerRef; path: string }[];
   try {
-    const context = await adminContext();
+    context = await adminContext();
     const replacement = await readMedia(context.payload, newId);
     // Spot ids encode owner and path; anything that does not decode to a registered spot is skipped.
-    const spots = (await findUsages(context.payload, oldId))
+    spots = (await findUsages(context.payload, oldId))
       .map((usage) => decodeSpotId(usage.spotId))
       .filter((spot) => spot !== null);
     if (spots.length === 0) return { ok: true, message: "Nothing used the old image." };
@@ -237,14 +250,26 @@ export async function swapImage(oldInput: number, newInput: number): Promise<Act
       const problem = imageProblemFor(replacement, owner, path);
       if (problem) return refuse(problem);
     }
-    for (const { owner, path } of spots) {
-      const latest = writable(await readLatest(context.payload, owner));
-      await save(context, owner, setPath(latest, path, newId), true);
-    }
-    return { ok: true, message: `${places(spots.length)} now use the new image as a draft.` };
   } catch (error) {
     return refuse(describe(error));
   }
+  // Writes start here: if one fails, earlier spots may already be saved, so do not claim that
+  // nothing changed.
+  let saved = 0;
+  try {
+    for (const { owner, path } of spots) {
+      const latest = await readLatest(context.payload, owner);
+      await save(context, owner, setPath(latest, path, newId), "draft");
+      saved += 1;
+    }
+  } catch (error) {
+    const reason = describe(error);
+    const detail = reason === FAILED ? "" : ` (${reason})`;
+    return refuse(
+      `The swap stopped part way${detail}. ${places(saved)} may already use the new image as a draft; check the Images page before trying again.`,
+    );
+  }
+  return { ok: true, message: `${places(spots.length)} now use the new image as a draft.` };
 }
 
 export async function deleteImage(

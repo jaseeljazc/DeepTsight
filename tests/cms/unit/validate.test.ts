@@ -10,6 +10,8 @@ import {
   parseOwner,
   parsePercent,
   parseSpotPath,
+  asDraft,
+  asPublished,
   writable,
 } from "../../../src/cms/images/validate";
 import type { OwnerRef } from "../../../src/cms/images/types";
@@ -181,7 +183,7 @@ test("imageProblemFor matches badges to the badge spot and nothing else", () => 
   );
 });
 
-test("writable drops bookkeeping fields and approval flags, and leaves the input alone", () => {
+test("writable drops bookkeeping fields, _status and approval flags, and leaves the input alone", () => {
   const doc = {
     id: 5,
     createdAt: "x",
@@ -194,7 +196,19 @@ test("writable drops bookkeeping fields and approval flags, and leaves the input
     _status: "draft",
     media: { why: 3 },
   };
-  assert.deepEqual(writable(doc), { _status: "draft", media: { why: 3 } });
+  assert.deepEqual(writable(doc), { media: { why: 3 } });
   assert.equal(doc.id, 5);
   assert.equal(doc.verified, true);
+});
+
+test("a draft payload never carries published, even when the latest version is published", () => {
+  const latest = { id: 5, _status: "published", verified: true, media: { why: 3 } };
+  assert.deepEqual(asDraft(latest), { _status: "draft", media: { why: 3 } });
+  assert.deepEqual(asDraft({ media: { why: 3 } }), { _status: "draft", media: { why: 3 } });
+  assert.equal(latest._status, "published");
+});
+
+test("a publish payload carries published", () => {
+  const latest = { id: 5, _status: "draft", approvedForPublic: false, focalX: 40 };
+  assert.deepEqual(asPublished(latest), { _status: "published", focalX: 40 });
 });

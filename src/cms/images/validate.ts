@@ -104,14 +104,16 @@ export function imageProblemFor(media: Doc | null, owner: OwnerRef, path: string
 }
 
 /*
- * Keys never sent back on a save: fields Payload sets itself, and the approval flags. These
- * actions never change an approval; leaving the flags out means Payload keeps the stored values.
+ * Keys never sent back on a save: fields Payload sets itself, `_status` (each save states its own,
+ * below), and the approval flags. These actions never change an approval; leaving the flags out
+ * means Payload refills them from the stored version.
  */
 const NOT_WRITTEN = [
   "id",
   "createdAt",
   "updatedAt",
   "globalType",
+  "_status",
   "verified",
   "disclosureApproved",
   "approvedForPublic",
@@ -123,4 +125,17 @@ export function writable(doc: Doc): Doc {
   const copy: Doc = { ...doc };
   for (const key of NOT_WRITTEN) delete copy[key];
   return copy;
+}
+
+/*
+ * Payload saves a draft only when `draft: true` AND `data._status` is not "published"; otherwise
+ * the write goes live. A draft save therefore always states `_status: "draft"`, even when the
+ * latest version it was built from is published.
+ */
+export function asDraft(doc: Doc): Doc {
+  return { ...writable(doc), _status: "draft" };
+}
+
+export function asPublished(doc: Doc): Doc {
+  return { ...writable(doc), _status: "published" };
 }
