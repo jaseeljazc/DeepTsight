@@ -49,11 +49,13 @@ export function CapabilityRail({
     <Section aria-labelledby="capabilities-heading" spacing="tight">
       <RailTag label={title} />
       <Container rail>
-        <div className="rail-enter">
+        <div className="rail-enter flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <SectionHeader id="capabilities-heading" title={title} intro={intro} size="h1" />
-          <p className="mt-4">
-            <Link href="/services">{labels.allServices}</Link>
-          </p>
+          <div className="shrink-0">
+            <Link href="/services" variant="buttonSecondary">
+              {labels.allServices}
+            </Link>
+          </div>
         </div>
 
         {/* The delivery sequence's motion (globals.css .sequence): the conductor fills along the four
@@ -107,13 +109,6 @@ export function CapabilityRail({
                     className="group flex h-full flex-col gap-4"
                   >
                     <DotNumeral value={String(index + 1).padStart(2, "0")} className="w-numeral" />
-                    <h3
-                      id={headingId}
-                      className="font-display text-ink-900 group-hover:text-primary text-h3-lg flex items-start gap-3 font-medium transition-colors duration-150"
-                    >
-                      <ServiceIcon name={service.icon} />
-                      <span>{title}</span>
-                    </h3>
                     {imageSrc && (
                       <div className="aspect-landscape rounded-panel border-rule bg-ground-deep relative w-full overflow-hidden border">
                         <Image
@@ -126,6 +121,13 @@ export function CapabilityRail({
                         />
                       </div>
                     )}
+                    <h3
+                      id={headingId}
+                      className="font-display text-ink-900 group-hover:text-primary text-h3-lg flex items-start gap-3 font-medium transition-colors duration-150"
+                    >
+                      <ServiceIcon name={service.icon} />
+                      <span>{title}</span>
+                    </h3>
                     <p className="text-ink-700 text-small">{service.summary}</p>
                     <p className="text-ink-900 text-small border-rule border-t pt-4">{outcome}</p>
                     {outputs.length > 0 && (

@@ -29,18 +29,4 @@ export const colorTokens = {
 export type ColorToken = keyof typeof colorTokens;
 
 /** Type-scale names, so cn() knows text-h2 etc. are sizes, not colours. */
-export const fontSizeTokens = [
-  "display",
-  "h1",
-  "h2",
-  "h3-lg",
-  "h3",
-  "menu",
-  "wordmark",
-  "lead",
-  "body",
-  "small",
-  "field",
-  "caption",
-  "inline-mono",
-] as const;
+export const fontSizeTokens = ["display", "h1", "h2", "h3-lg", "h3", "menu", "wordmark", "lead", "body", "small", "field", "caption", "inline-mono"] as const;

@@ -1173,7 +1173,7 @@
       animation-range: entry-crossing 3rem entry-crossing 8rem;
     }
 
-    /* Service wiring: four cores draw in turn, meet, then the trunk lands on the common terminal */
+    /* Service wiring: four cores draw together, meet, then the trunk lands on the common terminal */
     .rail-wire {
       stroke-dasharray: 1;
       stroke-dashoffset: 0;
@@ -1181,24 +1181,15 @@
       animation-timeline: --wiring;
     }
 
-    .rail-wire-1 {
+    .rail-wire-1,
+    .rail-wire-2,
+    .rail-wire-3,
+    .rail-wire-4 {
       animation-range: entry-crossing 0px entry-crossing 15rem;
     }
 
-    .rail-wire-2 {
-      animation-range: entry-crossing 2.5rem entry-crossing 17.5rem;
-    }
-
-    .rail-wire-3 {
-      animation-range: entry-crossing 5rem entry-crossing 20rem;
-    }
-
-    .rail-wire-4 {
-      animation-range: entry-crossing 7.5rem entry-crossing 22.5rem;
-    }
-
     .rail-wire-trunk {
-      animation-range: entry-crossing 18rem entry-crossing 25rem;
+      animation-range: entry-crossing 15rem entry-crossing 22rem;
     }
 
     .rail-wire-node {
@@ -1208,7 +1199,7 @@
     }
 
     .rail-wire-junction {
-      animation-range: entry-crossing 15rem entry-crossing 20rem;
+      animation-range: entry-crossing 13rem entry-crossing 17rem;
     }
 
     /* A block fades up a few pixels as it enters. Cards follow one another. */
