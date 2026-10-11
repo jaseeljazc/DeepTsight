@@ -365,7 +365,13 @@ async function importContent(payload: Payload): Promise<void> {
       deliveryApproach: home.deliveryApproach,
       selectedProofTitle: home.selectedProofTitle,
       selectedProof: proofIds,
-      perthContext: { ...home.perthContext, sectors: list(home.perthContext.sectors) },
+      perthContext: {
+        ...home.perthContext,
+        sectors: home.perthContext.sectors.map((sector) => ({
+          value: sector.name,
+          illustration: sector.illustration ?? null,
+        })),
+      },
       finalCta: home.finalCta,
       media: {
         problems: mediaId(media, home.media.problems),
@@ -384,6 +390,7 @@ async function importContent(payload: Payload): Promise<void> {
       narrative: { ...aboutSource.narrative, paragraphs: list(aboutSource.narrative.paragraphs) },
       principles: aboutSource.principles,
       timeline: aboutSource.timeline,
+      experience: aboutSource.experience,
       media: {
         portrait: mediaId(media, aboutSource.media.portrait),
         site: mediaId(media, aboutSource.media.site),
@@ -398,7 +405,18 @@ async function importContent(payload: Payload): Promise<void> {
     slug: "pages",
     data: {
       ...pagesSource,
-      services: { ...pagesSource.services, figure: mediaId(media, pagesSource.services.figure) },
+      services: {
+        ...pagesSource.services,
+        figure: mediaId(media, pagesSource.services.figure),
+        lifecycle: {
+          ...pagesSource.services.lifecycle,
+          phases: pagesSource.services.lifecycle.phases.map((phase) => ({
+            ...phase,
+            activities: list(phase.activities),
+          })),
+          engageModes: list(pagesSource.services.lifecycle.engageModes),
+        },
+      },
       credentials: {
         ...pagesSource.credentials,
         figure: mediaId(media, pagesSource.credentials.figure),

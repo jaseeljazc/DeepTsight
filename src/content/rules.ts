@@ -107,7 +107,7 @@ export function seoOrFallback(entry: SeoEntry | undefined, route: string): SeoEn
     entry ?? {
       title: "Industrial engineering and OT cybersecurity",
       description:
-        "Engineering consulting for critical infrastructure and heavy industry: control systems, OT cybersecurity, IT/OT segregation and plant reliability.",
+        "Engineering consulting for critical infrastructure and heavy industry: control systems, electrical and instrumentation, OT governance and OT cybersecurity.",
       canonical: route,
     },
   );

@@ -15,7 +15,7 @@ test.skip(
   "Needs a CONTENT_SOURCE=cms build (scripts/cms/test-cms.ts)",
 );
 
-const SLUG = "ot-cybersecurity";
+const SLUG = "ot-cybersecurity-iec-62443";
 const PAGE = `/services/${SLUG}`;
 const DRAFT_SUMMARY = "Draft summary written by the preview test.";
 

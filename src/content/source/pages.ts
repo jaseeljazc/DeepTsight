@@ -21,6 +21,74 @@ export const pagesSource: PagesContent = {
         "Most operational problems cross more than one. Describe the situation and the scope follows from it.",
     },
     figure: "img-services-facility",
+    // Capability statement, page 7 (Where we support you).
+    lifecycle: {
+      title: "Engineering and cybersecurity through the project lifecycle",
+      intro:
+        "One integrated service model for control systems, automation and OT cybersecurity, from early definition through sustained operations.",
+      phases: [
+        {
+          step: "01",
+          title: "Define",
+          subtitle: "Strategy, requirements and risk",
+          activities: [
+            "Asset context and stakeholder needs",
+            "Basis of design and performance requirements",
+            "OT risk, criticality and compliance objectives",
+          ],
+        },
+        {
+          step: "02",
+          title: "Design",
+          subtitle: "Architecture and detailed engineering",
+          activities: [
+            "Control, network and instrumentation design",
+            "Zones, conduits and secure access concepts",
+            "Specifications, drawings and implementation plans",
+          ],
+        },
+        {
+          step: "03",
+          title: "Deliver",
+          subtitle: "Integration and implementation",
+          activities: [
+            "PLC, SCADA, HMI and telemetry engineering",
+            "Configuration, hardening and system integration",
+            "Vendor coordination and controlled deployment",
+          ],
+        },
+        {
+          step: "04",
+          title: "Assure",
+          subtitle: "Test, commission and hand over",
+          activities: [
+            "Design reviews and technical assurance",
+            "FAT, SAT, verification and validation",
+            "Commissioning, documentation and operational readiness",
+          ],
+        },
+        {
+          step: "05",
+          title: "Sustain",
+          subtitle: "Operate, maintain and improve",
+          activities: [
+            "Lifecycle governance and asset visibility",
+            "Change, patch, backup and access reviews",
+            "Performance, resilience and security improvement",
+          ],
+        },
+      ],
+      engageTitle: "Engage at any phase",
+      engageModes: [
+        "Independent advisory",
+        "Owner’s engineering",
+        "Detailed design",
+        "Integration support",
+        "Assurance",
+        "Lifecycle governance",
+      ],
+      note: "Every engagement is tailored to plant risk, operational constraints and the client’s existing delivery model.",
+    },
   },
   serviceTemplate: {
     engagement: "Founder-led",

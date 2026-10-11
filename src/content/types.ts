@@ -26,6 +26,7 @@ import {
   legalPageSchema,
   pagesContentSchema,
   enquiryOptionsSchema,
+  illustrationNames,
 } from "./schema";
 
 export type SeoEntry = z.infer<typeof seoEntrySchema>;
@@ -55,3 +56,4 @@ export type LegalPage = z.infer<typeof legalPageSchema>;
 export type LegalSlug = LegalPage["slug"];
 export type PagesContent = z.infer<typeof pagesContentSchema>;
 export type EnquiryOptions = z.infer<typeof enquiryOptionsSchema>;
+export type IllustrationName = (typeof illustrationNames)[number];

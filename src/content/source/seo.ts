@@ -10,7 +10,7 @@ export const seoSource: Record<string, SeoEntry> = {
   "/": {
     title: "Industrial engineering and OT cybersecurity",
     description:
-      "Engineering consulting for critical infrastructure and heavy industry: control systems, ISA/IEC 62443 cybersecurity, IT/OT segregation and plant reliability.",
+      "Engineering consulting for critical infrastructure and heavy industry: control systems, electrical and instrumentation, OT governance and ISA/IEC 62443 cybersecurity.",
     canonical: "/",
   },
   "/about": {
@@ -22,7 +22,7 @@ export const seoSource: Record<string, SeoEntry> = {
   "/services": {
     title: "Engineering and cybersecurity services",
     description:
-      "Four services: control systems and E&I engineering, OT cybersecurity, IT/OT segregation and plant reliability.",
+      "Four services: control systems engineering, electrical and instrumentation, OT governance and asset resilience, and OT cybersecurity and ISA/IEC 62443.",
     canonical: "/services",
   },
   "/credentials": {

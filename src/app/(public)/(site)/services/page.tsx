@@ -16,6 +16,8 @@ import {
   TableRow,
 } from "@/components/primitives/table";
 import { FinalCta } from "@/components/sections/final-cta";
+import { ProjectLifecycle } from "@/components/sections/project-lifecycle";
+import { MarkedText } from "@/components/primitives/placeholder";
 import { ServiceIcon } from "@/components/content/service-icon";
 import { lowerFirst } from "@/lib/utils";
 import { seoMetadata } from "@/lib/seo-metadata";
@@ -108,11 +110,13 @@ export default async function ServicesPage() {
                       size="part"
                     />
                     <div className="sm:pl-part-indent mt-6 space-y-6">
-                      <p className="text-ink-700">{service.summary}</p>
+                      <p className="text-ink-700">
+                        <MarkedText text={service.summary} />
+                      </p>
                       <SpecBlock
                         label={`${service.shortTitle} summary`}
                         items={[
-                          { label: "Outcome", value: service.outcome },
+                          { label: "Outcome", value: <MarkedText text={service.outcome} /> },
                           { label: "Key standard", value: service.standards[0], mono: true },
                           {
                             label: "Scope",
@@ -137,6 +141,8 @@ export default async function ServicesPage() {
           </ol>
         </Container>
       </Section>
+
+      <ProjectLifecycle lifecycle={pages.services.lifecycle} />
 
       <Section ground="panel" aria-labelledby="connect-heading">
         <Container className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-12">
@@ -163,7 +169,9 @@ export default async function ServicesPage() {
                         </Link>
                       </span>
                     </TableHead>
-                    <TableCell className="py-5">{service.challenge}</TableCell>
+                    <TableCell className="py-5">
+                      <MarkedText text={service.challenge} />
+                    </TableCell>
                     <TableCell className="text-ink-900 text-caption py-5 font-mono">
                       {service.standards[0]}
                     </TableCell>

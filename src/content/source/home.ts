@@ -1,19 +1,21 @@
 import type { HomeSource } from "../types";
 
 /*
- * The trust strip lists ids from the credentials register (credentials.ts), so each credential is
- * recorded once. CTA labels come from site.ts.
+ * Wording marked "capability statement" comes from the client's DeepTsight Capability Statement
+ * (docs/ref-pdf, 2026-10-11). The trust strip lists ids from the credentials register
+ * (credentials.ts), so each credential is recorded once. CTA labels come from site.ts.
  * Selected proof entries are unverified drafts, gated by disclosureApproved = false until the
  * client confirms wording and permission. In non-production builds they render as marked placeholders.
  */
 export const homeSource: HomeSource = {
   hero: {
-    headline: "Deep insight for secure, reliable industrial operations.",
+    // Capability statement, page 1.
+    headline: "Precision and innovation in control systems and operational technology.",
     supportingText:
       "DeepTsight combines hands-on control systems and E&I engineering experience with practical OT cybersecurity and reliability thinking, keeping plant availability in view.",
     facts: [
       { label: "Based", value: "Perth, WA. Working Australia-wide" },
-      { label: "Disciplines", value: "Control systems, OT security, segregation, reliability" },
+      { label: "Disciplines", value: "Control systems, E&I, OT governance, OT security" },
       { label: "Standards", value: "ISA/IEC 62443", mono: true },
       // { label: "Engagement", value: "Founder-led" },
     ],
@@ -34,59 +36,56 @@ export const homeSource: HomeSource = {
       platforms: "Platforms",
     },
   },
-  coreCapabilitiesTitle: "Core capabilities",
+  // Capability statement, page 3.
+  coreCapabilitiesTitle: "Integrated expertise across control, field and cyber layers",
   coreCapabilitiesIntro:
-    "One practitioner across four disciplines, so each recommendation accounts for the other three.",
+    "Practical engineering capability shaped by complex brownfield, live-plant and critical-infrastructure environments.",
   coreCapabilities: [
     {
-      slug: "control-systems-ei-engineering",
-      title: "Control systems and E&I engineering",
-      outcome:
-        "Reduce delivery risk, improve operability and integrate change within live industrial environments.",
+      slug: "control-systems-engineering",
+      title: "Control systems engineering",
+      outcome: "PLC and DCS engineering, integration, upgrades, testing and commissioning.",
     },
     {
-      slug: "ot-cybersecurity",
-      title: "OT cybersecurity and network architecture",
+      slug: "electrical-instrumentation",
+      title: "Electrical and instrumentation",
       outcome:
-        "Improve visibility, segmentation and resilience with controls that respect plant availability.",
+        "Instrumentation design, E&I integration, field interfaces and plant modification support.",
     },
     {
-      slug: "it-ot-segregation",
-      title: "IT/OT segregation",
+      slug: "ot-governance-asset-resilience",
+      title: "OT governance and asset resilience",
       outcome:
-        "Reduce exposure while preserving the operational data flows and supportability the plant depends on.",
+        "OT lifecycle governance, asset visibility, infrastructure modernisation, technical assurance and operational continuity planning.",
     },
     {
-      slug: "plant-reliability",
-      title: "Plant reliability and asset lifecycle",
+      slug: "ot-cybersecurity-iec-62443",
+      title: "OT cybersecurity and ISA/IEC 62443",
       outcome:
-        "Improve resilience, prioritise expenditure and balance technical risk against lifecycle cost.",
+        "Risk assessment, IT/OT segregation, Level 3.5 DMZ architecture, vulnerability roadmaps and defensible compensating controls.",
     },
   ],
+  // Capability statement, page 2 (About us), with the site's earlier case for one practitioner.
   whyDeepTsight: {
-    title: "Why DeepTsight",
+    title: "Engineering clarity for complex industrial systems",
     convergenceLabel: "One accountable practitioner",
     paragraphs: [
-      "Cybersecurity advice can recommend controls that disrupt plant availability. Reliability studies can lack hands-on control system and communications depth. Engineering upgrades can treat cybersecurity as an afterthought.",
-      "DeepTsight was founded to bring these disciplines together under one senior practitioner.",
+      "DeepTsight is a specialist engineering and technology consultancy helping critical infrastructure and heavy-industry operators improve the performance, resilience and security of operational environments.",
+      "Cybersecurity advice can recommend controls that disrupt plant availability. Reliability studies can lack hands-on control system and communications depth. Engineering upgrades can treat cybersecurity as an afterthought. DeepTsight brings these disciplines together under one senior practitioner.",
     ],
     pillars: [
+      { title: "See", description: "Reveal technical risk, constraints and root causes." },
       {
-        title: "Founder-led accountability",
-        description:
-          "You work directly with the practitioner who assesses, designs and validates the solution.",
+        title: "Connect",
+        description: "Align control, electrical, instrumentation and security decisions.",
       },
       {
-        title: "Site-grounded judgement",
-        description:
-          "Recommendations are shaped by site experience on operating assets, not by theory alone.",
-      },
-      {
-        title: "Integrated disciplines",
-        description:
-          "Each recommendation weighs control logic, security segmentation and asset lifecycle together.",
+        title: "Deliver",
+        description: "Turn insight into practical, plant-aware engineering outcomes.",
       },
     ],
+    mission:
+      "Deliver premium, technology-driven engineering solutions that hold up in live industrial environments.",
   },
   problemsAddressed: {
     title: "Operational problems addressed",
@@ -113,33 +112,45 @@ export const homeSource: HomeSource = {
       },
     ],
   },
+  // Capability statement, page 6 (How we work).
   deliveryApproach: {
-    title: "A method built around a running plant",
-    intro: "Four stages, each ending in a deliverable the plant can check before the next begins.",
+    title: "From uncertainty to confident execution",
+    intro:
+      "A disciplined path that integrates operational context, engineering rigour and cyber resilience.",
     steps: [
       {
         step: "01",
-        title: "Assess",
-        description:
-          "Establish the real current state: cabinets, logic, network flows and operating constraints.",
+        title: "Discover",
+        description: "Understand the asset, constraints and decision context.",
       },
       {
         step: "02",
-        title: "Architect",
-        description:
-          "Produce functional specifications, zone and conduit definitions and cutover protocols.",
+        title: "Define",
+        description: "Frame risk, requirements and practical options.",
       },
       {
         step: "03",
-        title: "Implement",
-        description:
-          "Stage and test configurations before site arrival, so commissioning confirms rather than discovers.",
+        title: "Engineer",
+        description: "Develop fit-for-purpose designs and implementation plans.",
       },
       {
         step: "04",
         title: "Assure",
-        description:
-          "Commission during planned windows, validate every change and hand over as-built documentation.",
+        description: "Verify readiness, quality, security and operational acceptance.",
+      },
+    ],
+    values: [
+      {
+        title: "Reliability",
+        description: "Protect plant availability and operational continuity.",
+      },
+      {
+        title: "Cost optimisation",
+        description: "Prioritise practical investments and lifecycle value.",
+      },
+      {
+        title: "Specialist depth",
+        description: "Access premium expertise without unnecessary overhead.",
       },
     ],
   },
@@ -166,20 +177,21 @@ export const homeSource: HomeSource = {
     title: "Based in Perth, working across Australia",
     description: "Operators of critical infrastructure and heavy industry, anywhere in Australia.",
     officeArea: "Perth, Western Australia",
+    // Capability statement, page 4 (sector exposure and the industries it pictures).
     sectors: [
-      "Heavy industry",
-      "Resources",
-      "Utilities",
-      "Critical infrastructure",
-      "Oil and gas",
-      "Power generation",
-      "Energy",
-      "Mining",
+      { name: "LNG and gas", illustration: "sector-oil-gas-upstream" },
+      { name: "Oil and gas downstream", illustration: "sector-oil-gas-downstream" },
+      { name: "Mining and resources", illustration: "sector-mining" },
+      { name: "Water infrastructure", illustration: "sector-water" },
+      { name: "Power generation", illustration: "sector-power" },
+      { name: "Remote operations", illustration: "sector-remote-operations" },
+      { name: "Critical infrastructure" },
     ],
   },
+  // Capability statement, page 8.
   finalCta: {
-    title: "Talk through an operational challenge",
+    title: "Let’s build resilient industrial systems",
     supportingText:
-      "Speak directly with Deepak Pazhoor about control systems, OT security architecture or plant reliability.",
+      "Engage DeepTsight for specialist control systems engineering, automation and OT cybersecurity services designed around real operational constraints.",
   },
 };

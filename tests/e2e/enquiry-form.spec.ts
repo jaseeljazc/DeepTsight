@@ -17,7 +17,7 @@ async function fillValidEnquiry(page: Page) {
   await page.fill("#contact-email", "alex@example.com");
   await page.fill("#contact-org", "Example Organisation");
   await page.fill("#contact-phone", "+61 8 5550 0100");
-  await page.selectOption("#contact-type", "OT cybersecurity and network architecture");
+  await page.selectOption("#contact-type", "OT cybersecurity and ISA/IEC 62443");
   await page.fill("#contact-message", "Requesting an initial scoping discussion. Test enquiry.");
   await page.check("#contact-consent");
 }

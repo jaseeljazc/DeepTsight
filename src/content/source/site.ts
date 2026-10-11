@@ -3,10 +3,12 @@ import type { SiteSource } from "../types";
 export const siteSource: SiteSource = {
   legalName: "DeepTsight Consulting Pty Ltd",
   displayName: "DeepTsight",
-  tagline: "Deep technical insight for safer, more reliable and more secure industrial operations.",
+  // Capability statement (docs/ref-pdf, 2026-10-11).
+  tagline: "Precision. Resilience. Insight.",
   abn: "62 701 473 814",
   phone: "0406 899 469",
-  email: "enquiries@deeptsight.com",
+  // The named contact in the capability statement (owner decision 2026-10-11).
+  email: "deepak.pazhoor@deeptsight.com",
   // Founder's personal profile until the company page exists (docs/CONTENT_GAPS.md).
   linkedIn: "https://www.linkedin.com/in/deepak-pazhoor-a29b7b49",
   responseTime: "Within 1 business day",

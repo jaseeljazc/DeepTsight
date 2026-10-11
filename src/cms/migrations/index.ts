@@ -2,6 +2,7 @@ import * as migration_20261001_151007_initial from "./20261001_151007_initial";
 import * as migration_20261001_152658_admin_security from "./20261001_152658_admin_security";
 import * as migration_20261002_064614_cms_content from "./20261002_064614_cms_content";
 import * as migration_20261005_080109_services_share_image from "./20261005_080109_services_share_image";
+import * as migration_20261011_094738_capability_statement_content from "./20261011_094738_capability_statement_content";
 
 export const migrations = [
   {
@@ -23,5 +24,10 @@ export const migrations = [
     up: migration_20261005_080109_services_share_image.up,
     down: migration_20261005_080109_services_share_image.down,
     name: "20261005_080109_services_share_image",
+  },
+  {
+    up: migration_20261011_094738_capability_statement_content.up,
+    down: migration_20261011_094738_capability_statement_content.down,
+    name: "20261011_094738_capability_statement_content",
   },
 ];

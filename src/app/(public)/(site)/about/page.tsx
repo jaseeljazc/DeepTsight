@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { getAboutContent, getFigures, getPageContent, getSite, getSeo } from "@/content";
+import {
+  getAboutContent,
+  getFigures,
+  getHomeContent,
+  getPageContent,
+  getSite,
+  getSeo,
+} from "@/content";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { PageHeader } from "@/components/layout/page-header";
@@ -8,6 +15,8 @@ import { Link } from "@/components/primitives/link";
 import { SectionHeader } from "@/components/primitives/section-header";
 import { MarkedText, isPlaceholder } from "@/components/primitives/placeholder";
 import { FinalCta } from "@/components/sections/final-cta";
+import { IndustryExperience } from "@/components/sections/industry-experience";
+import { SeeConnectDeliver } from "@/components/content/see-connect-deliver";
 import { personLd } from "@/lib/jsonld";
 import { JsonLd } from "@/components/seo/json-ld";
 import { seoMetadata } from "@/lib/seo-metadata";
@@ -19,11 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [about, site, figures, pages] = await Promise.all([
+  const [about, site, figures, pages, home] = await Promise.all([
     getAboutContent(),
     getSite(),
     getFigures(),
     getPageContent(),
+    getHomeContent(),
   ]);
   const [intro, ...narrative] = about.narrative.paragraphs;
   const linkedInPending = !site.linkedIn || isPlaceholder(site.linkedIn);
@@ -134,6 +144,23 @@ export default async function AboutPage() {
               </li>
             ))}
           </ol>
+        </Container>
+      </Section>
+
+      <IndustryExperience experience={about.experience} />
+
+      {/* Mission and See / Connect / Deliver, shared with Home (capability statement, page 2) */}
+      <Section ground="panel" aria-labelledby="mission-heading">
+        <Container>
+          <div className="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-12">
+            <h2 id="mission-heading" className="lg:col-span-4">
+              <span className="tag-plate">Mission</span>
+            </h2>
+            <p className="font-display text-h2 text-ink-900 measure font-medium lg:col-span-8">
+              {home.whyDeepTsight.mission}
+            </p>
+          </div>
+          <SeeConnectDeliver pillars={home.whyDeepTsight.pillars} className="mt-14" />
         </Container>
       </Section>
 

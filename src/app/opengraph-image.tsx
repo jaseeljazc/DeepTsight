@@ -53,8 +53,8 @@ export default async function Image() {
           {site.tagline}
         </div>
         <div style={{ fontSize: "24px", color: c.ink700, maxWidth: "860px", lineHeight: 1.4 }}>
-          Control systems and E&I engineering, OT cybersecurity, IT/OT segregation and plant
-          reliability.
+          Control systems engineering, electrical and instrumentation, OT governance and asset
+          resilience, OT cybersecurity and ISA/IEC 62443.
         </div>
       </div>
 

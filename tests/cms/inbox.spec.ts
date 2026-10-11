@@ -35,7 +35,7 @@ test("a submission is saved, readable only by an admin, and fully deleted", asyn
   await page.goto("/contact");
   await page.fill("#contact-name", "Test Visitor");
   await page.fill("#contact-email", "visitor@example.com");
-  await page.selectOption("#contact-type", "Plant reliability and asset lifecycle");
+  await page.selectOption("#contact-type", "OT governance and asset resilience");
   await page.fill("#contact-message", `Test enquiry ${MARKER}.`);
   await page.check("#contact-consent");
   await page.getByRole("button", { name: /send enquiry/i }).click();
@@ -54,7 +54,7 @@ test("a submission is saved, readable only by an admin, and fully deleted", asyn
   const doc = ((await search.json()) as { docs: EnquiryDoc[] }).docs[0];
   if (!doc) throw new Error("The enquiry was not saved.");
   expect(doc.emailStatus).toBe("simulated");
-  expect(doc.enquiryTypeLabel).toBe("Plant reliability and asset lifecycle");
+  expect(doc.enquiryTypeLabel).toBe("OT governance and asset resilience");
   expect(doc.read).toBe(false);
   // Nothing beyond the form's fields is stored.
   for (const key of ["ip", "userAgent", "turnstileToken", "hp_website", "cf-turnstile-response"]) {

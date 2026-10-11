@@ -114,6 +114,8 @@
   /* 1280px content plus 32px gutters */
   --container-measure: 68ch;
   /* long-form reading */
+  --container-illustration: 64rem;
+  /* wide brand illustrations (See / Connect / Deliver, lifecycle) */
   --container-prose-md: 54ch;
   /* hero lead */
   --container-prose-sm: 40ch;

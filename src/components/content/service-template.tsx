@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { AnchorNav, type AnchorItem } from "@/components/layout/anchor-nav";
 import { Figure } from "@/components/primitives/figure";
 import { SpecBlock } from "@/components/primitives/spec-block";
+import { MarkedText } from "@/components/primitives/placeholder";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ServiceBody } from "./service-body";
 import { ServiceIcon } from "./service-icon";
@@ -57,7 +58,14 @@ export function ServiceTemplate({
           <SpecBlock
             label="Service particulars"
             items={[
-              { label: "Outcome", value: <span className="font-sans">{service.outcome}</span> },
+              {
+                label: "Outcome",
+                value: (
+                  <span className="font-sans">
+                    <MarkedText text={service.outcome} />
+                  </span>
+                ),
+              },
               { label: "Key standard", value: service.standards[0] ?? "", mono: true },
               { label: "Engagement", value: copy.engagement },
             ]}

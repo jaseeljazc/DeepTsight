@@ -12,6 +12,7 @@ import type {
   Service,
   SiteSource,
 } from "../types";
+import { illustrationNames } from "../schema";
 import {
   asDoc,
   bool,
@@ -208,6 +209,7 @@ export function mapHome(
         title: str(row, "title"),
         description: str(row, "description"),
       })),
+      mission: str(why, "mission"),
     },
     problemsAddressed: {
       title: str(problems, "title"),
@@ -224,6 +226,10 @@ export function mapHome(
         title: str(row, "title"),
         description: str(row, "description"),
       })),
+      values: rows(delivery, "values").map((row) => ({
+        title: str(row, "title"),
+        description: str(row, "description"),
+      })),
     },
     selectedProofTitle: str(doc, "selectedProofTitle"),
     selectedProof,
@@ -231,7 +237,10 @@ export function mapHome(
       title: str(perth, "title"),
       description: str(perth, "description"),
       officeArea: str(perth, "officeArea"),
-      sectors: list(perth, "sectors"),
+      sectors: rows(perth, "sectors").map((row) => {
+        const illustration = illustrationNames.find((name) => name === row["illustration"]);
+        return { name: str(row, "value"), ...(illustration ? { illustration } : {}) };
+      }),
     },
     finalCta: finalCta(doc),
     updatedAt: updatedAt(doc),
@@ -252,6 +261,7 @@ export function mapAbout(doc: Doc): AboutContent {
   const founder = group(doc, "founder");
   const narrative = group(doc, "narrative");
   const media = group(doc, "media");
+  const experience = group(doc, "experience");
   return {
     founder: { name: str(founder, "name"), jobTitle: str(founder, "jobTitle") },
     narrative: { title: str(narrative, "title"), paragraphs: list(narrative, "paragraphs") },
@@ -269,6 +279,16 @@ export function mapAbout(doc: Doc): AboutContent {
       role: str(row, "role"),
       context: str(row, "context"),
     })),
+    experience: {
+      title: str(experience, "title"),
+      intro: str(experience, "intro"),
+      note: str(experience, "note"),
+      items: rows(experience, "items").map((row) => ({
+        year: str(row, "year"),
+        title: str(row, "title"),
+        description: str(row, "description"),
+      })),
+    },
     updatedAt: updatedAt(doc),
   };
 }
@@ -276,6 +296,7 @@ export function mapAbout(doc: Doc): AboutContent {
 export function mapPages(doc: Doc): PagesContent {
   const about = group(doc, "about");
   const services = group(doc, "services");
+  const lifecycle = group(services, "lifecycle");
   const template = group(doc, "serviceTemplate");
   const credentials = group(doc, "credentials");
   const contact = group(doc, "contact");
@@ -288,6 +309,19 @@ export function mapPages(doc: Doc): PagesContent {
       lead: str(services, "lead"),
       finalCta: finalCta(services),
       figure: figureKey(services["figure"]),
+      lifecycle: {
+        title: str(lifecycle, "title"),
+        intro: str(lifecycle, "intro"),
+        phases: rows(lifecycle, "phases").map((row) => ({
+          step: str(row, "step"),
+          title: str(row, "title"),
+          subtitle: str(row, "subtitle"),
+          activities: list(row, "activities"),
+        })),
+        engageTitle: str(lifecycle, "engageTitle"),
+        engageModes: list(lifecycle, "engageModes"),
+        note: str(lifecycle, "note"),
+      },
     },
     serviceTemplate: {
       engagement: str(template, "engagement"),

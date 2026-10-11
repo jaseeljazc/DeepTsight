@@ -306,6 +306,19 @@ export const figureSchema = z.discriminatedUnion("kind", [
   imageSlotSchema.extend({ kind: z.literal("slot") }),
 ]);
 
+/**
+ * The client's brand illustrations (public/illustrations, supplied 2026-10-11). A sector names one
+ * of these to show beside it; the file and its size live in src/components/content/illustrations.ts.
+ */
+export const illustrationNames = [
+  "sector-oil-gas-upstream",
+  "sector-oil-gas-downstream",
+  "sector-mining",
+  "sector-water",
+  "sector-power",
+  "sector-remote-operations",
+] as const;
+
 /** Closing call to action as rendered. The button label always comes from `site.ctaLabels`. */
 export const finalCtaSchema = z.object({
   title: z.string(),
@@ -347,12 +360,14 @@ export const homeContentSchema = z.object({
     title: z.string(),
     convergenceLabel: z.string(),
     paragraphs: z.array(z.string()),
+    /** See, Connect, Deliver in the capability statement. */
     pillars: z.array(
       z.object({
         title: z.string(),
         description: z.string(),
       }),
     ),
+    mission: z.string(),
   }),
   problemsAddressed: z.object({
     title: z.string(),
@@ -373,6 +388,13 @@ export const homeContentSchema = z.object({
         description: z.string(),
       }),
     ),
+    /** What the method protects, shown under the stages. */
+    values: z.array(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    ),
   }),
   selectedProofTitle: z.string(),
   selectedProof: z.array(proofItemSchema),
@@ -380,7 +402,12 @@ export const homeContentSchema = z.object({
     title: z.string(),
     description: z.string(),
     officeArea: z.string(),
-    sectors: z.array(z.string()),
+    sectors: z.array(
+      z.object({
+        name: z.string(),
+        illustration: z.enum(illustrationNames).optional(),
+      }),
+    ),
   }),
   finalCta: finalCtaCopySchema,
   updatedAt: z.string().optional(),
@@ -429,6 +456,20 @@ export const aboutContentSchema = z.object({
       context: z.string(),
     }),
   ),
+  /** Industry experience by period, from the capability statement. */
+  experience: z.object({
+    title: z.string(),
+    intro: z.string(),
+    /** Says the experience includes work before the company was founded. */
+    note: z.string(),
+    items: z.array(
+      z.object({
+        year: z.string(),
+        title: z.string(),
+        description: z.string(),
+      }),
+    ),
+  }),
   updatedAt: z.string().optional(),
 });
 
@@ -465,6 +506,22 @@ export const pagesContentSchema = z.object({
     finalCta: finalCtaCopySchema,
     /** Figure id from the media register, shown under the page header. */
     figure: z.string(),
+    /** "Where we support you": the project lifecycle from the capability statement. */
+    lifecycle: z.object({
+      title: z.string(),
+      intro: z.string(),
+      phases: z.array(
+        z.object({
+          step: z.string(),
+          title: z.string(),
+          subtitle: z.string(),
+          activities: z.array(z.string()),
+        }),
+      ),
+      engageTitle: z.string(),
+      engageModes: z.array(z.string()),
+      note: z.string(),
+    }),
   }),
   serviceTemplate: z.object({
     /** Value of the "Engagement" row in the service particulars block. */

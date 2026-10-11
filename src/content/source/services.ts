@@ -1,16 +1,43 @@
 import type { Service } from "../types";
 
 /*
- * Service icons are developer-chosen placeholders until the client picks them (TASKS.md,
- * 2026-10-01). Choices are limited to serviceIconNames in schema.ts.
+ * The four core capabilities of the client's capability statement (docs/ref-pdf, 2026-10-11).
+ * Titles and summaries are the statement's wording. The rest reuses the site's earlier approved
+ * service copy where it covers the same work (control systems and E&I, OT cybersecurity, IT/OT
+ * segregation, plant reliability) or the statement's own lists. Anything neither source covers is a
+ * visible [PLACEHOLDER] for the client. Icons come from serviceIconNames in schema.ts.
  */
+
+/** The statement's "How we work" stages, used where a service has no method of its own yet. */
+const howWeWork = [
+  {
+    step: "01",
+    title: "Discover",
+    description: "Understand the asset, constraints and decision context.",
+  },
+  {
+    step: "02",
+    title: "Define",
+    description: "Frame risk, requirements and practical options.",
+  },
+  {
+    step: "03",
+    title: "Engineer",
+    description: "Develop fit-for-purpose designs and implementation plans.",
+  },
+  {
+    step: "04",
+    title: "Assure",
+    description: "Verify readiness, quality, security and operational acceptance.",
+  },
+];
+
 export const servicesSource: Service[] = [
   {
-    slug: "control-systems-ei-engineering",
-    title: "Control systems and E&I engineering",
-    shortTitle: "Control systems & E&I",
-    summary:
-      "PLC, DCS and electrical instrumentation engineering for continuous process plants and critical utilities.",
+    slug: "control-systems-engineering",
+    title: "Control systems engineering",
+    shortTitle: "Control systems",
+    summary: "PLC and DCS engineering, integration, upgrades, testing and commissioning.",
     outcome:
       "Reduce delivery risk, improve operability and integrate complex modifications within live industrial environments.",
     icon: "Cpu",
@@ -19,7 +46,7 @@ export const servicesSource: Service[] = [
     whyItMatters:
       "On a heavy industrial plant, a control system outage can trigger safety trips, environmental breaches and major production losses. Modernisation must balance the target architecture against live cutover constraints.",
     capability:
-      "DeepTsight provides hands-on engineering across DCS and safety PLC architectures, covering functional design, loop checking, instrumentation specification and live brownfield commissioning.",
+      "DeepTsight provides hands-on engineering across DCS and safety PLC architectures, covering functional design, integration, upgrades, testing and live brownfield commissioning.",
     scopeAndOutputs: [
       {
         scope: "Detailed engineering and functional specifications",
@@ -69,40 +96,187 @@ export const servicesSource: Service[] = [
     standards: [
       "IEC 61131-3 (Programmable Controllers)",
       "IEC 61508 / IEC 61511 (Functional Safety)",
-      "AS/NZS 3000 (Wiring Rules)",
-      "AS/NZS 60079 (Explosive Atmospheres)",
     ],
     evidence:
       "[PLACEHOLDER] Verified delivery on Tier-1 Australian resources and power generation brownfield upgrades.",
-    relatedSlugs: ["ot-cybersecurity", "it-ot-segregation", "plant-reliability"],
+    relatedSlugs: [
+      "electrical-instrumentation",
+      "ot-cybersecurity-iec-62443",
+      "ot-governance-asset-resilience",
+    ],
     media: {
       hero: "img-service-control",
-      detail: "img-service-control-detail",
+      detail: "img-hero-control-room",
     },
     seo: {
-      title: "Control systems and E&I engineering",
+      title: "Control systems engineering",
       description:
-        "PLC, DCS and E&I engineering for critical infrastructure, with cutover delivery in live industrial environments.",
-      canonical: "/services/control-systems-ei-engineering",
+        "PLC and DCS engineering, integration, upgrades, testing and commissioning in live industrial environments.",
+      canonical: "/services/control-systems-engineering",
     },
     enabled: true,
     sortOrder: 10,
   },
   {
-    slug: "ot-cybersecurity",
-    title: "OT cybersecurity and network architecture",
+    slug: "electrical-instrumentation",
+    title: "Electrical and instrumentation",
+    shortTitle: "Electrical & instrumentation",
+    summary:
+      "Instrumentation design, E&I integration, field interfaces and plant modification support.",
+    outcome: "[PLACEHOLDER] Approved outcome statement for electrical and instrumentation work.",
+    icon: "Cable",
+    challenge: "[PLACEHOLDER] Approved client challenge for electrical and instrumentation work.",
+    whyItMatters:
+      "[PLACEHOLDER] Approved statement of why electrical and instrumentation work matters operationally.",
+    capability:
+      "DeepTsight provides instrumentation design, E&I integration, field interfaces and plant modification support, including loop checking, instrumentation specification and live brownfield commissioning.",
+    scopeAndOutputs: [
+      {
+        scope: "Design & specification",
+        outputs: [
+          "Control, network and instrumentation design",
+          "Specifications, drawings and implementation plans",
+        ],
+      },
+      {
+        scope: "Testing, commissioning & handover",
+        outputs: [
+          "FAT, SAT, verification and validation",
+          "Commissioning, documentation and operational readiness",
+        ],
+      },
+    ],
+    deliveryApproach: howWeWork,
+    standards: ["AS/NZS 3000 (Wiring Rules)", "AS/NZS 60079 (Explosive Atmospheres)"],
+    evidence: "[PLACEHOLDER] Approved, anonymised electrical and instrumentation project evidence.",
+    relatedSlugs: [
+      "control-systems-engineering",
+      "ot-governance-asset-resilience",
+      "ot-cybersecurity-iec-62443",
+    ],
+    media: {
+      hero: "img-service-control-detail",
+      detail: "img-ot-industrial-rack",
+    },
+    seo: {
+      title: "Electrical and instrumentation",
+      description:
+        "Instrumentation design, E&I integration, field interfaces and plant modification support for operating plant.",
+      canonical: "/services/electrical-instrumentation",
+    },
+    enabled: true,
+    sortOrder: 20,
+  },
+  {
+    slug: "ot-governance-asset-resilience",
+    title: "OT governance and asset resilience",
+    shortTitle: "OT governance",
+    summary:
+      "OT lifecycle governance, asset visibility, infrastructure modernisation, technical assurance and operational continuity planning.",
+    outcome:
+      "Improve operational resilience, prioritise capital expenditure and balance technical risk against lifecycle value.",
+    icon: "Gauge",
+    challenge:
+      "Obsolescence, unpredictable component failures and uncoordinated upgrades lead to frequent reactive work and rising CAPEX.",
+    whyItMatters:
+      "High plant availability depends on systematic reliability evaluation. Engineering decisions need quantitative risk data and realistic asset lifecycle horizons.",
+    capability:
+      "DeepTsight provides lifecycle governance, technical oversight and operational continuity for critical assets, with reliability modelling (RAMS) and field condition assessments so asset owners can make defensible replacement and maintenance choices.",
+    scopeAndOutputs: [
+      {
+        scope: "Obsolescence & risk assessment",
+        outputs: [
+          "Automation & electrical obsolescence audit",
+          "Criticality & single-point-of-failure (SPOF) analysis",
+          "FMECA (failure modes, effects & criticality analysis)",
+          "Spare parts & recovery strategy",
+        ],
+      },
+      {
+        scope: "Lifecycle strategy & capex planning",
+        outputs: [
+          "10-year technology roadmap",
+          "CAPEX vs OPEX prioritisation matrix",
+          "Upgrade justification technical brief",
+          "Availability improvement plan",
+        ],
+      },
+      {
+        scope: "Governance & sustained operations",
+        outputs: [
+          "Lifecycle governance and asset visibility",
+          "Change, patch, backup and access reviews",
+          "Performance, resilience and security improvement",
+        ],
+      },
+    ],
+    deliveryApproach: [
+      {
+        step: "01",
+        title: "Condition & spares audit",
+        description:
+          "Audit physical wear, component support status, spare parts availability and historical trip logs.",
+      },
+      {
+        step: "02",
+        title: "Risk quantification",
+        description:
+          "Identify single points of failure in power feeds, communication backbones and PLC processors.",
+      },
+      {
+        step: "03",
+        title: "Lifecycle options analysis",
+        description:
+          "Develop risk-ranked replacement options, evaluating cost, shutdown requirements and extended support.",
+      },
+      {
+        step: "04",
+        title: "Execution roadmap",
+        description:
+          "Deliver phased upgrade schedules aligned with statutory turnarounds and capital budget cycles.",
+      },
+    ],
+    standards: [
+      "IEC 60300 (Dependability Management)",
+      "ISO 55000 (Asset Management)",
+      "MIL-STD-1629A / IEC 60812 (FMEA/FMECA)",
+      "RAMS Engineering Principles",
+    ],
+    evidence:
+      "[PLACEHOLDER] RAMS analysis and reliability roadmaps delivered for heavy industrial processing plants.",
+    relatedSlugs: [
+      "ot-cybersecurity-iec-62443",
+      "control-systems-engineering",
+      "electrical-instrumentation",
+    ],
+    media: {
+      hero: "img-service-reliability",
+      detail: "slot-service-reliability-detail",
+    },
+    seo: {
+      title: "OT governance and asset resilience",
+      description:
+        "OT lifecycle governance, asset visibility, modernisation, technical assurance and operational continuity planning for critical assets.",
+      canonical: "/services/ot-governance-asset-resilience",
+    },
+    enabled: true,
+    sortOrder: 30,
+  },
+  {
+    slug: "ot-cybersecurity-iec-62443",
+    title: "OT cybersecurity and ISA/IEC 62443",
     shortTitle: "OT cybersecurity",
     summary:
-      "ISA/IEC 62443-aligned security architecture, asset visibility and segmentation for live industrial control networks.",
+      "Risk assessment, IT/OT segregation, Level 3.5 DMZ architecture, vulnerability roadmaps and defensible compensating controls.",
     outcome:
       "Improve visibility, segmentation and cyber resilience with controls designed around plant availability.",
     icon: "Network",
     challenge:
-      "Standard corporate IT security controls (such as aggressive scanning or uncoordinated reboots) can trigger PLC halts and trip critical processes.",
+      "Standard corporate IT security controls (such as aggressive scanning or uncoordinated reboots) can trigger PLC halts and trip critical processes, while demands for cloud analytics and remote vendor support erode boundary defences.",
     whyItMatters:
-      "Operators must defend legacy systems without compromising safety systems, deterministic cycle times or operational availability.",
+      "Operators must defend legacy systems without compromising safety systems, deterministic cycle times or operational availability. Uncontrolled convergence creates direct pathways for enterprise ransomware to halt industrial operations.",
     capability:
-      "DeepTsight applies plant engineering knowledge to cyber defence, translating ISA/IEC 62443 into practical zone and conduit designs, passive asset discovery and defensible architectures.",
+      "DeepTsight applies plant engineering knowledge to cyber defence, translating ISA/IEC 62443 into practical zone and conduit designs, passive asset discovery and Purdue Model Level 3.5 industrial demilitarised zones that terminate all protocols at the boundary.",
     scopeAndOutputs: [
       {
         scope: "Risk & posture assessment",
@@ -111,6 +285,15 @@ export const servicesSource: Service[] = [
           "Passive asset inventory & taxonomy",
           "Crown jewels risk analysis",
           "Defect remediation roadmap",
+        ],
+      },
+      {
+        scope: "IT/OT segregation & industrial DMZ",
+        outputs: [
+          "Current-state ingress/egress traffic map",
+          "Industrial DMZ architecture specification",
+          "Historian & jump host broker design",
+          "Remote vendor access (PAM) policy",
         ],
       },
       {
@@ -160,187 +343,26 @@ export const servicesSource: Service[] = [
     standards: [
       "ISA/IEC 62443-2-1 / 3-2 / 3-3",
       "NIST SP 800-82 Rev 3",
+      "Purdue Enterprise Reference Architecture (PERA)",
       "Australian SOCI Act Compliance Guidance",
       "AESCSF (Australian Energy Sector Cyber Security Framework)",
     ],
     evidence:
       "[PLACEHOLDER] ISA/IEC 62443 architecture implemented across regulated Western Australian energy and utility assets.",
-    relatedSlugs: ["it-ot-segregation", "control-systems-ei-engineering", "plant-reliability"],
+    relatedSlugs: [
+      "control-systems-engineering",
+      "ot-governance-asset-resilience",
+      "electrical-instrumentation",
+    ],
     media: {
       hero: "img-service-cyber",
       detail: "img-service-cyber-detail",
     },
     seo: {
-      title: "OT cybersecurity and network architecture",
+      title: "OT cybersecurity and ISA/IEC 62443",
       description:
-        "ISA/IEC 62443-aligned OT cybersecurity and industrial network segmentation engineered for critical plant availability.",
-      canonical: "/services/ot-cybersecurity",
-    },
-    enabled: true,
-    sortOrder: 20,
-  },
-  {
-    slug: "it-ot-segregation",
-    title: "IT/OT segregation and industrial DMZ architecture",
-    shortTitle: "IT/OT segregation",
-    summary:
-      "Defensible separation between corporate and control networks, without breaking essential data flows.",
-    outcome:
-      "Reduce attack surface exposure while preserving production telemetry, historian replication and secure remote support.",
-    icon: "Split",
-    challenge:
-      "Business demands for cloud analytics, MES connectivity and remote vendor support frequently erode boundary defences and bridge networks insecurely.",
-    whyItMatters:
-      "Uncontrolled convergence creates direct pathways for enterprise ransomware to halt industrial operations. Segregation is designed to contain an incident at Level 4/5 before it reaches Level 0–3.",
-    capability:
-      "DeepTsight designs and implements Purdue Model Level 3.5 industrial demilitarised zones (IDMZs) that terminate all protocols at the boundary and prevent direct cross-domain routing.",
-    scopeAndOutputs: [
-      {
-        scope: "Boundary analysis & architecture",
-        outputs: [
-          "Current-state ingress/egress traffic map",
-          "Industrial DMZ architecture specification",
-          "Historian & jump host broker design",
-          "Remote vendor access (PAM) policy",
-        ],
-      },
-      {
-        scope: "Migration & validation",
-        outputs: [
-          "Cutover sequencing protocol",
-          "Strict firewall rule set (stateful/DPI)",
-          "Boundary failover verification test sheet",
-          "As-built segregation documentation",
-        ],
-      },
-    ],
-    deliveryApproach: [
-      {
-        step: "01",
-        title: "Traffic discovery",
-        description:
-          "Identify and document every communication path between corporate systems and plant automation.",
-      },
-      {
-        step: "02",
-        title: "IDMZ design",
-        description:
-          "Establish Purdue Level 3.5 with separate trust domains, dedicated authentication and proxy brokers.",
-      },
-      {
-        step: "03",
-        title: "Staged boundary cutover",
-        description:
-          "Implement rules in monitor mode first, verifying historian and engineering connections before enforcing drops.",
-      },
-      {
-        step: "04",
-        title: "Isolation verification",
-        description:
-          "Run penetration and egress leak tests to verify no direct IP routing exists across the boundary.",
-      },
-    ],
-    standards: [
-      "Purdue Enterprise Reference Architecture (PERA)",
-      "ISA/IEC 62443-3-3",
-      "NIST SP 800-82",
-      "CISA Defending OT Environments",
-    ],
-    evidence:
-      "[PLACEHOLDER] Segregation designs executed for multi-site processing facilities across Western Australia.",
-    relatedSlugs: ["ot-cybersecurity", "control-systems-ei-engineering", "plant-reliability"],
-    media: {
-      hero: "img-service-idmz",
-      detail: "img-service-idmz-detail",
-    },
-    seo: {
-      title: "IT/OT segregation and IDMZ architecture",
-      description:
-        "Defensible boundary separation between corporate IT and plant OT using Purdue Level 3.5 architectures.",
-      canonical: "/services/it-ot-segregation",
-    },
-    enabled: true,
-    sortOrder: 30,
-  },
-  {
-    slug: "plant-reliability",
-    title: "Plant reliability and asset lifecycle engineering",
-    shortTitle: "Plant reliability",
-    summary:
-      "Engineering analysis, failure mode risk reduction and lifecycle optimisation for ageing automation and electrical assets.",
-    outcome:
-      "Improve operational resilience, prioritise capital expenditure and balance technical risk against lifecycle value.",
-    icon: "Gauge",
-    challenge:
-      "Obsolescence, unpredictable component failures and uncoordinated upgrades lead to frequent reactive work and rising CAPEX.",
-    whyItMatters:
-      "High plant availability depends on systematic reliability evaluation. Engineering decisions need quantitative risk data and realistic asset lifecycle horizons.",
-    capability:
-      "DeepTsight applies reliability modelling (RAMS) and field condition assessments so asset owners can make defensible replacement and maintenance choices.",
-    scopeAndOutputs: [
-      {
-        scope: "Obsolescence & risk assessment",
-        outputs: [
-          "Automation & electrical obsolescence audit",
-          "Criticality & single-point-of-failure (SPOF) analysis",
-          "FMECA (failure modes, effects & criticality analysis)",
-          "Spare parts & recovery strategy",
-        ],
-      },
-      {
-        scope: "Lifecycle strategy & capex planning",
-        outputs: [
-          "10-year technology roadmap",
-          "CAPEX vs OPEX prioritisation matrix",
-          "Upgrade justification technical brief",
-          "Availability improvement plan",
-        ],
-      },
-    ],
-    deliveryApproach: [
-      {
-        step: "01",
-        title: "Condition & spares audit",
-        description:
-          "Audit physical wear, component support status, spare parts availability and historical trip logs.",
-      },
-      {
-        step: "02",
-        title: "Risk quantification",
-        description:
-          "Identify single points of failure in power feeds, communication backbones and PLC processors.",
-      },
-      {
-        step: "03",
-        title: "Lifecycle options analysis",
-        description:
-          "Develop risk-ranked replacement options, evaluating cost, shutdown requirements and extended support.",
-      },
-      {
-        step: "04",
-        title: "Execution roadmap",
-        description:
-          "Deliver phased upgrade schedules aligned with statutory turnarounds and capital budget cycles.",
-      },
-    ],
-    standards: [
-      "IEC 60300 (Dependability Management)",
-      "ISO 55000 (Asset Management)",
-      "MIL-STD-1629A / IEC 60812 (FMEA/FMECA)",
-      "RAMS Engineering Principles",
-    ],
-    evidence:
-      "[PLACEHOLDER] RAMS analysis and reliability roadmaps delivered for heavy industrial processing plants.",
-    relatedSlugs: ["control-systems-ei-engineering", "ot-cybersecurity", "it-ot-segregation"],
-    media: {
-      hero: "img-service-reliability",
-      detail: "slot-service-reliability-detail",
-    },
-    seo: {
-      title: "Plant reliability and asset lifecycle",
-      description:
-        "Reliability modelling, obsolescence audits and lifecycle engineering for critical plant automation and electrical systems.",
-      canonical: "/services/plant-reliability",
+        "ISA/IEC 62443 risk assessment, IT/OT segregation, Level 3.5 DMZ architecture and defensible controls engineered for plant availability.",
+      canonical: "/services/ot-cybersecurity-iec-62443",
     },
     enabled: true,
     sortOrder: 40,

@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/section";
 import { SectionHeader } from "@/components/primitives/section-header";
 import { RailTag } from "@/components/primitives/rail-tag";
 import { Figure } from "@/components/primitives/figure";
+import { SeeConnectDeliver } from "@/components/content/see-connect-deliver";
 import type { FigureData, HomeContent } from "@/content/types";
 
 export type WhyDeepTsightProps = {
@@ -11,13 +12,16 @@ export type WhyDeepTsightProps = {
   figure?: FigureData | undefined;
 };
 
-/** The argument for one practitioner across four disciplines, with the three reasons it holds. */
+/**
+ * Who DeepTsight is and its mission, then See, Connect, Deliver: the client's illustration with
+ * the three lines set under the panel each belongs to.
+ */
 export function WhyDeepTsight({ whyDeepTsight, figure }: WhyDeepTsightProps) {
   return (
     <Section ground="panel" spacing="tight" aria-labelledby="why-heading">
-      <RailTag label={whyDeepTsight.title} />
+      <RailTag label="Why DeepTsight" />
       <Container rail className="rail-enter grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-12">
-        <div className="lg:sticky-below-header lg:sticky lg:col-span-6 lg:self-start">
+        <div className="lg:col-span-6">
           <SectionHeader
             id="why-heading"
             title={whyDeepTsight.title}
@@ -31,6 +35,12 @@ export function WhyDeepTsight({ whyDeepTsight, figure }: WhyDeepTsightProps) {
               </div>
             }
           />
+          <div className="border-ink-900 mt-10 border-t pt-6">
+            <p className="tag-plate">Mission</p>
+            <p className="font-display text-h3-lg text-ink-900 measure mt-4 font-medium">
+              {whyDeepTsight.mission}
+            </p>
+          </div>
         </div>
 
         <div className="self-end lg:col-span-5 lg:col-start-8">
@@ -40,18 +50,11 @@ export function WhyDeepTsight({ whyDeepTsight, figure }: WhyDeepTsightProps) {
               aspect="landscape"
               reveal
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="mb-10"
             />
           )}
-          <ul className="border-ink-900 border-t">
-            {whyDeepTsight.pillars.map((pillar) => (
-              <li key={pillar.title} className="border-rule border-b py-6">
-                <h3 className="font-display text-ink-900 text-h3-lg font-medium">{pillar.title}</h3>
-                <p className="text-ink-700 text-body mt-2">{pillar.description}</p>
-              </li>
-            ))}
-          </ul>
         </div>
+
+        <SeeConnectDeliver pillars={whyDeepTsight.pillars} className="lg:col-span-12" />
       </Container>
     </Section>
   );

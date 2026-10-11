@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Figure } from "@/components/primitives/figure";
-import { Placeholder, isPlaceholder } from "@/components/primitives/placeholder";
+import { MarkedText, Placeholder, isPlaceholder } from "@/components/primitives/placeholder";
 import {
   Table,
   TableBody,
@@ -13,6 +13,8 @@ import { Part } from "./part";
 import { ProcessSequence } from "./process-sequence";
 import { IndexList } from "./index-list";
 import { ServiceIcon } from "./service-icon";
+import { BrandIllustration } from "./brand-illustration";
+import { serviceIllustrations } from "./illustrations";
 import type { FigureData, Service } from "@/content/types";
 
 export type ServiceBodyProps = {
@@ -24,20 +26,33 @@ export type ServiceBodyProps = {
 
 /** Parts 1.0 to 8.0 of the service template. Part 9.0 is the enquiry band that follows. */
 export function ServiceBody({ service, relatedServices, detailFigure, figures }: ServiceBodyProps) {
+  const illustration = serviceIllustrations[service.slug];
   return (
     <div>
       <Part id="challenge" number="1.0" title="Client challenge">
-        <p className="text-lead text-ink-700 measure">{service.challenge}</p>
+        <p className="text-lead text-ink-700 measure">
+          <MarkedText text={service.challenge} />
+        </p>
       </Part>
 
       <Part id="why-it-matters" number="2.0" title="Why it matters operationally">
         <blockquote className="border-ink-900 font-display text-ink-900 measure text-h3-lg border-l pl-6">
-          {service.whyItMatters}
+          <MarkedText text={service.whyItMatters} />
         </blockquote>
+        {illustration && (
+          <BrandIllustration
+            name={illustration.key}
+            alt={illustration.alt}
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            className="mt-10"
+          />
+        )}
       </Part>
 
       <Part id="capability" number="3.0" title="DeepTsight capability">
-        <p className="text-ink-700 measure">{service.capability}</p>
+        <p className="text-ink-700 measure">
+          <MarkedText text={service.capability} />
+        </p>
         <Figure
           figure={detailFigure}
           aspect="landscape"

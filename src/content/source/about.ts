@@ -2,13 +2,14 @@ import type { AboutContent } from "../types";
 
 /*
  * Career dates, employers and role titles come from founder-supplied sources
- * (docs/CONTENT_PROVENANCE.md). Project, facility and client names are deliberately omitted
+ * (docs/CONTENT_PROVENANCE.md); the industry experience and the job title come from the client
+ * capability statement (docs/ref-pdf, 2026-10-11). Project, facility and client names are deliberately omitted
  * (CLAUDE.md §6).
  */
 export const aboutSource: AboutContent = {
   founder: {
     name: "Deepak Pazhoor",
-    jobTitle: "Founder and principal consultant",
+    jobTitle: "Principal consultant",
   },
   narrative: {
     title: "Engineering judgement formed on operating industrial assets",
@@ -82,4 +83,36 @@ export const aboutSource: AboutContent = {
         "DeepTsight Consulting Pty Ltd, Perth. OT cybersecurity and control systems, aligned with AS/NZS IEC 62443 and the SOCI Act.",
     },
   ],
+  experience: {
+    title: "Experience shaped in demanding operating environments",
+    intro:
+      "Sector exposure: LNG and gas, mining and resources, water infrastructure, power generation and critical infrastructure.",
+    note: "Experience includes work undertaken by DeepTsight personnel before the establishment of DeepTsight Consulting Pty Ltd.",
+    items: [
+      {
+        year: "2011",
+        title: "Instrumentation, control and commissioning",
+        description:
+          "Brownfield integration planning, controls modification and staged commissioning of DCS, SCADA, safety systems, metering, rotating equipment and remote telemetry.",
+      },
+      {
+        year: "2016",
+        title: "Control systems and automation",
+        description:
+          "Secure PLC, SCADA and telemetry architecture and implementation support preserving essential operational data flows.",
+      },
+      {
+        year: "2020",
+        title: "OT governance and cyber resilience",
+        description:
+          "Lifecycle governance, technical oversight and operational continuity for critical assets.",
+      },
+      {
+        year: "2026",
+        title: "Engineering and OT cybersecurity",
+        description:
+          "Control engineering, OT risk, network segregation and ISA/IEC 62443-aligned advisory.",
+      },
+    ],
+  },
 };

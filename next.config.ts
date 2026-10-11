@@ -101,8 +101,24 @@ const nextConfig: NextConfig = {
       { pathname: "/images/**" },
       { pathname: "/badges/**" },
       { pathname: "/dither/**" },
+      { pathname: "/brand/**" },
+      { pathname: "/illustrations/**" },
       { pathname: "/api/media/file/**" },
     ],
+  },
+  // Service pages restructured to the capability statement's four capabilities (2026-10-11).
+  // Old addresses keep working: each goes to the service that now covers its work.
+  async redirects() {
+    return [
+      ["control-systems-ei-engineering", "control-systems-engineering"],
+      ["ot-cybersecurity", "ot-cybersecurity-iec-62443"],
+      ["it-ot-segregation", "ot-cybersecurity-iec-62443"],
+      ["plant-reliability", "ot-governance-asset-resilience"],
+    ].map(([from, to]) => ({
+      source: `/services/${from}`,
+      destination: `/services/${to}`,
+      permanent: true,
+    }));
   },
   async headers() {
     return [

@@ -1328,6 +1328,7 @@ export interface Home {
           id?: string | null;
         }[]
       | null;
+    mission: string;
   };
   problemsAddressed: {
     title: string;
@@ -1350,6 +1351,13 @@ export interface Home {
           id?: string | null;
         }[]
       | null;
+    values?:
+      | {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   selectedProofTitle: string;
   /**
@@ -1361,11 +1369,24 @@ export interface Home {
     description: string;
     officeArea: string;
     /**
-     * One sector per row.
+     * One sector per row. A sector with an illustration also shows as a tile.
      */
     sectors?:
       | {
           value: string;
+          /**
+           * Optional brand illustration from public/illustrations.
+           */
+          illustration?:
+            | (
+                | "sector-oil-gas-upstream"
+                | "sector-oil-gas-downstream"
+                | "sector-mining"
+                | "sector-water"
+                | "sector-power"
+                | "sector-remote-operations"
+              )
+            | null;
           id?: string | null;
         }[]
       | null;
@@ -1440,6 +1461,22 @@ export interface About {
         id?: string | null;
       }[]
     | null;
+  experience: {
+    title: string;
+    intro: string;
+    /**
+     * Says the experience includes work before the company was founded.
+     */
+    note: string;
+    items?:
+      | {
+          year: string;
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
   media: {
     /**
      * Founder portrait. Never upload photographs that show a client site, plant, equipment tags or screens (CLAUDE.md §6).
@@ -1489,6 +1526,38 @@ export interface Page {
      * Wide image under the page header. Never upload photographs that show a client site, plant, equipment tags or screens (CLAUDE.md §6).
      */
     figure: number | Media;
+    lifecycle: {
+      title: string;
+      intro: string;
+      phases?:
+        | {
+            step: string;
+            title: string;
+            subtitle: string;
+            /**
+             * One activity per row.
+             */
+            activities?:
+              | {
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+          }[]
+        | null;
+      engageTitle: string;
+      /**
+       * One per row.
+       */
+      engageModes?:
+        | {
+            value: string;
+            id?: string | null;
+          }[]
+        | null;
+      note: string;
+    };
   };
   serviceTemplate: {
     /**
@@ -1837,6 +1906,7 @@ export interface HomeSelect<T extends boolean = true> {
               description?: T;
               id?: T;
             };
+        mission?: T;
       };
   problemsAddressed?:
     | T
@@ -1863,6 +1933,13 @@ export interface HomeSelect<T extends boolean = true> {
               description?: T;
               id?: T;
             };
+        values?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
       };
   selectedProofTitle?: T;
   selectedProof?: T;
@@ -1876,6 +1953,7 @@ export interface HomeSelect<T extends boolean = true> {
           | T
           | {
               value?: T;
+              illustration?: T;
               id?: T;
             };
       };
@@ -1934,6 +2012,21 @@ export interface AboutSelect<T extends boolean = true> {
         context?: T;
         id?: T;
       };
+  experience?:
+    | T
+    | {
+        title?: T;
+        intro?: T;
+        note?: T;
+        items?:
+          | T
+          | {
+              year?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
   media?:
     | T
     | {
@@ -1973,6 +2066,34 @@ export interface PagesSelect<T extends boolean = true> {
               supportingText?: T;
             };
         figure?: T;
+        lifecycle?:
+          | T
+          | {
+              title?: T;
+              intro?: T;
+              phases?:
+                | T
+                | {
+                    step?: T;
+                    title?: T;
+                    subtitle?: T;
+                    activities?:
+                      | T
+                      | {
+                          value?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              engageTitle?: T;
+              engageModes?:
+                | T
+                | {
+                    value?: T;
+                    id?: T;
+                  };
+              note?: T;
+            };
       };
   serviceTemplate?:
     | T

@@ -1,5 +1,5 @@
 import type { Field, GlobalConfig } from "payload";
-import { socialPlatforms, weekdays, isMapsUrl } from "../../content/schema";
+import { illustrationNames, socialPlatforms, weekdays, isMapsUrl } from "../../content/schema";
 import { SEO_ROUTES } from "../../content/mappers";
 import { adminOnly } from "../access";
 import { approvalFlag, finalCtaGroup, httpsUrlField, mediaField, stringList } from "../fields";
@@ -312,7 +312,8 @@ export const Home: GlobalConfig = {
           required: true,
           textarea: true,
         }),
-        titled("pillars", "Pillars"),
+        titled("pillars", "See, Connect, Deliver"),
+        area("mission"),
       ],
     },
     {
@@ -326,7 +327,7 @@ export const Home: GlobalConfig = {
     },
     {
       name: "deliveryApproach",
-      label: "Delivery approach",
+      label: "How we work",
       type: "group",
       fields: [
         text("title"),
@@ -336,6 +337,7 @@ export const Home: GlobalConfig = {
           type: "array",
           fields: [text("step"), text("title"), area("description")],
         },
+        titled("values", "What the method protects"),
       ],
     },
     text("selectedProofTitle", "Selected proof: title"),
@@ -358,7 +360,25 @@ export const Home: GlobalConfig = {
         text("title"),
         area("description"),
         text("officeArea", "Office area"),
-        stringList("sectors", "Sectors", "One sector per row.", { required: true }),
+        {
+          name: "sectors",
+          label: "Sectors",
+          type: "array",
+          minRows: 1,
+          admin: {
+            description: "One sector per row. A sector with an illustration also shows as a tile.",
+          },
+          // The column stays "value" (as when sectors were a plain list), so no data moves.
+          fields: [
+            text("value", "Sector"),
+            {
+              name: "illustration",
+              type: "select",
+              options: illustrationNames.map((value) => ({ label: value, value })),
+              admin: { description: "Optional brand illustration from public/illustrations." },
+            },
+          ],
+        },
       ],
     },
     finalCtaGroup(),
@@ -416,6 +436,21 @@ export const About: GlobalConfig = {
       fields: [text("period"), text("role"), area("context")],
     },
     {
+      name: "experience",
+      label: "Industry experience",
+      type: "group",
+      fields: [
+        text("title"),
+        area("intro"),
+        area("note", "Note", "Says the experience includes work before the company was founded."),
+        {
+          name: "items",
+          type: "array",
+          fields: [text("year"), text("title"), area("description")],
+        },
+      ],
+    },
+    {
       name: "media",
       label: "Images",
       type: "group",
@@ -454,6 +489,35 @@ export const Pages: GlobalConfig = {
         area("lead"),
         finalCtaGroup(),
         mediaField("figure", "Image", "Wide image under the page header."),
+        {
+          name: "lifecycle",
+          label: "Where we support you",
+          type: "group",
+          fields: [
+            text("title"),
+            area("intro"),
+            {
+              name: "phases",
+              type: "array",
+              // Short table names: the generated ones pass Postgres's 63-character limit.
+              dbName: "svc_lc_phases",
+              fields: [
+                text("step"),
+                text("title"),
+                text("subtitle"),
+                {
+                  ...stringList("activities", "Activities", "One activity per row.", {
+                    required: true,
+                  }),
+                  dbName: "svc_lc_activities",
+                },
+              ],
+            },
+            text("engageTitle", "Engage at any phase: title"),
+            stringList("engageModes", "Ways to engage", "One per row.", { required: true }),
+            area("note"),
+          ],
+        },
       ],
     },
     {
