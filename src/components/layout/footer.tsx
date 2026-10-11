@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import { Container } from "./container";
 import { Wordmark } from "./wordmark";
 import { Link } from "@/components/primitives/link";
@@ -116,7 +117,18 @@ export function Footer({ site, services, className }: FooterProps) {
           </FooterColumn>
         </div>
 
-        <DrawingRule onDark className="mt-20" />
+        <div className="mt-14 w-full overflow-hidden select-none" aria-hidden="true">
+          <Image
+            src="/images/wave-of-transformation.svg"
+            alt=""
+            width={1610}
+            height={435}
+            unoptimized
+            className="h-auto max-h-36 w-full object-contain sm:max-h-48 lg:max-h-56"
+          />
+        </div>
+
+        <DrawingRule onDark className="mt-10" />
         <dl className="border-rule-dark grid grid-cols-2 border-b border-l sm:grid-cols-3 lg:grid-cols-6">
           {titleBlock.map((cell) => (
             <div key={cell.label} className="border-rule-dark border-t border-r px-3 py-3">

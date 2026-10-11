@@ -5,9 +5,46 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { GLOBE_LAND_POINTS, PERTH_COORDS } from "./globe-data.generated";
 
-export type DotGlobeProps = {
-  /** Visible pin label. */
+export const KERALA_COORDS = { lat: 9.94, lon: 76.27 } as const;
+export const SAUDI_COORDS = { lat: 24.71, lon: 46.68 } as const;
+
+export type GlobeMarker = {
+  id: string;
   label: string;
+  lat: number;
+  lon: number;
+  leadDirection?: "left" | "right";
+};
+
+export const DEFAULT_GLOBE_MARKERS: readonly GlobeMarker[] = [
+  {
+    id: "perth",
+    label: "Perth, WA",
+    lat: PERTH_COORDS.lat,
+    lon: PERTH_COORDS.lon,
+    leadDirection: "left",
+  },
+  {
+    id: "kerala",
+    label: "Kerala, India",
+    lat: KERALA_COORDS.lat,
+    lon: KERALA_COORDS.lon,
+    leadDirection: "left",
+  },
+  {
+    id: "saudi",
+    label: "Saudi Arabia",
+    lat: SAUDI_COORDS.lat,
+    lon: SAUDI_COORDS.lon,
+    leadDirection: "left",
+  },
+];
+
+export type DotGlobeProps = {
+  /** Visible pin label for the primary Perth terminal (defaults to "Perth, WA"). */
+  label?: string;
+  /** Custom list of location markers pinned to the globe. Defaults to Perth, Kerala, and Saudi Arabia. */
+  markers?: readonly GlobeMarker[];
   className?: string;
 };
 
@@ -38,20 +75,76 @@ const IN_VIEW_THRESHOLD = 0.4;
 
 const emptySubscribe = () => () => {};
 
+// Pre-compute accented regions once at module load
+// Type 2 = primary accent (Australia, Kerala, and Saudi Arabia)
+const PROCESSED_LAND_POINTS: readonly [number, number, number][] = GLOBE_LAND_POINTS.map(
+  ([lat, lon, type]) => {
+    const isKerala = lat >= 8 && lat <= 13 && lon >= 74.5 && lon <= 78;
+    const isSaudi = lat >= 16 && lat <= 32 && lon >= 36 && lon <= 55;
+    const isHighlighted = type === 2 || isKerala || isSaudi;
+    return [lat, lon, isHighlighted ? 2 : 1] as const;
+  },
+);
+
+function getInitialMarkerStyle(marker: GlobeMarker, isDragging: boolean): React.CSSProperties {
+  const mPhi = marker.lat * DEG2RAD;
+  const mLam = marker.lon * DEG2RAD - START_LON;
+  const mx = Math.cos(mPhi) * Math.sin(mLam);
+  const my = COS_TILT * Math.sin(mPhi) - SIN_TILT * Math.cos(mPhi) * Math.cos(mLam);
+  const mz = SIN_TILT * Math.sin(mPhi) + COS_TILT * Math.cos(mPhi) * Math.cos(mLam);
+
+  if (mz > 0) {
+    const screenX = CX + mx * RADIUS;
+    const screenY = CY - my * RADIUS;
+    const opacity = mz < 0.18 ? Math.max(0, mz / 0.18) : 1;
+    const xPct = ((screenX / GLOBE_SIZE) * 100).toFixed(2);
+    const yPct = ((screenY / GLOBE_SIZE) * 100).toFixed(2);
+
+    return {
+      "--pin-x": `${xPct}%`,
+      "--pin-y": `${yPct}%`,
+      opacity: opacity > 0.05 ? opacity : 0,
+      visibility: opacity > 0.05 ? "visible" : "hidden",
+      transition: isDragging ? "none" : "opacity 0.15s ease-out",
+    } as React.CSSProperties;
+  }
+
+  return {
+    "--pin-x": "50%",
+    "--pin-y": "50%",
+    opacity: 0,
+    visibility: "hidden",
+    transition: isDragging ? "none" : "opacity 0.15s ease-out",
+  } as React.CSSProperties;
+}
+
 /**
  * Revolving dot-matrix globe matching the hero power plant's telemetry aesthetic.
  * Renders an orthographic sphere of precomputed land dots on HTML5 canvas at 60fps,
- * revolving smoothly around its polar axis with Perth pinned as a terminal marker.
+ * revolving smoothly around its polar axis with location terminals pinned.
  *
- * It stays still on Australia until it first comes into view, holds there for a moment, then
+ * It stays still on Australia when it first comes into view, holds there for a moment, then
  * starts to spin. Later visits carry on from wherever it was. Nothing renders while off screen.
  *
  * Supports drag-to-inspect and honors prefers-reduced-motion.
  */
-export function DotGlobe({ label, className }: DotGlobeProps) {
+export function DotGlobe({ label, markers: customMarkers, className }: DotGlobeProps) {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const pinRef = React.useRef<HTMLSpanElement | null>(null);
+  const pinMapRef = React.useRef<Map<string, HTMLSpanElement>>(new Map());
+
+  const resolvedMarkers = React.useMemo(() => {
+    if (customMarkers && customMarkers.length > 0) return customMarkers;
+    if (label) {
+      return DEFAULT_GLOBE_MARKERS.map((m) => (m.id === "perth" ? { ...m, label } : m));
+    }
+    return DEFAULT_GLOBE_MARKERS;
+  }, [customMarkers, label]);
+
+  const markersRef = React.useRef(resolvedMarkers);
+  React.useEffect(() => {
+    markersRef.current = resolvedMarkers;
+  }, [resolvedMarkers]);
 
   // React 18/19 safe client hydration flag without cascading render effect
   const isClient = React.useSyncExternalStore(
@@ -175,8 +268,8 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
 
       // 4. Dot-matrix land points (high density, ~10,400 points)
       let lastFill = "";
-      for (let i = 0; i < GLOBE_LAND_POINTS.length; i++) {
-        const pt = GLOBE_LAND_POINTS[i];
+      for (let i = 0; i < PROCESSED_LAND_POINTS.length; i++) {
+        const pt = PROCESSED_LAND_POINTS[i];
         if (!pt) continue;
         const [lat, lon, type] = pt;
         const phi = lat * DEG2RAD;
@@ -202,28 +295,34 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
         }
       }
 
-      // 5. Compute Perth's position on the revolving sphere
-      const pPhi = PERTH_COORDS.lat * DEG2RAD;
-      const pLam = PERTH_COORDS.lon * DEG2RAD - rotLon;
-      const px = Math.cos(pPhi) * Math.sin(pLam);
-      const py = COS_TILT * Math.sin(pPhi) - SIN_TILT * Math.cos(pPhi) * Math.cos(pLam);
-      const pz = SIN_TILT * Math.sin(pPhi) + COS_TILT * Math.cos(pPhi) * Math.cos(pLam);
+      // 5. Compute each pin's position on the revolving sphere
+      const currentMarkers = markersRef.current;
+      for (let i = 0; i < currentMarkers.length; i++) {
+        const m = currentMarkers[i];
+        if (!m) continue;
+        const pinEl = pinMapRef.current.get(m.id);
+        if (!pinEl) continue;
 
-      if (pinRef.current) {
-        if (pz > 0) {
-          const screenX = CX + px * RADIUS;
-          const screenY = CY - py * RADIUS;
-          const opacity = pz < 0.18 ? Math.max(0, pz / 0.18) : 1;
+        const mPhi = m.lat * DEG2RAD;
+        const mLam = m.lon * DEG2RAD - rotLon;
+        const mx = Math.cos(mPhi) * Math.sin(mLam);
+        const my = COS_TILT * Math.sin(mPhi) - SIN_TILT * Math.cos(mPhi) * Math.cos(mLam);
+        const mz = SIN_TILT * Math.sin(mPhi) + COS_TILT * Math.cos(mPhi) * Math.cos(mLam);
+
+        if (mz > 0) {
+          const screenX = CX + mx * RADIUS;
+          const screenY = CY - my * RADIUS;
+          const opacity = mz < 0.18 ? Math.max(0, mz / 0.18) : 1;
           const xPct = ((screenX / GLOBE_SIZE) * 100).toFixed(2);
           const yPct = ((screenY / GLOBE_SIZE) * 100).toFixed(2);
 
-          pinRef.current.style.setProperty("--pin-x", `${xPct}%`);
-          pinRef.current.style.setProperty("--pin-y", `${yPct}%`);
-          pinRef.current.style.opacity = `${opacity}`;
-          pinRef.current.style.visibility = opacity > 0.05 ? "visible" : "hidden";
+          pinEl.style.setProperty("--pin-x", `${xPct}%`);
+          pinEl.style.setProperty("--pin-y", `${yPct}%`);
+          pinEl.style.opacity = `${opacity}`;
+          pinEl.style.visibility = opacity > 0.05 ? "visible" : "hidden";
         } else {
-          pinRef.current.style.opacity = "0";
-          pinRef.current.style.visibility = "hidden";
+          pinEl.style.opacity = "0";
+          pinEl.style.visibility = "hidden";
         }
       }
 
@@ -287,13 +386,7 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
     isDraggingRef.current = false;
   };
 
-  const initialPinStyle = {
-    "--pin-x": "44.14%",
-    "--pin-y": "56.08%",
-    opacity: 1,
-    visibility: "visible",
-    transition: isDragging ? "none" : "opacity 0.15s ease-out",
-  } as React.CSSProperties;
+  const labelsText = resolvedMarkers.map((m) => m.label).join(", ");
 
   return (
     <div
@@ -313,14 +406,14 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
       onMouseLeave={() => {
         isHoveredRef.current = false;
       }}
-      aria-label="Interactive revolving dot-matrix globe with Perth pinned. Drag horizontally to rotate."
+      aria-label={`Interactive revolving dot-matrix globe with ${labelsText} pinned. Drag horizontally to rotate.`}
       role="img"
     >
       {/* SSR / Fallback image */}
       {!isClient && (
         <Image
           src="/dither/globe-perth.svg"
-          alt="Dot-matrix globe turned to Australia, with Perth marked on the west coast."
+          alt={`Dot-matrix globe turned to Australia, with ${labelsText} marked.`}
           width={GLOBE_SIZE}
           height={GLOBE_SIZE}
           unoptimized
@@ -337,13 +430,27 @@ export function DotGlobe({ label, className }: DotGlobeProps) {
         className={cn("h-auto w-full select-none", !isClient && "hidden")}
       />
 
-      {/* Pinned Perth Terminal and Label */}
-      <span ref={pinRef} className="globe-pin" style={initialPinStyle} aria-hidden="true">
-        <span className="globe-pin-lead" />
-        <span className="globe-pin-label text-small text-ink-900 font-mono font-medium">
-          {label}
+      {/* Pinned Terminals and Labels */}
+      {resolvedMarkers.map((marker) => (
+        <span
+          key={marker.id}
+          ref={(el) => {
+            if (el) {
+              pinMapRef.current.set(marker.id, el);
+            } else {
+              pinMapRef.current.delete(marker.id);
+            }
+          }}
+          className={cn("globe-pin", marker.leadDirection === "right" && "globe-pin--right")}
+          style={getInitialMarkerStyle(marker, isDragging)}
+          aria-hidden="true"
+        >
+          <span className="globe-pin-lead" />
+          <span className="globe-pin-label text-small text-ink-900 font-mono font-medium">
+            {marker.label}
+          </span>
         </span>
-      </span>
+      ))}
     </div>
   );
 }

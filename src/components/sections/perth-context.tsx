@@ -14,7 +14,7 @@ export type PerthContextProps = {
 
 /**
  * Composed like the hero: the statement and a particulars panel on the left, the dot-matrix
- * globe rising from the bottom-right edge with Perth pinned.
+ * globe rising from the bottom-right edge with Perth, Kerala, and Saudi Arabia pinned.
  */
 export function PerthContext({ perthContext }: PerthContextProps) {
   return (

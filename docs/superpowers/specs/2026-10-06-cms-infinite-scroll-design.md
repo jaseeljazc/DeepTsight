@@ -15,9 +15,9 @@ button; nothing about who can read what changes.
 
 ### Owner decisions (conversation, 2026-10-06)
 
-| #   | Decision                                                                                                           |
-| --- | ------------------------------------------------------------------------------------------------------------------ |
-| D1  | Auto-load on scroll, keeping Payload's own list views (not rebuilt lists, not a "Load more"-only button).          |
+| #   | Decision                                                                                                               |
+| --- | ---------------------------------------------------------------------------------------------------------------------- |
+| D1  | Auto-load on scroll, keeping Payload's own list views (not rebuilt lists, not a "Load more"-only button).              |
 | D2  | Applies to every admin list table, including the audit log. A shared helper means a new collection gets it by default. |
 
 ## 2. Findings in Payload 3.90.2 (read from the installed code)

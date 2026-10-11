@@ -827,6 +827,17 @@
     white-space: nowrap;
     transform: translateY(-50%);
   }
+
+  .globe-pin--right .globe-pin-lead {
+    left: 100%;
+    right: auto;
+    transform-origin: left center;
+  }
+
+  .globe-pin--right .globe-pin-label {
+    left: calc(100% + var(--globe-lead) + 0.375rem);
+    right: auto;
+  }
 }
 
 /*
