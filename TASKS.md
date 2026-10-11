@@ -16,9 +16,9 @@ something listed there, tick it there too. The agent-level detail for each item 
 
 Client-dependent. Chase these in parallel with Phase 1; several block later phases.
 
-- [ ] Confirm name capitalisation: DeepTsight vs DeepTSight (OPEN-01)
+- [x] Confirm name capitalisation: DeepTsight vs DeepTSight (OPEN-01) — _the official logo (2026-10-11) spells DeepTsight_
 - [ ] Confirm whether "Consulting" appears in nav and page titles (OPEN-02)
-- [ ] **Sample the navy from the supplied logo file; replace `--ink-800`; regenerate the ink ramp** (OPEN-10) — _blocks final palette sign-off_
+- [x] **Sample the navy from the supplied logo file; replace `--ink-800`; regenerate the ink ramp** (OPEN-10) — _2026-10-11: the logo has black text and a `#005BAA` mark, no navy; ink unchanged, the mark blue became the primary_
 - [ ] Present the design system as a proposal; get palette and typeface approval (OPEN-11). _The accent is resolved: the client primary is `#0E50ED` (Q-04)_
 - [x] Confirm real business address, phone, email, ABN, LinkedIn — replace the placeholders in `site.ts` _(2026-09-30: from the founder file; no address is published, LinkedIn is the personal profile until the company page exists)_
 - [ ] Confirm domain, DNS control, registrar, launch date (OPEN-12)
@@ -304,7 +304,7 @@ Each item mirrors a line in `pending_work.md`. Tick both when done.
 
 **Client inputs (blocked; don't invent values, CLAUDE.md §3)**
 
-- [ ] Logo: add it to `public/`, sample its darkest colour for `ink-900`, re-run `pnpm check:content` (OPEN-10)
+- [x] Logo: add it to `public/`, sample its darkest colour for `ink-900`, re-run `pnpm check:content` (OPEN-10) — _`public/brand/`, 2026-10-11_
 - [ ] Founder portrait: replace `public/images/founder-portrait.jpg` with a real photograph, update `img-portrait-founder` in `media.ts` and the caption in `about.ts`. Never generate it
 - [ ] Photography: for each image in `docs/image-prompts/ALL_PROMPTS.md`, replace the file in `public/images/` or fill an `imageSlotSource` slot; set source, licence and rights in `media.ts`. Generated images stay disclosed ("Representative image")
 - [ ] Selected proof: fill the two `home.ts` proof items; set `disclosureApproved: true` only with written permission (FR-15)
@@ -466,3 +466,4 @@ Record every judgement call the documents did not cover: what was chosen and why
 - 2026-10-05: Perth globe waits 100 ms (was 1 s) on Australia after it first scrolls into view before it starts to spin (START_HOLD_MS in dot-globe.tsx), at the owner's request.
 - 2026-10-05: The service wiring that ends at "One accountable practitioner" now draws over about 25% more scroll distance (trunk lands at 25rem, was 20rem; each wire and the junction scaled to match, stagger kept), at the owner's request. A larger stretch would end the trunk behind the sticky header on short screens.
 - 2026-10-11: Primary changed from `#0E50ED` to `#005BAA`, the blue of the official logo, at the owner's request, so the site, logo and brand illustrations share one blue. Derived tokens: `primary-deep` `#004A8C`, `primary-on-dark` `#80ADD4`, dot ramp `#D9E6F2` / `#9EC1DF` / `#4C8CC4` (tints of the new blue). The hero plant and the globe now read their colours from `colorTokens` instead of hard-coded hex. All contrast pairs pass (`scripts/check-contrast.ts`).
+- 2026-10-11: Official logo pack added to `public/brand/` unchanged. `Wordmark` now renders the logo image (colour on light, white on the ink band; heights `--spacing-logo` 1.75rem, `--spacing-logo-lg` 2.25rem in the footer); the typeset wordmark and its tokens are gone. "Consulting" is no longer beside the logo, because the logo does not carry it (OPEN-02 stays open for nav and page titles). Favicon `src/app/icon.svg` (32px mark) and `apple-icon.png` (64px mark at 4x). CMS login uses the colour logo, the dark sidebar the white logo, the collapsed sidebar the mark. The share image shows the logo.

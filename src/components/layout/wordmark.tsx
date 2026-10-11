@@ -1,38 +1,31 @@
 import * as React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export type WordmarkProps = {
   onDark?: boolean;
+  /** `lg` in the footer; the header, menu and 404 use the default. */
+  size?: "default" | "lg";
   className?: string;
 };
 
+/* The official logo files (supplied 2026-10-11, public/brand), used unchanged. Their artboard is
+   400.62 × 78.87; width and height below keep that ratio, CSS sets the rendered height. */
+const LOGO_WIDTH = 401;
+const LOGO_HEIGHT = 79;
+
 /**
- * Typeset wordmark. Stands in for the supplied logo file until it is added to the repo.
- * TODO(CLIENT): replace with the approved logo artwork (OPEN-01, OPEN-02, OPEN-10).
+ * The DeepTsight logo: the colour logo on light grounds, the white logo on the ink band.
  */
-export function Wordmark({ onDark = false, className }: WordmarkProps) {
+export function Wordmark({ onDark = false, size = "default", className }: WordmarkProps) {
   return (
-    <span className={cn("flex items-baseline gap-2", className)}>
-      <span
-        aria-hidden="true"
-        className="marker-square bg-primary size-wordmark-mark self-center"
-      />
-      <span
-        className={cn(
-          "font-display text-wordmark font-semibold",
-          onDark ? "text-on-dark" : "text-ink-900",
-        )}
-      >
-        DeepTsight
-      </span>
-      <span
-        className={cn(
-          "xs:inline text-small hidden",
-          onDark ? "text-on-dark-muted" : "text-steel-600",
-        )}
-      >
-        Consulting
-      </span>
-    </span>
+    <Image
+      src={onDark ? "/brand/deeptsight-logo-white.svg" : "/brand/deeptsight-logo-horizontal.svg"}
+      alt="DeepTsight"
+      width={LOGO_WIDTH}
+      height={LOGO_HEIGHT}
+      unoptimized
+      className={cn("w-auto select-none", size === "lg" ? "h-logo-lg" : "h-logo", className)}
+    />
   );
 }

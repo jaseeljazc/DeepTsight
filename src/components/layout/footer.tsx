@@ -42,7 +42,7 @@ export function Footer({ site, services, className }: FooterProps) {
       <Container className="pt-20 pb-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-12">
           <div className="md:col-span-2 lg:col-span-4">
-            <Wordmark onDark />
+            <Wordmark onDark size="lg" />
             <p className="text-small max-w-prose-sm mt-5">{site.tagline}</p>
           </div>
 

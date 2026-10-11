@@ -4,7 +4,7 @@ import { ArrowUpRight, Globe, LogOut } from "lucide-react";
 import { EntityType, groupNavItems, type EntityToGroup } from "@payloadcms/ui/shared";
 import type { PayloadRequest, ServerProps } from "payload";
 import { isAdmin } from "../access";
-import { Icon } from "../graphics/logo";
+import { LogoOnDark } from "../graphics/logo";
 import { labelText } from "./label";
 import { groupEntries, type NavEntry } from "./nav-groups";
 import { NavClose, NavLinks, NavShell } from "./nav-client";
@@ -55,9 +55,7 @@ export async function AdminNav(props: AdminNavProps) {
     <NavShell>
       <div className="dts-nav__top">
         <Link className="dts-brand" href={ADMIN_ROUTE} prefetch={false}>
-          <Icon />
-          <span className="dts-brand__name">DeepTsight</span>
-          <span className="dts-brand__sub">CMS</span>
+          <LogoOnDark />
         </Link>
         <NavClose />
       </div>

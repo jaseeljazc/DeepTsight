@@ -521,20 +521,14 @@ html[data-theme="light"] .nav__scroll::-webkit-scrollbar-thumb {
   color: #ffffff;
   text-decoration: none;
 }
-.dts-brand__name {
-  font-family: "Archivo", Arial, sans-serif;
-  font-size: 1.25rem;
-  font-weight: 600;
+.dts-brand__logo {
+  display: block;
+  width: auto;
+  height: 26px;
 }
 .dts-brand__sub {
   color: var(--dts-nav-caption);
   font-size: 0.875rem;
-}
-.dts-brand .dts-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  font-size: 1rem;
 }
 .dts-nav__close {
   display: none;
@@ -703,17 +697,11 @@ html[data-theme="light"] .nav a.dts-nav__signout:hover {
   font-family: "Archivo", Arial, sans-serif;
   color: var(--dts-ink);
 }
-.dts-wordmark__marker {
+.dts-wordmark__logo {
+  display: block;
   align-self: center;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  background: var(--dts-primary);
-}
-.dts-wordmark__name {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1;
+  width: auto;
+  height: 30px;
 }
 .dts-wordmark__sub {
   font-family: "IBM Plex Sans", Arial, sans-serif;
@@ -721,17 +709,9 @@ html[data-theme="light"] .nav a.dts-nav__signout:hover {
   color: var(--dts-muted);
 }
 .dts-icon {
-  display: grid;
-  place-items: center;
+  display: block;
   width: 22px;
   height: 22px;
-  border-radius: 6px;
-  background: var(--dts-primary);
-  color: #ffffff;
-  font-family: "Archivo", Arial, sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1;
 }
 
 /* Inbox counters above the enquiry list (src/cms/views/inbox-summary.tsx) */

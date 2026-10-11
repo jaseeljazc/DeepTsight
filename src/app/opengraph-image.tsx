@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getSite } from "@/content";
 import { colorTokens as c } from "@/styles/tokens.generated";
@@ -16,6 +18,9 @@ export const contentType = "image/png";
  */
 export default async function Image() {
   const site = await getSite();
+  // The official logo file, unchanged (public/brand). next/og takes it as a data URI.
+  const logo = await readFile(path.join(process.cwd(), "public/brand/deeptsight-logo-horizontal.svg"));
+  const logoSrc = `data:image/svg+xml;base64,${logo.toString("base64")}`;
   return new ImageResponse(
     <div
       style={{
@@ -29,10 +34,9 @@ export default async function Image() {
         color: c.ink900,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-        <div style={{ width: "16px", height: "16px", backgroundColor: c.primary }} />
-        <span style={{ fontSize: "30px", fontWeight: 600, color: c.ink900 }}>DeepTsight</span>
-        <span style={{ fontSize: "22px", color: c.steel600 }}>Consulting</span>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- next/og renders plain img only */}
+        <img src={logoSrc} alt="DeepTsight" width={305} height={60} />
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>

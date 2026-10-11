@@ -5,7 +5,7 @@ Ticked items are done.
 
 ## Needed from the client
 
-- [ ] Logo file
+- [x] Logo file (official logo pack added 2026-10-11)
 - [ ] Real photo of Deepak (the current portrait is not him)
 - [ ] Real photos to replace the AI images (prompts are in `docs/image-prompts/`)
 - [ ] Two anonymised project examples for the home page

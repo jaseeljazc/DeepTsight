@@ -119,13 +119,12 @@ build. The contrast check reads `globals.css` directly.
 
 ## 1. Status of this system
 
-> **Proposed, pending brand confirmation.** The client supplied a logo file with no guidelines,
-> and the logo is not yet in the repository. The wordmark is typeset (`Wordmark` component) and
-> `ink-900` stands in for the brand navy.
+> **Logo in place (11 October 2026).** The client's official logo pack is in `public/brand/`
+> (horizontal, vertical, black, white and the mark), used unchanged by the `Wordmark` component, the
+> CMS and the browser icon (`src/app/icon.svg`, `apple-icon.png`).
 
-**Blocking action (OPEN-10):** when the logo file is added, sample its darkest colour. If it
-reads as navy rather than anthracite, move `ink-900` towards it, keeping the same lightness, and
-re-run `pnpm check:content`. The rest of the palette does not change.
+**OPEN-10, resolved:** the logo's darkest colour is plain black text beside the `#005BAA` mark; it
+holds no navy, so `ink-900` stays anthracite. The mark's blue became the primary (§3.4).
 
 ---
 
@@ -335,7 +334,7 @@ page sections in `src/components/sections`.
 | `Placeholder`, `MarkedText`, `isPlaceholder` | Visibly unfinished content (dashed outline, `[PLACEHOLDER]`). `MarkedText` marks any content string carrying a marker.                                                                                                                             |
 | `PageHeader`                                 | Interior page opening: breadcrumb, drawing rule, H1, lead and optional aside.                                                                                                                                                                      |
 | `AnchorNav`                                  | Sticky contents rail with numbered entries and `aria-current="location"`.                                                                                                                                                                          |
-| `Wordmark`                                   | Typeset wordmark with a primary terminal marker. Stands in for the logo.                                                                                                                                                                           |
+| `Wordmark`                                   | The official logo: the colour horizontal logo on light grounds, the white logo on the ink band (`public/brand`). Height from `h-logo` / `h-logo-lg`. Never recoloured or redrawn.                                                                  |
 
 ---
 
