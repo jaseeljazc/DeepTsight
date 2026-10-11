@@ -1,7 +1,7 @@
 /**
  * High-definition dithered dot-matrix vector paths for the power plant cooling towers ONLY.
  * Smooth hyperbolic flanks with all non-tower base projections cleanly removed.
- * Rendered in the DeepTsight electric brand blue color palette (#0e50ed).
+ * Rendered in the DeepTsight electric brand blue color palette.
  */
 export const DITHER_WIDTH = 770.0;
 export const DITHER_HEIGHT = 728.0;

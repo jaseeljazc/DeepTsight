@@ -82,7 +82,7 @@ The rest of this section comes from `DESIGN.md`. Violating any of it is a defect
   `src/styles/tokens.generated.ts`, which `pnpm tokens` / every build regenerates from `globals.css`.
   Never edit that file by hand.
 - **Icons:** 1.5px stroke line icons only, `ink-700` or `ink-900` by default, from the single approved set.
-- **Primary `#0E50ED`** (client brand colour) marks actions, label plates, markers, active states and
+- **Primary `#005BAA`** (client brand colour, the logo blue) marks actions, label plates, markers, active states and
   focus. Never a section fill or body copy. On the dark band use `primary-on-dark`.
 - Mono is used sparingly, for data. It is not a decorative label font. Do not add an uppercase mono
   eyebrow above every section heading.

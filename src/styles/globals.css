@@ -32,16 +32,16 @@
   --color-rule: #c9cecb;
   --color-rule-dark: #3d474b;
 
-  --color-primary: #0e50ed;
-  --color-primary-deep: #0a3fc2;
-  --color-primary-on-dark: #7aa2ff;
+  --color-primary: #005baa;
+  --color-primary-deep: #004a8c;
+  --color-primary-on-dark: #80add4;
   --color-on-primary: #ffffff;
 
   /* Dot-matrix tone ramp (hero plant, globe and every dithered figure). Illustration only,
      never text or UI; the deepest tone is --color-primary. */
-  --color-dot-faint: #dce5ff;
-  --color-dot-light: #a4beff;
-  --color-dot-mid: #4f7eff;
+  --color-dot-faint: #d9e6f2;
+  --color-dot-light: #9ec1df;
+  --color-dot-mid: #4c8cc4;
 
   --color-on-dark: #e6e9e8;
   --color-on-dark-muted: #a3adb1;

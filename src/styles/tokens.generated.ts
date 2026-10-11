@@ -13,13 +13,13 @@ export const colorTokens = {
   control: "#737C80",
   rule: "#C9CECB",
   ruleDark: "#3D474B",
-  primary: "#0E50ED",
-  primaryDeep: "#0A3FC2",
-  primaryOnDark: "#7AA2FF",
+  primary: "#005BAA",
+  primaryDeep: "#004A8C",
+  primaryOnDark: "#80ADD4",
   onPrimary: "#FFFFFF",
-  dotFaint: "#DCE5FF",
-  dotLight: "#A4BEFF",
-  dotMid: "#4F7EFF",
+  dotFaint: "#D9E6F2",
+  dotLight: "#9EC1DF",
+  dotMid: "#4C8CC4",
   onDark: "#E6E9E8",
   onDarkMuted: "#A3ADB1",
   error: "#A4271B",
@@ -29,18 +29,4 @@ export const colorTokens = {
 export type ColorToken = keyof typeof colorTokens;
 
 /** Type-scale names, so cn() knows text-h2 etc. are sizes, not colours. */
-export const fontSizeTokens = [
-  "display",
-  "h1",
-  "h2",
-  "h3-lg",
-  "h3",
-  "menu",
-  "wordmark",
-  "lead",
-  "body",
-  "small",
-  "field",
-  "caption",
-  "inline-mono",
-] as const;
+export const fontSizeTokens = ["display", "h1", "h2", "h3-lg", "h3", "menu", "wordmark", "lead", "body", "small", "field", "caption", "inline-mono"] as const;

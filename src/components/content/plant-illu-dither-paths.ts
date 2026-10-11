@@ -1,6 +1,6 @@
 /**
  * High-definition dithered dot-matrix vector paths for the industrial plant telemetry (plant-illu.png).
- * Modeled in the exact design language of the DeepTsight electric brand blue palette (#0e50ed / primary).
+ * Modeled in the exact design language of the DeepTsight electric brand blue palette.
  *
  * 160x90 grid with 7-unit cells.
  */

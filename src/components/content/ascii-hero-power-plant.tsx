@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { colorTokens } from "@/styles/tokens.generated";
 import {
   DITHER_WIDTH,
   DITHER_HEIGHT,
@@ -16,7 +17,7 @@ export type AsciiHeroPowerPlantProps = {
 
 /**
  * Dithered dot-matrix vector rendering of the Western Australian power plant cooling towers
- * in the DeepTsight electric brand blue palette (#0e50ed / primary).
+ * in the DeepTsight electric brand blue palette (the primary and the dot tokens in globals.css).
  *
  * Inspired by technical ordered-dither telemetry displays.
  */
@@ -51,16 +52,16 @@ export function AsciiHeroPowerPlant({ className, align = "right" }: AsciiHeroPow
 
           <g mask="url(#hero-fade-mask)">
             {/* Layer 1: Background engineering dot matrix (faint brand blue tint) */}
-            <path d={DITHER_BG_PATH} fill="#dce5ff" opacity="0.6" />
+            <path d={DITHER_BG_PATH} fill={colorTokens.dotFaint} opacity="0.6" />
 
             {/* Layer 2: Highlight dots (periwinkle tint) */}
-            <path d={DITHER_LIGHT_PATH} fill="#a4beff" opacity="0.8" />
+            <path d={DITHER_LIGHT_PATH} fill={colorTokens.dotLight} opacity="0.8" />
 
             {/* Layer 3: Midtone dots (medium electric blue) */}
-            <path d={DITHER_MID_PATH} fill="#4f7eff" opacity="0.9" />
+            <path d={DITHER_MID_PATH} fill={colorTokens.dotMid} opacity="0.9" />
 
-            {/* Layer 4: Deep saturated brand primary blue (#0e50ed) */}
-            <path d={DITHER_DEEP_PATH} fill="#0e50ed" />
+            {/* Layer 4: Deep saturated brand primary blue (--color-primary) */}
+            <path d={DITHER_DEEP_PATH} fill={colorTokens.primary} />
           </g>
         </svg>
 

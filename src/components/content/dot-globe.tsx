@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { colorTokens } from "@/styles/tokens.generated";
 import { GLOBE_LAND_POINTS, PERTH_COORDS } from "./globe-data.generated";
 
 export const KERALA_COORDS = { lat: 9.94, lon: 76.27 } as const;
@@ -61,10 +62,10 @@ const COS_TILT = Math.cos(TILT_LAT);
 const SIN_TILT = Math.sin(TILT_LAT);
 
 // Design system token colours
-const COLOR_PRIMARY = "#0E50ED";
-const COLOR_DOT_MID = "#4F7EFF";
-const COLOR_DOT_LIGHT = "#A4BEFF";
-const COLOR_RULE = "#C9CECB";
+const COLOR_PRIMARY = colorTokens.primary;
+const COLOR_DOT_MID = colorTokens.dotMid;
+const COLOR_DOT_LIGHT = colorTokens.dotLight;
+const COLOR_RULE = colorTokens.rule;
 
 // Australia and Perth front and centre (124 degrees longitude)
 const START_LON = 124 * DEG2RAD;
