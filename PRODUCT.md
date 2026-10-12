@@ -57,7 +57,7 @@ details or vulnerability information.
 
 ## Brand Commitments
 
-- Client primary colour `#005BAA` (the logo blue; was `#0E50ED` until 2026-10-11), used for actions, markers, active states and focus.
+- Client primary colour `#0E50ED` (briefly `#005BAA`, the logo blue, on 2026-10-11), used for actions, markers, active states and focus.
 - Tone: technical and direct, calm and assured, specific and credible. No hype words, no fear-based
   cybersecurity messaging, no exaggerated claims.
 - Sentence case for headings, buttons and labels.

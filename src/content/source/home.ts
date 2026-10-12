@@ -185,7 +185,7 @@ export const homeSource: HomeSource = {
       { name: "Water infrastructure", illustration: "sector-water" },
       { name: "Power generation", illustration: "sector-power" },
       { name: "Remote operations", illustration: "sector-remote-operations" },
-      { name: "Critical infrastructure" },
+      { name: "Critical infrastructure", illustration: "sector-critical-infrastructure" },
     ],
   },
   // Capability statement, page 8.

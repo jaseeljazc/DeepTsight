@@ -8,26 +8,29 @@ export type SeeConnectDeliverProps = {
 };
 
 /**
- * The client's See / Connect / Deliver illustration, with each line set under the panel it belongs
- * to. The panels already carry the three words, so from md the headings are for assistive
- * technology only; on a phone the lines stack and the headings show.
+ * The client's See / Connect / Deliver illustration, one panel above each line. The illustration
+ * is a single file, so each panel is the same file cropped to its third (`pillar-art`), which
+ * lets the grid gap, not the artwork, set the space between them. The panels already carry the
+ * three words, so from md the headings are for assistive technology only; on a phone the panels
+ * stack and the headings show.
  */
 export function SeeConnectDeliver({ pillars, className }: SeeConnectDeliverProps) {
   return (
     <div className={cn("border-rule border-t pt-10", className)}>
-      <BrandIllustration
-        name="see-connect-deliver"
-        alt=""
-        sizes="(max-width: 1024px) 100vw, 64rem"
-        className="max-w-illustration mx-auto"
-      />
-      <ul className="max-w-illustration mx-auto mt-4 grid grid-cols-1 gap-6 md:grid-cols-3">
-        {pillars.map((pillar) => (
+      <ul className="max-w-illustration mx-auto grid grid-cols-1 gap-x-16 gap-y-12 md:grid-cols-3">
+        {pillars.map((pillar, index) => (
           <li key={pillar.title} className="md:text-center">
-            <h3 className="font-display text-h3 text-ink-900 font-medium md:sr-only">
+            <div data-pillar={index} className="pillar-art max-w-pillar mx-auto w-full">
+              <BrandIllustration
+                name="see-connect-deliver"
+                alt=""
+                sizes="(max-width: 768px) 36rem, 30rem"
+              />
+            </div>
+            <h3 className="font-display text-h3 text-ink-900 mt-4 font-medium md:sr-only">
               {pillar.title}
             </h3>
-            <p className="text-ink-700 text-body mt-1 md:mt-0">{pillar.description}</p>
+            <p className="text-ink-700 text-body mt-1 md:mt-4">{pillar.description}</p>
           </li>
         ))}
       </ul>

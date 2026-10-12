@@ -32,16 +32,16 @@
   --color-rule: #c9cecb;
   --color-rule-dark: #3d474b;
 
-  --color-primary: #005baa;
-  --color-primary-deep: #004a8c;
-  --color-primary-on-dark: #80add4;
+  --color-primary: #0e50ed;
+  --color-primary-deep: #0a3fc2;
+  --color-primary-on-dark: #7aa2ff;
   --color-on-primary: #ffffff;
 
   /* Dot-matrix tone ramp (hero plant, globe and every dithered figure). Illustration only,
      never text or UI; the deepest tone is --color-primary. */
-  --color-dot-faint: #d9e6f2;
-  --color-dot-light: #9ec1df;
-  --color-dot-mid: #4c8cc4;
+  --color-dot-faint: #dce5ff;
+  --color-dot-light: #a4beff;
+  --color-dot-mid: #4f7eff;
 
   --color-on-dark: #e6e9e8;
   --color-on-dark-muted: #a3adb1;
@@ -114,8 +114,10 @@
   /* 1280px content plus 32px gutters */
   --container-measure: 68ch;
   /* long-form reading */
-  --container-illustration: 64rem;
+  --container-illustration: 40rem;
   /* wide brand illustrations (See / Connect / Deliver, lifecycle) */
+  --container-pillar: 12rem;
+  /* one See, Connect or Deliver panel when the three stack on a phone */
   --container-prose-md: 54ch;
   /* hero lead */
   --container-prose-sm: 40ch;
@@ -346,6 +348,27 @@
       forced-color-adjust: none;
       border: var(--spacing-rule) solid CanvasText;
     }
+  }
+}
+
+/* One third of the See / Connect / Deliver illustration (2552 x 981), shown on its own so the three
+   panels can be spaced apart. The file is only cropped by this box; its shapes are untouched. */
+@utility pillar-art {
+  overflow: hidden;
+  aspect-ratio: 851 / 981;
+
+  & img {
+    width: 300%;
+    max-width: none;
+    height: auto;
+  }
+
+  &[data-pillar="1"] img {
+    margin-left: -100%;
+  }
+
+  &[data-pillar="2"] img {
+    margin-left: -200%;
   }
 }
 

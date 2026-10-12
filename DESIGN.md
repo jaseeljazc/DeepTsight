@@ -6,7 +6,7 @@ disagrees with this file, the implementation is wrong.
 **Design intent: "the engineering record", set in a switchroom.** The site should read like a
 well-made engineering deliverable, such as a design report, a drawing sheet or a commissioning
 dossier. Its materials come from the place the work happens: the light grey of an enclosure
-panel and anthracite ink, with one confident brand blue (`#005BAA`, the blue of the client's logo) marking every action and label. It should feel expensive
+panel and anthracite ink, with one confident brand blue (`#0E50ED`, supplied by the client) marking every action and label. It should feel expensive
 through precision, never through decoration.
 
 Replaced on 24 September 2026. The previous system (navy grounds, signal amber and card grids)
@@ -173,7 +173,7 @@ and so on. Sizes are fluid with `clamp()`.
 
 ## 3. Colour
 
-**Strategy: restrained.** A neutral world with one brand colour, the client primary `#005BAA` (the logo blue). Light theme only.
+**Strategy: restrained.** A neutral world with one brand colour, the client primary `#0E50ED`. Light theme only.
 
 ### 3.1 Grounds
 
@@ -200,9 +200,9 @@ and so on. Sizes are fluid with `clamp()`.
 
 | Token             | Hex       | Use                                                                                                                                                                                                       |
 | ----------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `primary`         | `#005BAA` | Client brand primary. Primary buttons, label plates (white text), terminal markers, active nav and contents rules, checked controls, link-underline hover, focus ring on light grounds, the sequence fill |
-| `primary-deep`    | `#004A8C` | Primary button hover                                                                                                                                                                                      |
-| `primary-on-dark` | `#80ADD4` | Tint of the primary for the dark band and footer: focus ring, sequence lamps, link-underline hover, on-dark button fill (ink text)                                                                        |
+| `primary`         | `#0E50ED` | Client brand primary. Primary buttons, label plates (white text), terminal markers, active nav and contents rules, checked controls, link-underline hover, focus ring on light grounds, the sequence fill |
+| `primary-deep`    | `#0A3FC2` | Primary button hover                                                                                                                                                                                      |
+| `primary-on-dark` | `#7AA2FF` | Tint of the primary for the dark band and footer: focus ring, sequence lamps, link-underline hover, on-dark button fill (ink text)                                                                        |
 | `on-primary`      | `#FFFFFF` | Text on primary                                                                                                                                                                                           |
 | `on-dark`         | `#E6E9E8` | Text on ink                                                                                                                                                                                               |
 | `on-dark-muted`   | `#A3ADB1` | Secondary text on ink                                                                                                                                                                                     |
@@ -211,7 +211,7 @@ and so on. Sizes are fluid with `clamp()`.
 
 **Primary rule:** the primary marks actions, states and the few signature devices. It never fills a
 section or band, never sets body copy, and is never the only cue for a state. On `ink-900` use
-`primary-on-dark`, because `#005BAA` itself is only about 2.4:1 there.
+`primary-on-dark`, because `#0E50ED` itself is only 2.6:1 there.
 
 Tailwind's default palette is removed (`--color-*: initial`). Any class outside this table does
 not compile.
@@ -219,8 +219,9 @@ not compile.
 ### 3.4 Changing the primary
 
 The client supplied `#0E50ED` as the primary on 24 September 2026. On 11 October 2026 the owner
-changed it to `#005BAA`, the blue of the official logo, so the site, the logo and the brand
-illustrations share one blue. If it changes again, update the four `primary*` tokens and the three
+changed it to `#005BAA`, the blue of the official logo. On 12 October 2026 the owner reverted to
+`#0E50ED` for the site, the brand illustrations and the favicon; the official logo files stay
+unchanged and keep their own blue. If it changes again, update the four `primary*` tokens and the three
 `dot-*` tints together and re-run `pnpm check:content`.
 
 ### 3.5 Contrast
@@ -234,9 +235,9 @@ pairs pass.
 | `control` on every ground                                               | 3:1     | lowest is `ground-deep` at about 3.2:1                |
 | `ink-900` focus ring on every ground                                    | 3:1     |                                                       |
 | `on-dark` and `on-dark-muted` on `ink-900` and `ink-800`                | 4.5:1   |                                                       |
-| `primary` on every ground and on white                                  | 4.5:1   | lowest is `ground-deep` at 5.2:1                      |
-| `on-primary` on `primary` and `primary-deep`                            | 4.5:1   | 6.8:1 and 8.9:1                                       |
-| `primary-on-dark` on `ink-900` and `ink-800`                            | 4.5:1   | 6.9:1 and 5.8:1                                       |
+| `primary` on every ground and on white                                  | 4.5:1   | lowest is `ground-deep` at 4.75:1                     |
+| `on-primary` on `primary` and `primary-deep`                            | 4.5:1   | 6.2:1 and 8.4:1                                       |
+| `primary-on-dark` on `ink-900` and `ink-800`                            | 4.5:1   | 6.5:1 and 5.6:1                                       |
 | `ink-900` on `primary-on-dark`                                          | 4.5:1   | on-dark button label                                  |
 
 ---
@@ -378,5 +379,5 @@ changes or the site does. Owner decisions are in the `TASKS.md` decisions log.
 | 8   | Each service has a 1.5px Lucide line icon beside its title (home cards, services list and table, service page heading, related services)                                                                                             | Not covered here. `CLAUDE.md` §4 allows line icons; they sit beside the title, not in icon tiles (§0.2 #4) | Owner decision 2026-10-01 (`REQUIREMENTS.md` FR-45). Icons are placeholders until the client chooses                               |
 | 9   | Generated photographs are approved for public use as captioned "Representative image"; only the founder portrait stays a marked mock                                                                                                 | §9 ("all must be replaced before launch")                                                                  | Owner decision 2026-10-01 (Q-05)                                                                                                   |
 | 10  | Components in use but not listed: `RailTag`, `DotNumeral`, `DotRamp`, `DotGlobe`, `AsciiHeroPowerPlant`, `ServiceIcon`, `Part`. `ConvergenceSchematic` is listed but no longer used                                                  | §8                                                                                                         | Update §8 once items 3–5 are settled                                                                                               |
-| 12  | The client's brand illustrations (one colour, `#005BAA`, white on the ink band) appear on Home (See / Connect / Deliver, sector tiles, How we work), About and each service page. Some contain shields, padlocks, binary and a globe | `CLAUDE.md` §4 (no decorative illustrations), §0.2 #6 (cyber clichés), §9 (photography only)               | Owner decision 2026-10-11: client brand art, used where it explains the words beside it, never as a background pattern or animated |
+| 12  | The client's brand illustrations (one colour, `#0E50ED`, white on the ink band) appear on Home (See / Connect / Deliver, sector tiles, How we work), About and each service page. Some contain shields, padlocks, binary and a globe | `CLAUDE.md` §4 (no decorative illustrations), §0.2 #6 (cyber clichés), §9 (photography only)               | Owner decision 2026-10-11: client brand art, used where it explains the words beside it, never as a background pattern or animated |
 | 11  | Targets use the `min-h-target` token and the container uses `max-w-page` (84rem)                                                                                                                                                     | §6.3 (`min-h-[44px]`) and §4 (`max-w-[1344px]`) name arbitrary values, which lint now forbids              | Wording only; values unchanged                                                                                                     |

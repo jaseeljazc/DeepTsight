@@ -2,7 +2,7 @@
  * CMS admin theme (docs/cms/04_DECISIONS_DEFAULTS.md D-81, D-82).
  *
  * A dashboard-style admin: dark navy sidebar, white top bar, soft white cards on a pale page,
- * coloured icon tiles, rounded corners. The brand blue (#005BAA, the logo blue and the site's primary) marks actions
+ * coloured icon tiles, rounded corners. The brand blue (#0E50ED, the logo blue and the site's primary) marks actions
  * and the active item. The public site's stricter rules (single accent, 2px and 4px corners) apply
  * to the public site only; the admin is a separate internal surface (D-82).
  *
@@ -49,9 +49,9 @@
 :root,
 html[data-theme="light"] {
   /* Brand and status (primary and status mirror src/styles/globals.css) */
-  --dts-primary: #005baa;
-  --dts-primary-deep: #004a8c;
-  --dts-primary-tint: #e5eef7;
+  --dts-primary: #0e50ed;
+  --dts-primary-deep: #0a3fc2;
+  --dts-primary-tint: #e6edff;
   --dts-error: #a4271b;
   --dts-status: #2f6b3a;
   --dts-alert: #d92d20;
@@ -75,8 +75,8 @@ html[data-theme="light"] {
   --dts-nav-caption: #98a3ba;
 
   /* Icon tiles and pills: a tint and the colour drawn on it */
-  --dts-blue-bg: #e5eef7;
-  --dts-blue-fg: #005baa;
+  --dts-blue-bg: #e6edff;
+  --dts-blue-fg: #0e50ed;
   --dts-green-bg: #e1f4e8;
   --dts-green-fg: #17703a;
   --dts-purple-bg: #efe9fd;

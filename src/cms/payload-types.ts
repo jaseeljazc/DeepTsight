@@ -1385,6 +1385,7 @@ export interface Home {
                 | "sector-water"
                 | "sector-power"
                 | "sector-remote-operations"
+                | "sector-critical-infrastructure"
               )
             | null;
           id?: string | null;

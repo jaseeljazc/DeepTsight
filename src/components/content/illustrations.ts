@@ -13,6 +13,11 @@ export const illustrations = {
   "sector-water": { file: "sector-water.svg", width: 2048, height: 2048 },
   "sector-power": { file: "sector-power.svg", width: 1024, height: 1024 },
   "sector-remote-operations": { file: "sector-remote-operations.svg", width: 1024, height: 1024 },
+  "sector-critical-infrastructure": {
+    file: "sector-critical-infrastructure.svg",
+    width: 1024,
+    height: 1024,
+  },
   "see-connect-deliver": { file: "see-connect-deliver.svg", width: 2552, height: 981 },
   "transformation-wave": { file: "transformation-wave.svg", width: 1678, height: 937 },
   "transformation-wave-on-dark": {
@@ -34,6 +39,7 @@ export const sectorIllustrations: Record<SectorIllustrationName, IllustrationKey
   "sector-water": "sector-water",
   "sector-power": "sector-power",
   "sector-remote-operations": "sector-remote-operations",
+  "sector-critical-infrastructure": "sector-critical-infrastructure",
 };
 
 /**

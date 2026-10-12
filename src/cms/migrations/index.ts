@@ -3,6 +3,7 @@ import * as migration_20261001_152658_admin_security from "./20261001_152658_adm
 import * as migration_20261002_064614_cms_content from "./20261002_064614_cms_content";
 import * as migration_20261005_080109_services_share_image from "./20261005_080109_services_share_image";
 import * as migration_20261011_094738_capability_statement_content from "./20261011_094738_capability_statement_content";
+import * as migration_20261012_122631_sector_critical_infrastructure_illustration from "./20261012_122631_sector_critical_infrastructure_illustration";
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20261011_094738_capability_statement_content.up,
     down: migration_20261011_094738_capability_statement_content.down,
     name: "20261011_094738_capability_statement_content",
+  },
+  {
+    up: migration_20261012_122631_sector_critical_infrastructure_illustration.up,
+    down: migration_20261012_122631_sector_critical_infrastructure_illustration.down,
+    name: "20261012_122631_sector_critical_infrastructure_illustration",
   },
 ];

@@ -317,6 +317,7 @@ export const illustrationNames = [
   "sector-water",
   "sector-power",
   "sector-remote-operations",
+  "sector-critical-infrastructure",
 ] as const;
 
 /** Closing call to action as rendered. The button label always comes from `site.ctaLabels`. */
