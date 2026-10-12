@@ -17,7 +17,10 @@ export type SectorTilesProps = {
  */
 export function SectorTiles({ sectors, className }: SectorTilesProps) {
   return (
-    <ul aria-label="Sectors" className={cn("grid grid-cols-2 gap-3 sm:grid-cols-3", className)}>
+    <ul
+      aria-label="Sectors"
+      className={cn("grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-7", className)}
+    >
       {sectors.map((sector) => (
         <li
           key={sector.name}
@@ -27,7 +30,7 @@ export function SectorTiles({ sectors, className }: SectorTilesProps) {
             <BrandIllustration
               name={sectorIllustrations[sector.illustration]}
               alt=""
-              sizes="(max-width: 640px) 45vw, (max-width: 1280px) 30vw, 12vw"
+              sizes="(max-width: 640px) 45vw, (max-width: 1280px) 22vw, 10rem"
               className="mb-3"
             />
           )}

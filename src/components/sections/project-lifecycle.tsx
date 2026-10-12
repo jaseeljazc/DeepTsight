@@ -42,7 +42,8 @@ export function ProjectLifecycle({ lifecycle }: ProjectLifecycleProps) {
           ))}
         </ol>
 
-        <div className="border-rule mt-10 grid grid-cols-1 gap-x-8 gap-y-4 border-t pt-8 lg:grid-cols-12">
+        {/* Below xl the last phase's rule already closes the schedule, so only xl draws one here */}
+        <div className="border-rule mt-10 grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-12 xl:border-t xl:pt-8">
           <h3 className="font-display text-h3 text-ink-900 font-medium lg:col-span-4">
             {lifecycle.engageTitle}
           </h3>

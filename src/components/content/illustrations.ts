@@ -3,7 +3,8 @@ import type { IllustrationName as SectorIllustrationName } from "@/content/types
 /*
  * The client's brand illustrations (supplied 2026-10-11 in microicons-svg/, copied to
  * public/illustrations/). Each is one colour: the primary (#005BAA), or white for the ink band.
- * Shapes are the client's and are never redrawn. Sizes are each file's viewBox.
+ * Shapes are the client's and are never redrawn. Sizes are each file's viewBox (see-connect-deliver's
+ * is cropped to its drawn area, shapes untouched).
  */
 export const illustrations = {
   "sector-oil-gas-upstream": { file: "sector-oil-gas-upstream.svg", width: 2048, height: 2048 },
@@ -12,7 +13,7 @@ export const illustrations = {
   "sector-water": { file: "sector-water.svg", width: 2048, height: 2048 },
   "sector-power": { file: "sector-power.svg", width: 1024, height: 1024 },
   "sector-remote-operations": { file: "sector-remote-operations.svg", width: 1024, height: 1024 },
-  "see-connect-deliver": { file: "see-connect-deliver.svg", width: 2752, height: 1536 },
+  "see-connect-deliver": { file: "see-connect-deliver.svg", width: 2552, height: 981 },
   "transformation-wave": { file: "transformation-wave.svg", width: 1678, height: 937 },
   "transformation-wave-on-dark": {
     file: "transformation-wave-on-dark.svg",

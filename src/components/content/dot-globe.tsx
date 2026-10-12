@@ -87,35 +87,34 @@ const PROCESSED_LAND_POINTS: readonly [number, number, number][] = GLOBE_LAND_PO
   },
 );
 
-function getInitialMarkerStyle(marker: GlobeMarker, isDragging: boolean): React.CSSProperties {
+// Pins show only once clear of the limb. They switch rather than fade, so a label is never
+// drawn at partial opacity (a half-faded label fails text contrast).
+const PIN_VISIBLE_MZ = 0.18;
+
+function getInitialMarkerStyle(marker: GlobeMarker): React.CSSProperties {
   const mPhi = marker.lat * DEG2RAD;
   const mLam = marker.lon * DEG2RAD - START_LON;
   const mx = Math.cos(mPhi) * Math.sin(mLam);
   const my = COS_TILT * Math.sin(mPhi) - SIN_TILT * Math.cos(mPhi) * Math.cos(mLam);
   const mz = SIN_TILT * Math.sin(mPhi) + COS_TILT * Math.cos(mPhi) * Math.cos(mLam);
 
-  if (mz > 0) {
+  if (mz >= PIN_VISIBLE_MZ) {
     const screenX = CX + mx * RADIUS;
     const screenY = CY - my * RADIUS;
-    const opacity = mz < 0.18 ? Math.max(0, mz / 0.18) : 1;
     const xPct = ((screenX / GLOBE_SIZE) * 100).toFixed(2);
     const yPct = ((screenY / GLOBE_SIZE) * 100).toFixed(2);
 
     return {
       "--pin-x": `${xPct}%`,
       "--pin-y": `${yPct}%`,
-      opacity: opacity > 0.05 ? opacity : 0,
-      visibility: opacity > 0.05 ? "visible" : "hidden",
-      transition: isDragging ? "none" : "opacity 0.15s ease-out",
+      visibility: "visible",
     } as React.CSSProperties;
   }
 
   return {
     "--pin-x": "50%",
     "--pin-y": "50%",
-    opacity: 0,
     visibility: "hidden",
-    transition: isDragging ? "none" : "opacity 0.15s ease-out",
   } as React.CSSProperties;
 }
 
@@ -310,19 +309,16 @@ export function DotGlobe({ label, markers: customMarkers, className }: DotGlobeP
         const my = COS_TILT * Math.sin(mPhi) - SIN_TILT * Math.cos(mPhi) * Math.cos(mLam);
         const mz = SIN_TILT * Math.sin(mPhi) + COS_TILT * Math.cos(mPhi) * Math.cos(mLam);
 
-        if (mz > 0) {
+        if (mz >= PIN_VISIBLE_MZ) {
           const screenX = CX + mx * RADIUS;
           const screenY = CY - my * RADIUS;
-          const opacity = mz < 0.18 ? Math.max(0, mz / 0.18) : 1;
           const xPct = ((screenX / GLOBE_SIZE) * 100).toFixed(2);
           const yPct = ((screenY / GLOBE_SIZE) * 100).toFixed(2);
 
           pinEl.style.setProperty("--pin-x", `${xPct}%`);
           pinEl.style.setProperty("--pin-y", `${yPct}%`);
-          pinEl.style.opacity = `${opacity}`;
-          pinEl.style.visibility = opacity > 0.05 ? "visible" : "hidden";
+          pinEl.style.visibility = "visible";
         } else {
-          pinEl.style.opacity = "0";
           pinEl.style.visibility = "hidden";
         }
       }
@@ -443,7 +439,7 @@ export function DotGlobe({ label, markers: customMarkers, className }: DotGlobeP
             }
           }}
           className={cn("globe-pin", marker.leadDirection === "right" && "globe-pin--right")}
-          style={getInitialMarkerStyle(marker, isDragging)}
+          style={getInitialMarkerStyle(marker)}
           aria-hidden="true"
         >
           <span className="globe-pin-lead" />
