@@ -29,7 +29,13 @@ function main(): void {
   const base = `${name}-${timestamp()}`;
   const file = path.join(BACKUP_DIR, `${base}.dump`);
 
-  const result = runPg("pg_dump", ["--format=custom", "--no-owner", `--file=${file}`], db);
+  // The CMS lives entirely in `public`. A hosted database (Supabase) also has its own auth,
+  // storage and realtime schemas, which the app role may not read and which are not ours to back up.
+  const result = runPg(
+    "pg_dump",
+    ["--format=custom", "--no-owner", "--schema=public", `--file=${file}`],
+    db,
+  );
   if (result.status !== 0) {
     fs.rmSync(file, { force: true });
     console.error(
