@@ -358,7 +358,7 @@ test("a change is a draft until published, and other unpublished edits are named
   const visitor = await playwright.request.newContext({ baseURL: BASE });
   expect(await (await visitor.get("/")).text()).not.toContain(caption);
 
-  await card.getByRole("button", { name: /^Publish:/ }).click();
+  await card.getByRole("button", { name: /^Publish\s*:/ }).click();
   await expect(page.getByText(/other changes in the section are unpublished/i)).toBeVisible();
   await expect(page.getByText("hero.headline")).toBeVisible();
   await page.getByRole("button", { name: "Publish now" }).click();
@@ -403,7 +403,7 @@ test("a badge change and its publish leave the approval flags alone", async ({ b
   expect(idAt(live, "badge")).toBe(oldBadge);
   expect(live["verified"]).toBe(true);
 
-  await card.getByRole("button", { name: /^Publish:/ }).click();
+  await card.getByRole("button", { name: /^Publish\s*:/ }).click();
   await page.getByRole("button", { name: "Publish now" }).click();
   await expect(card.getByText("Draft change waiting")).toHaveCount(0, AFTER_REFRESH);
   const published = await credentialDoc(id, false);
@@ -438,7 +438,7 @@ test("a focal point is saved as a draft and published with the image", async ({
   expect(draft["focalX"]).not.toBe(before["focalX"]);
   expect((await mediaDoc(mediaId, false))["focalX"]).toBe(before["focalX"]);
 
-  await card.getByRole("button", { name: /^Publish image:/ }).click();
+  await card.getByRole("button", { name: /^Publish image\s*:/ }).click();
   await page.getByRole("button", { name: "Publish now" }).click();
   await expect(card.getByText("Focal point change waiting")).toHaveCount(0, AFTER_REFRESH);
 
@@ -590,12 +590,13 @@ test("an image in use needs a second confirmation, and Media refuses to delete i
   expect(refused.status()).toBe(409);
   expect(await refused.text()).toContain("Images on the website");
 
-  // The Images page asks twice.
+  // The Images page asks twice: the first Delete returns the server's list of places in use.
   await card.getByRole("button", { name: "Delete image" }).click();
   const dialog = page.getByRole("dialog");
+  const confirm = dialog.getByRole("button", { name: "Delete image" });
+  await confirm.click();
   await expect(dialog.getByText("This image is in use.")).toBeVisible();
   await expect(dialog.getByText(/Contact page/)).toBeVisible();
-  const confirm = dialog.getByRole("button", { name: "Delete image" });
   await expect(confirm).toBeDisabled();
   await dialog.getByLabel(/I understand these spots will be left without an image/).check();
   await confirm.click();
@@ -608,7 +609,7 @@ test("an image in use needs a second confirmation, and Media refuses to delete i
 
   // An empty required spot cannot be published (Payload's own required-field check), in words
   // that name the field.
-  await card.getByRole("button", { name: /^Publish:/ }).click();
+  await card.getByRole("button", { name: /^Publish\s*:/ }).click();
   await page.getByRole("button", { name: "Publish now" }).click();
   const alert = page.getByRole("dialog").getByRole("alert");
   await expect(alert).toBeVisible(AFTER_REFRESH);

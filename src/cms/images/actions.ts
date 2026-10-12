@@ -70,17 +70,30 @@ async function adminContext(): Promise<Context> {
  */
 function describe(error: unknown): string {
   if (error instanceof NotAllowedError) return NOT_ALLOWED;
-  if (error instanceof ValidationError) {
-    const errors = (error.data as { errors?: { path?: string; message?: string }[] } | undefined)
-      ?.errors;
-    if (errors?.length) {
-      return errors
-        .map((item) => `${item.path ?? "field"}: ${item.message ?? "invalid"}`)
-        .join("; ");
-    }
+  const fields = fieldErrors(error);
+  if (fields.length > 0) {
+    return fields.map((item) => `${item.path}: ${item.message}`).join("; ");
   }
   if (error instanceof APIError && error.message) return error.message;
   return FAILED;
+}
+
+/*
+ * Payload's validation errors carry `data.errors` as [{ path, message }]. Read that shape rather
+ * than relying on `instanceof ValidationError` alone: in the production server-action bundle the
+ * thrown error is not an instance of this module's class (seen on 2026-10-12, Images publish).
+ */
+function fieldErrors(error: unknown): { path: string; message: string }[] {
+  if (!(error instanceof ValidationError) && !(error instanceof Error)) return [];
+  const data = (error as { data?: unknown }).data;
+  if (typeof data !== "object" || data === null) return [];
+  const errors = (data as { errors?: unknown }).errors;
+  if (!Array.isArray(errors)) return [];
+  return errors.flatMap((item: unknown) => {
+    if (typeof item !== "object" || item === null) return [];
+    const { path, message } = item as { path?: unknown; message?: unknown };
+    return typeof path === "string" && typeof message === "string" ? [{ path, message }] : [];
+  });
 }
 
 const refuse = (message: string): ActionResult => ({ ok: false, message });

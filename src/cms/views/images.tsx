@@ -1,6 +1,8 @@
 import * as React from "react";
+import { redirect } from "next/navigation";
 import type { AdminViewServerProps } from "payload";
-import { isAdmin } from "../access";
+import { hasPasswordSession, isAdmin } from "../access";
+import { MFA_VIEW_PATH } from "../mfa/endpoints";
 import { loadImagesPage } from "../images/data";
 import { ImagesClient } from "./images/images-client";
 
@@ -12,7 +14,9 @@ import { ImagesClient } from "./images/images-client";
  */
 export async function ImagesView({ initPageResult }: AdminViewServerProps) {
   const { req } = initPageResult;
-  if (!isAdmin(req)) return null;
+  // Custom views skip Payload's own admin gate, so send the visitor where the rest of the admin
+  // would: sign in first, then the second factor.
+  if (!isAdmin(req)) redirect(hasPasswordSession(req) ? MFA_VIEW_PATH : "/admin/login");
   const data = await loadImagesPage(req.payload);
   return (
     <div className="dts-dashboard dts-img">
