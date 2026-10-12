@@ -21,19 +21,39 @@ export const INSIGHTS_FILE = path.join(TEST_DATA_DIR, "cms-insights.json");
 export const PREVIEW_FILE = path.join(TEST_DATA_DIR, "cms-preview.json");
 export const IMAGES_FILE = path.join(TEST_DATA_DIR, "cms-images.json");
 
-function run(script: string, args: string[]): void {
-  const result = spawnSync(
-    process.execPath,
-    [path.join("node_modules", "tsx", "dist", "cli.mjs"), script, ...args],
-    { stdio: "inherit", env: process.env },
-  );
-  if (result.status !== 0) throw new Error(`${script} failed (exit ${result.status ?? "signal"}).`);
+/*
+ * Runs a script and requires its own success line, not just exit 0. Under tsx's async loader Node
+ * now and then exits 0 before a script starts its work (no output, nothing done); such a run is
+ * retried twice. A run that did any work and then failed exits non-zero and is not retried.
+ */
+function run(script: string, args: string[], done: string): void {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const result = spawnSync(
+      process.execPath,
+      [path.join("node_modules", "tsx", "dist", "cli.mjs"), script, ...args],
+      { stdio: ["ignore", "pipe", "inherit"], encoding: "utf8", env: process.env },
+    );
+    const output = result.stdout ?? "";
+    process.stdout.write(output);
+    if (result.status !== 0)
+      throw new Error(`${script} failed (exit ${result.status ?? "signal"}).`);
+    if (output.includes(done)) return;
+  }
+  throw new Error(`${script} exited without running (3 attempts).`);
 }
 
 export function prepareTestDb(): void {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
-  run(path.join("scripts", "cms", "migrate.ts"), ["--db", "DATABASE_URI_TEST", "--fresh"]);
-  run(path.join("scripts", "cms", "import-from-source.ts"), ["--db", "DATABASE_URI_TEST"]);
+  run(
+    path.join("scripts", "cms", "migrate.ts"),
+    ["--db", "DATABASE_URI_TEST", "--fresh"],
+    "Migrations applied",
+  );
+  run(
+    path.join("scripts", "cms", "import-from-source.ts"),
+    ["--db", "DATABASE_URI_TEST"],
+    "Imported into",
+  );
   const accounts: [string, string, string, string][] = [
     [ADMIN_FILE, "editor@example.com", "Test Editor", "editor,approver"],
     [EDITOR_FILE, "editor-only@example.com", "Test Editor Only", "editor"],
@@ -45,19 +65,24 @@ export function prepareTestDb(): void {
     [IMAGES_FILE, "images@example.com", "Test Images", "editor,approver"],
   ];
   for (const [file, email, name, roles] of accounts) {
-    run(path.join("scripts", "cms", "create-admin.ts"), [
-      "--db",
-      "DATABASE_URI_TEST",
-      "--email",
-      email,
-      "--name",
-      name,
-      "--roles",
-      roles,
-      "--out",
-      file,
-      "--json",
-    ]);
+    run(
+      path.join("scripts", "cms", "create-admin.ts"),
+      [
+        "--db",
+        "DATABASE_URI_TEST",
+        "--email",
+        email,
+        "--name",
+        name,
+        "--roles",
+        roles,
+        "--out",
+        file,
+        "--json",
+      ],
+      "Created account",
+    );
+    if (!fs.existsSync(file)) throw new Error(`No account file was written for ${email}.`);
   }
 }
 
