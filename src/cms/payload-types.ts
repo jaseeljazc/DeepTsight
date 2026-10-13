@@ -1332,6 +1332,7 @@ export interface Home {
   };
   problemsAddressed: {
     title: string;
+    intro?: string | null;
     items?:
       | {
           challenge: string;
@@ -1913,6 +1914,7 @@ export interface HomeSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        intro?: T;
         items?:
           | T
           | {

@@ -213,6 +213,9 @@ export function mapHome(
     },
     problemsAddressed: {
       title: str(problems, "title"),
+      intro:
+        str(problems, "intro") ||
+        "The situations that bring asset owners to an engineering conversation, and the practical response to each.",
       items: rows(problems, "items").map((row) => ({
         challenge: str(row, "challenge"),
         solution: str(row, "solution"),

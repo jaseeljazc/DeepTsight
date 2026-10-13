@@ -372,6 +372,7 @@ export const homeContentSchema = z.object({
   }),
   problemsAddressed: z.object({
     title: z.string(),
+    intro: z.string(),
     items: z.array(
       z.object({
         challenge: z.string(),

@@ -322,6 +322,7 @@ export const Home: GlobalConfig = {
       type: "group",
       fields: [
         text("title"),
+        area("intro", "Intro"),
         { name: "items", type: "array", fields: [area("challenge"), area("solution")] },
       ],
     },

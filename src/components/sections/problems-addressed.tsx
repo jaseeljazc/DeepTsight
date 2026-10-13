@@ -27,7 +27,12 @@ export function ProblemsAddressed({ problemsAddressed, figure }: ProblemsAddress
       <Container rail className="rail-enter">
         <div className="grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-6">
-            <SectionHeader id="problems-heading" title={problemsAddressed.title} size="h1" />
+            <SectionHeader
+              id="problems-heading"
+              title={problemsAddressed.title}
+              intro={problemsAddressed.intro}
+              size="h1"
+            />
           </div>
           {figure && (
             <div className="lg:col-span-5 lg:col-start-8">

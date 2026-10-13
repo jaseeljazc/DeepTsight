@@ -114,7 +114,7 @@
   /* 1280px content plus 32px gutters */
   --container-measure: 68ch;
   /* long-form reading */
-  --container-illustration: 40rem;
+  --container-illustration: 44rem;
   /* wide brand illustrations (See / Connect / Deliver, lifecycle) */
   --container-pillar: 12rem;
   /* one See, Connect or Deliver panel when the three stack on a phone */

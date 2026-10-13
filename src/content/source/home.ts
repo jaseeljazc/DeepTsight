@@ -89,6 +89,8 @@ export const homeSource: HomeSource = {
   },
   problemsAddressed: {
     title: "Operational problems addressed",
+    intro:
+      "The situations that bring asset owners to an engineering conversation, and the practical response to each.",
     items: [
       {
         challenge: "Complex brownfield upgrades",
